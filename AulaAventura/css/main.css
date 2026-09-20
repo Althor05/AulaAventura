@@ -99,7 +99,18 @@ h1, h2, h3, h4, h5, h6 {
     padding: 2rem 1.5rem;
     position: relative;
     z-index: 1;
-    animation: smoothFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.view-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    animation: smoothFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.view:not(:has(.home-top-bar)) {
+    animation: smoothFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes smoothFadeIn {

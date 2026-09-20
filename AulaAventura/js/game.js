@@ -18,12 +18,15 @@ Router.addRoute('/mapa', () => `
                 </button>
                 
                 <div style="display: flex; align-items: center; gap: 0.9rem;">
-                    <img src="assets/logo_don_quijote.png" alt="Escudo" style="width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3)); background: rgba(255,255,255,0.15); border-radius: 12px; padding: 3px;">
+                    <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" style="height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35)); display: block;">
                     <div style="text-align: left;">
                         <h2 id="mapa-titulo" style="color: #ffffff; font-size: 1.45rem; line-height: 1.1; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.25);">Mapa del Curso</h2>
-                        <div style="font-size: 0.9rem; color: #fef08a; font-weight: 800;">
-                            Aventurero/a: <span id="mapa-nombre-personaje" style="color: #ffffff; font-weight: 900;">Aventurero</span>
+                        <div style="font-size: 0.9rem; color: #fef08a; font-weight: 800; display: flex; align-items: center; gap: 0.4rem; margin-top: 2px;">
+                            <span>Aventurero/a:</span> <span id="mapa-nombre-personaje" style="color: #ffffff; font-weight: 900;">Aventurero</span>
                         </div>
+                    </div>
+                    <div class="mini-avatar-box" onclick="Avatar.editCourseAvatar(AppState.currentLevel)" title="Haz clic para personalizar tu mascota" style="width: 46px; height: 46px; border-radius: 12px; padding: 3px; cursor: pointer; border-color: rgba(255,255,255,0.85); box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                        <img id="mapa-avatar-img" src="" alt="Mascota" class="mini-avatar-img">
                     </div>
                 </div>
 
@@ -111,6 +114,11 @@ Router.addRoute('/mapa', () => `
     document.getElementById('mapa-titulo').textContent = nombresCursos[cursoId] || 'Mapa de Aventura';
     document.getElementById('mapa-nombre-personaje').textContent = avatarData.name || 'Aventurero';
     document.getElementById('mapa-chuches').textContent = Avatar.getCourseChucheletes(cursoId);
+    const mapImg = document.getElementById('mapa-avatar-img');
+    if (mapImg) {
+        mapImg.src = Avatar.getSkinImgSrc(avatarData.skinId || avatarData.species);
+        mapImg.onerror = () => { mapImg.src = `assets/Nueva carpeta (2)/${avatarData.file}`; };
+    }
     if (window.updateFullscreenButtons) window.updateFullscreenButtons();
 });
 
@@ -273,246 +281,111 @@ window.GameCore = {
     }
 };
 
-// Configuración y personalización de Personajes Animales
+// Configuración y personalización de Personajes Animales Cuadrados (Carrusel Cíclico)
 Router.addRoute('/avatar', () => {
-    const animalsList = [
-        { id: 'zorro', name: 'Zorro Astuto', color: '#ea580c' },
-        { id: 'panda', name: 'Panda Amable', color: '#ffffff' },
-        { id: 'oso', name: 'Oso Perezoso', color: '#78350f' },
-        { id: 'leon', name: 'León Valiente', color: '#eab308' },
-        { id: 'conejo', name: 'Conejo Veloz', color: '#e2e8f0' },
-        { id: 'gato', name: 'Gato Curioso', color: '#fb923c' },
-        { id: 'perro', name: 'Perro Fiel', color: '#f59e0b' },
-        { id: 'buho', name: 'Búho Sabio', color: '#8b5cf6' },
-        { id: 'rana', name: 'Rana Saltarina', color: '#10b981' },
-        { id: 'koala', name: 'Koala Tierno', color: '#94a3b8' }
-    ];
+    const cursoId = Avatar.currentCourse || AppState.currentLevel || 'primaria1';
+    const nombresCursos = {
+        'primaria1': '1.º de Primaria',
+        'primaria2': '2.º de Primaria',
+        'primaria3': '3.º de Primaria',
+        'primaria4': '4.º de Primaria',
+        'primaria5': '5.º de Primaria',
+        'primaria6': '6.º de Primaria'
+    };
+    const nombreCurso = nombresCursos[cursoId] || 'Primaria';
+    const avatarData = Avatar.getCourseAvatar(cursoId);
+    const skin = Avatar.getSkin(avatarData.skinId || avatarData.species);
 
-    const animalsHTML = animalsList.map(a => `
-        <button class="asset-choice-btn" onclick="Avatar.setProperty('species', '${a.id}')">
-            <div style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;">
-                ${Avatar.renderSVG({ species: a.id, furColor: a.color }, 52)}
-            </div>
-            <span>${a.name}</span>
+    const thumbnailsHTML = Avatar.SKINS.map((s, idx) => `
+        <button type="button" class="skin-thumb-btn ${s.id === skin.id ? 'active' : ''}" onclick="Avatar.selectSkinIndex(${idx})" title="${s.name}">
+            <img src="assets/animales/${s.file}" alt="${s.name}" onerror="this.src='assets/Nueva carpeta (2)/${s.file}'">
         </button>
     `).join('');
 
     return `
-    <div class="view" id="view-avatar" style="align-items: center; justify-content: center; min-height: 100vh;">
-        <div style="width: 100%; max-width: 1000px; display: flex; flex-direction: column; background: rgba(255,255,255,0.96); backdrop-filter: blur(14px); border-radius: 36px; padding: 2.2rem; box-shadow: 0 16px 45px rgba(0,0,0,0.06); border: 2px solid #ffffff;">
-            
-            <!-- Barra superior -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem;">
-                <button class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem;" onclick="Router.navigate('/seleccionar-curso')">
-                    ${window.AppIcons ? window.AppIcons.backArrow : ''} Volver a Cursos
-                </button>
-                
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <img src="assets/logo_don_quijote.png" alt="Logo" style="width: 44px; height: 44px; object-fit: contain;">
-                    <div style="text-align: left;">
-                        <h1 id="avatar-curso-titulo" style="color: var(--school-red); font-size: 1.8rem; margin: 0; line-height: 1.1;">Tu Mascota</h1>
-                        <span style="font-size: 0.85rem; color: #16a34a; font-weight: 800;">
-                            Todos los accesorios desbloqueados
-                        </span>
-                    </div>
-                </div>
-
-                <div class="chuchelete-badge">
-                    ${window.AppIcons ? window.AppIcons.chuchelete(26, 18) : ''}
-                    <span><span id="avatar-chuches">0</span> Chucheletes</span>
+    <div class="view" id="view-avatar" style="min-height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%;">
+        
+        <!-- Barra Superior Full-Width Coherente con Inicio y Cursos -->
+        <header class="home-top-bar">
+            <div class="home-top-brand">
+                <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" class="home-top-logo">
+                <div class="home-top-brand-text">
+                    <h2>CEIP Don Quijote</h2>
+                    <span>Colegio de Educación Infantil y Primaria</span>
                 </div>
             </div>
+
+            <div class="home-top-actions">
+                <button class="top-bar-back-btn" onclick="Router.navigate('/seleccionar-curso')" title="Volver a Cursos">
+                    ${AppIcons.backArrow} Volver a Cursos
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor del Selector de Personajes en Carrusel Cíclico -->
+        <div class="view-body" style="width: 100%; max-width: 860px; margin: 0 auto; padding: 1.2rem 1.5rem 2rem 1.5rem; flex: 1;">
             
-            <div style="display: flex; gap: 2.5rem; align-items: flex-start; justify-content: center; flex-wrap: wrap;">
+            <div style="text-align: center; margin-bottom: 0.9rem;">
+                <h1 style="font-size: 2rem; font-weight: 900; color: #1e3a8a; margin: 0 0 0.25rem 0; letter-spacing: -0.02em;">
+                    Mascota de ${nombreCurso}
+                </h1>
+                <p style="color: #64748b; font-size: 1rem; font-weight: 700; margin: 0;">
+                    Elige tu personaje animal con las flechas o pulsando sobre ellos
+                </p>
+            </div>
+
+            <div class="skin-selector-card">
                 
-                <!-- Columna Izquierda: Vista Previa y Nombre -->
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 1.2rem; width: 280px;">
-                    
-                    <!-- Campo para cambiar el Nombre -->
-                    <div style="width: 100%; text-align: center;">
-                        <label style="display: block; font-weight: 800; font-size: 1.05rem; color: #334155; margin-bottom: 0.4rem;">
-                            Nombre de tu Personaje:
-                        </label>
-                        <input type="text" id="avatar-name-input" class="avatar-input-name" placeholder="Escribe un nombre..." maxlength="15">
+                <!-- Carrusel Cíclico Principal con Flechas Izquierda y Derecha -->
+                <div class="skin-carousel-stage">
+                    <button type="button" class="skin-nav-arrow skin-arrow-prev" onclick="Avatar.prevSkin()" title="Personaje anterior (o Flecha Izquierda)" aria-label="Anterior">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+
+                    <div class="skin-center-card">
+                        <div class="skin-preview-wrapper" onclick="Avatar.nextSkin()" title="Haz clic para pasar a la siguiente mascota">
+                            <img id="skin-main-img" src="assets/animales/${skin.file}" alt="${skin.name}" class="skin-large-img" onerror="this.src='assets/Nueva carpeta (2)/${skin.file}'">
+                        </div>
+
+                        <div class="skin-info-wrap">
+                            <div class="skin-species-tag" id="skin-species-tag">
+                                ${skin.name}
+                            </div>
+                            <div class="skin-counter-tag" id="skin-counter">
+                                1 / ${Avatar.SKINS.length}
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Cuadro de Vista Previa -->
-                    <div id="avatar-live-preview" style="width: 250px; height: 250px; background: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 6px solid #ffffff; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);">
-                        <!-- SVG inyectado en vivo -->
-                    </div>
-
-                    <button class="btn btn-primary" style="width: 100%; font-size: 1.25rem;" onclick="Router.navigate('/mapa')">
-                        ¡Ir a Jugar!
+                    <button type="button" class="skin-nav-arrow skin-arrow-next" onclick="Avatar.nextSkin()" title="Siguiente personaje (o Flecha Derecha)" aria-label="Siguiente">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                     </button>
                 </div>
-                
-                <!-- Columna Derecha: Pestañas de personalización de Animales -->
-                <div style="flex: 1; min-width: 320px; background: #ffffff; border: 2px solid #e2e8f0; border-radius: 26px; padding: 1.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-                    
-                    <!-- Pestañas de categorías (Animales y complementos) -->
-                    <div class="avatar-tabs">
-                        <button id="tab-btn-animal" class="avatar-tab-btn active" onclick="Avatar.switchTab('animal')">Especie Animal</button>
-                        <button id="tab-btn-pelaje" class="avatar-tab-btn" onclick="Avatar.switchTab('pelaje')">Color de Pelaje</button>
-                        <button id="tab-btn-sombreros" class="avatar-tab-btn" onclick="Avatar.switchTab('sombreros')">Sombreros</button>
-                        <button id="tab-btn-gafas" class="avatar-tab-btn" onclick="Avatar.switchTab('gafas')">Gafas y Rostro</button>
-                        <button id="tab-btn-cuello" class="avatar-tab-btn" onclick="Avatar.switchTab('cuello')">Cuello y Ropa</button>
-                    </div>
 
-                    <!-- Contenido 1: Selección de Especie Animal (10 Animales) -->
-                    <div id="tab-content-animal" class="avatar-tab-content">
-                        <h4 style="margin-bottom: 0.8rem; color: #475569; font-size: 1.05rem;">Elige la especie de tu compañero/a:</h4>
-                        <div class="asset-grid">
-                            ${animalsHTML}
-                        </div>
-                    </div>
-
-                    <!-- Contenido 2: Color de Pelaje (16 tonos vibrantes) -->
-                    <div id="tab-content-pelaje" class="avatar-tab-content" style="display: none;">
-                        <h4 style="margin-bottom: 0.8rem; color: #475569; font-size: 1.05rem;">Paleta de color de pelaje (16 tonos):</h4>
-                        <div class="color-palette-grid">
-                            <button class="color-btn" style="background: #ea580c;" title="Naranja Zorro" onclick="Avatar.setProperty('furColor', '#ea580c')"></button>
-                            <button class="color-btn" style="background: #f59e0b;" title="Ámbar Dorado" onclick="Avatar.setProperty('furColor', '#f59e0b')"></button>
-                            <button class="color-btn" style="background: #d97706;" title="Miel Canela" onclick="Avatar.setProperty('furColor', '#d97706')"></button>
-                            <button class="color-btn" style="background: #78350f;" title="Marrón Bosque" onclick="Avatar.setProperty('furColor', '#78350f')"></button>
-                            <button class="color-btn" style="background: #5c3826;" title="Castaño" onclick="Avatar.setProperty('furColor', '#5c3826')"></button>
-                            <button class="color-btn" style="background: #382218;" title="Café Oscuro" onclick="Avatar.setProperty('furColor', '#382218')"></button>
-                            <button class="color-btn" style="background: #0f172a;" title="Negro Azabache" onclick="Avatar.setProperty('furColor', '#0f172a')"></button>
-                            <button class="color-btn" style="background: #334155;" title="Gris Pizarra" onclick="Avatar.setProperty('furColor', '#334155')"></button>
-                            <button class="color-btn" style="background: #94a3b8;" title="Gris Plateado" onclick="Avatar.setProperty('furColor', '#94a3b8')"></button>
-                            <button class="color-btn" style="background: #e2e8f0;" title="Blanco Nieve" onclick="Avatar.setProperty('furColor', '#e2e8f0')"></button>
-                            <button class="color-btn" style="background: #fb7185;" title="Rosa Pastel" onclick="Avatar.setProperty('furColor', '#fb7185')"></button>
-                            <button class="color-btn" style="background: #a855f7;" title="Lavanda Fantasía" onclick="Avatar.setProperty('furColor', '#a855f7')"></button>
-                            <button class="color-btn" style="background: #3b82f6;" title="Azul Celeste" onclick="Avatar.setProperty('furColor', '#3b82f6')"></button>
-                            <button class="color-btn" style="background: #10b981;" title="Verde Menta" onclick="Avatar.setProperty('furColor', '#10b981')"></button>
-                            <button class="color-btn" style="background: #eab308;" title="Amarillo Brillante" onclick="Avatar.setProperty('furColor', '#eab308')"></button>
-                            <button class="color-btn" style="background: #fcd5ce;" title="Melocotón Cálido" onclick="Avatar.setProperty('furColor', '#fcd5ce')"></button>
-                        </div>
-                    </div>
-
-                    <!-- Contenido 3: Sombreros y Adornos de Cabeza -->
-                    <div id="tab-content-sombreros" class="avatar-tab-content" style="display: none;">
-                        <h4 style="margin-bottom: 0.8rem; color: #475569; font-size: 1.05rem;">Elige tu sombrero o accesorio para la cabeza:</h4>
-                        <div class="asset-grid">
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'ninguno')">
-                                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                                </div>
-                                <span>Sin Sombrero</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'gorra')">
-                                <span class="asset-tag" style="background: #dbeafe; color: #1d4ed8; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Deporte</span>
-                                <span>Gorra Deportiva</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'corona')">
-                                <span class="asset-tag" style="background: #fef3c7; color: #d97706; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Realeza</span>
-                                <span>Corona Real</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'chistera')">
-                                <span class="asset-tag" style="background: #e2e8f0; color: #0f172a; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Gala</span>
-                                <span>Chistera Elegante</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'brujo')">
-                                <span class="asset-tag" style="background: #f3e8ff; color: #7e22ce; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Magia</span>
-                                <span>Gorro Mágico</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'laquitolazo')">
-                                <span class="asset-tag" style="background: #fce7f3; color: #db2777; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Estilo</span>
-                                <span>Lazo Coqueto</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'auriculares')">
-                                <span class="asset-tag" style="background: #ccfbf1; color: #0f766e; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Música</span>
-                                <span>Auriculares</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'pirata')">
-                                <span class="asset-tag" style="background: #fee2e2; color: #b91c1c; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Aventura</span>
-                                <span>Bicornio Pirata</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'boina')">
-                                <span class="asset-tag" style="background: #ede9fe; color: #6d28d9; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Arte</span>
-                                <span>Boina Escolar</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('hat', 'flor')">
-                                <span class="asset-tag" style="background: #ecfdf5; color: #047857; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Naturaleza</span>
-                                <span>Flor Primaveral</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Contenido 4: Gafas y Rostro -->
-                    <div id="tab-content-gafas" class="avatar-tab-content" style="display: none;">
-                        <h4 style="margin-bottom: 0.8rem; color: #475569; font-size: 1.05rem;">Gafas y detalles faciales:</h4>
-                        <div class="asset-grid">
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'ninguno')">
-                                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                                </div>
-                                <span>Sin Gafas</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'gafas_redondas')">
-                                <span class="asset-tag" style="background: #e2e8f0; color: #334155; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Estudio</span>
-                                <span>Gafas Sabias</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'gafas_sol')">
-                                <span class="asset-tag" style="background: #0f172a; color: #ffffff; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Moderno</span>
-                                <span>Gafas de Sol</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'monoculo')">
-                                <span class="asset-tag" style="background: #fef3c7; color: #b45309; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Detective</span>
-                                <span>Monóculo Fino</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'estrella')">
-                                <span class="asset-tag" style="background: #fef9c3; color: #a16207; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Magia</span>
-                                <span>Estrellas Mágicas</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('glasses', 'pecas')">
-                                <span class="asset-tag" style="background: #fee2e2; color: #b91c1c; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Dulce</span>
-                                <span>Pecas Tiernas</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Contenido 5: Cuello y Accesorios -->
-                    <div id="tab-content-cuello" class="avatar-tab-content" style="display: none;">
-                        <h4 style="margin-bottom: 0.8rem; color: #475569; font-size: 1.05rem;">Complementos de cuello y ropa:</h4>
-                        <div class="asset-grid">
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'ninguno')">
-                                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-                                </div>
-                                <span>Sin Accesorio</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'pajarita')">
-                                <span class="asset-tag" style="background: #fee2e2; color: #dc2626; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Elegante</span>
-                                <span>Pajarita Roja</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'bufanda')">
-                                <span class="asset-tag" style="background: #dbeafe; color: #2563eb; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Invierno</span>
-                                <span>Bufanda Rayas</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'bandana')">
-                                <span class="asset-tag" style="background: #fef3c7; color: #d97706; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Explorador</span>
-                                <span>Bandana Scout</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'capa')">
-                                <span class="asset-tag" style="background: #fee2e2; color: #b91c1c; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Héroe</span>
-                                <span>Capa Heroica</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'medalla')">
-                                <span class="asset-tag" style="background: #fef9c3; color: #a16207; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Premio</span>
-                                <span>Medalla de Oro</span>
-                            </button>
-                            <button class="asset-choice-btn" onclick="Avatar.setProperty('collar', 'corbata')">
-                                <span class="asset-tag" style="background: #dbeafe; color: #1d4ed8; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.75rem;">Colegio</span>
-                                <span>Corbata Escolar</span>
-                            </button>
-                        </div>
-                    </div>
-
+                <!-- Tira de Miniaturas Cuadradas de los 10 Animales -->
+                <div class="skin-thumbnails-row">
+                    ${thumbnailsHTML}
                 </div>
+
+                <!-- Barra Inferior: Nombre y Botón Aceptar Alineados al Lado -->
+                <div class="skin-footer-bar">
+                    <div class="skin-name-field-compact">
+                        <label for="skin-name-input">Nombre del Aventurero/a:</label>
+                        <input type="text" id="skin-name-input" class="skin-name-input" maxlength="16" placeholder="Escribe un nombre..." oninput="Avatar.setCustomName(this.value)" value="${avatarData.name || skin.defaultName}">
+                    </div>
+                    <button type="button" class="btn-action-green skin-btn-accept" onclick="Router.navigate('/seleccionar-curso')">
+                        Aceptar
+                    </button>
+                </div>
+
             </div>
+
         </div>
     </div>
     `;
 }, () => {
-    Avatar.initView();
+    const cursoId = Avatar.currentCourse || AppState.currentLevel || 'primaria1';
+    Avatar.initCarousel(cursoId);
+    if (window.updateFullscreenButtons) window.updateFullscreenButtons();
 });
+

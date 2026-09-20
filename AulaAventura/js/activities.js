@@ -152,6 +152,12 @@ window.Activities = {
 
     playSound(type) {
         try {
+            const vol = (window.AppState && AppState.settings && AppState.settings.volume !== undefined)
+                ? AppState.settings.volume
+                : (window.AppState && AppState.settings && AppState.settings.soundEnabled === false ? 0 : 80);
+            
+            if (vol <= 0) return; // Silenciado al 0%
+            
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gainNode = ctx.createGain();
@@ -159,21 +165,24 @@ window.Activities = {
             osc.connect(gainNode);
             gainNode.connect(ctx.destination);
             
+            // Escalar volumen del 0% al 100% (amplitud máxima segura 0.35)
+            const targetGain = (vol / 100) * 0.35;
+            
             if(type === 'success') {
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(523.25, ctx.currentTime); // Do
                 osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // Mi
                 osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.16); // Sol
-                gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                gainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.35);
             } else {
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(260, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.22);
-                gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.22);
+                gainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.22);
             }

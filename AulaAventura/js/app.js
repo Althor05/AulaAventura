@@ -2,6 +2,7 @@ window.AppState = {
     currentLevel: StorageHelper.load('currentLevel', 'primaria1'),
     settings: {
         soundEnabled: true,
+        volume: 80,
         animationsEnabled: true
     },
     progress: {}
@@ -9,12 +10,18 @@ window.AppState = {
 
 // Sistema de Iconos SVG Integrados (Sin emojis)
 window.AppIcons = {
-    gear: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`,
+    gear: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3.2"/></svg>`,
     fullscreen: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`,
     exitFullscreen: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6m0 0v6m0-6L3 21m17-11h-6m0 0V4m0 6 7-7M14 10l7-7"/></svg>`,
     fullscreenMini: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`,
     exitFullscreenMini: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M4 14h6m0 0v6m0-6L3 21m17-11h-6m0 0V4m0 6 7-7M14 10l7-7"/></svg>`,
     backArrow: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M19 12H5m7 7-7-7 7-7"/></svg>`,
+    volumeMute: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`,
+    volumeLow: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+    volumeHigh: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
+    downloadIcon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+    uploadIcon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
+    trashIcon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
     chuchelete(w = 28, h = 20) {
         return `<svg viewBox="0 0 36 24" width="${w}" height="${h}" style="display: inline-block; vertical-align: middle; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15)); flex-shrink: 0;" fill="none">
             <rect x="1" y="1" width="34" height="22" rx="3" fill="#10b981" stroke="#047857" stroke-width="1.5" />
@@ -125,6 +132,9 @@ window.updateFullscreenButtons = function() {
 
 function initApp() {
     AppState.settings = StorageHelper.load('settings', AppState.settings);
+    if (AppState.settings.volume === undefined) {
+        AppState.settings.volume = AppState.settings.soundEnabled === false ? 0 : 80;
+    }
     Router.init('app-container');
 
     // Pantalla de Inicio Oficial CEIP Don Quijote
@@ -152,103 +162,105 @@ function initApp() {
                 </div>
             </header>
 
-            <!-- Sección Hero Expansiva y Centrada (Sin banner redundante ni emojis) -->
-            <section class="home-hero-full">
-                <h1 class="home-hero-title">
-                    AULA AVENTURA
-                </h1>
+            <div class="view-body">
+                <!-- Sección Hero Expansiva y Centrada (Sin banner redundante ni emojis) -->
+                <section class="home-hero-full">
+                    <h1 class="home-hero-title">
+                        AULA AVENTURA
+                    </h1>
 
-                <p class="home-hero-desc">
-                    Descubre retos divertidos, gana chucheletes y explora las 5 zonas del saber diseñadas para aprender en la pizarra digital o en el ordenador de clase.
-                </p>
+                    <p class="home-hero-desc">
+                        Descubre retos divertidos, gana chucheletes y explora las 5 zonas del saber diseñadas para aprender en la pizarra digital o en el ordenador de clase.
+                    </p>
 
-                <div class="home-hero-buttons">
-                    <button class="btn btn-primary btn-hero-cta" onclick="Router.navigate('/seleccionar-curso')">
-                        ¡EMPEZAR AVENTURA!
-                    </button>
-                </div>
-            </section>
+                    <div class="home-hero-buttons">
+                        <button class="btn btn-primary btn-hero-cta" onclick="Router.navigate('/seleccionar-curso')">
+                            ¡EMPEZAR AVENTURA!
+                        </button>
+                    </div>
+                </section>
 
-            <!-- Franja Expansiva de las 5 Zonas (Informativas) -->
-            <section class="home-zones-strip">
-                <div class="home-strip-header">
+                <!-- Franja Expansiva de las 5 Zonas (Informativas) -->
+                <section class="home-zones-strip">
+                    <div class="home-strip-header">
+                        <div>
+                            <h2>Las 5 Zonas del Saber</h2>
+                            <p>Cada zona esconde preguntas interactivas adaptadas para motivar a los alumnos.</p>
+                        </div>
+                    </div>
+
+                    <div class="home-zones-cards-row">
+                        <div class="home-zone-card-big zone-castillo">
+                            <div class="home-zone-big-icon-wrap">${AppIcons.castillo}</div>
+                            <div class="home-zone-big-title">Castillo del Saber</div>
+                            <div class="home-zone-big-desc">Matemáticas, series numéricas y lógica divertida.</div>
+                        </div>
+
+                        <div class="home-zone-card-big zone-bosque">
+                            <div class="home-zone-big-icon-wrap">${AppIcons.bosque}</div>
+                            <div class="home-zone-big-title">Bosque de Palabras</div>
+                            <div class="home-zone-big-desc">Vocabulario, lectoescritura y comprensión lectora.</div>
+                        </div>
+
+                        <div class="home-zone-card-big zone-lab">
+                            <div class="home-zone-big-icon-wrap">${AppIcons.laboratorio}</div>
+                            <div class="home-zone-big-title">Laboratorio</div>
+                            <div class="home-zone-big-desc">El mundo natural, seres vivos y experimentos.</div>
+                        </div>
+
+                        <div class="home-zone-card-big zone-biblioteca">
+                            <div class="home-zone-big-icon-wrap">${AppIcons.biblioteca}</div>
+                            <div class="home-zone-big-title">Biblioteca Mágica</div>
+                            <div class="home-zone-big-desc">Historias de Don Quijote, ingenio y cultura.</div>
+                        </div>
+
+                        <div class="home-zone-card-big zone-taller">
+                            <div class="home-zone-big-icon-wrap">${AppIcons.taller}</div>
+                            <div class="home-zone-big-title">Taller Creativo</div>
+                            <div class="home-zone-big-desc">Formas, colores, arte y agilidad visual.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección de Tres Características Destacadas -->
+                <section class="home-features-full">
+                    <div class="home-features-grid">
+                        <div class="home-feature-box feature-box-courses">
+                            <div class="home-feature-icon" style="background: #dbeafe; color: #1d4ed8;">${AppIcons.coursesGraduation}</div>
+                            <div class="home-feature-text">
+                                <h4>6 Cursos de Primaria</h4>
+                                <p>Desde 1.º hasta 6.º de Primaria, cada nivel cuenta con su dificultad calibrada para el aula.</p>
+                            </div>
+                        </div>
+
+                        <div class="home-feature-box feature-box-candies">
+                            <div class="home-feature-icon" style="background: #ecfdf5; color: #047857;">${AppIcons.chuchelete(32, 22)}</div>
+                            <div class="home-feature-text">
+                                <h4>Premio con Chucheletes</h4>
+                                <p>Los alumnos ganan billetes de chucheletes con cada acierto, celebrando el aprendizaje colaborativo en clase.</p>
+                            </div>
+                        </div>
+
+                        <div class="home-feature-box feature-box-screen">
+                            <div class="home-feature-icon" style="background: #cffafe; color: #0891b2;">${AppIcons.screenProjector}</div>
+                            <div class="home-feature-text">
+                                <h4>Pizarra Digital y Proyector</h4>
+                                <p>Diseñado para proyectar en el aula y dinamizar la participación activa de los alumnos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer Informativo Institucional -->
+                <footer class="home-footer-full">
                     <div>
-                        <h2>Las 5 Zonas del Saber</h2>
-                        <p>Cada zona esconde preguntas interactivas adaptadas para motivar a los alumnos.</p>
+                        <strong>C.E.I.P. Don Quijote</strong> · Plataforma Educativa Interactiva de Aula
                     </div>
-                </div>
-
-                <div class="home-zones-cards-row">
-                    <div class="home-zone-card-big zone-castillo">
-                        <div class="home-zone-big-icon-wrap">${AppIcons.castillo}</div>
-                        <div class="home-zone-big-title">Castillo del Saber</div>
-                        <div class="home-zone-big-desc">Matemáticas, series numéricas y lógica divertida.</div>
+                    <div>
+                        Diseñado para Pizarra Digital y Proyector en el Aula
                     </div>
-
-                    <div class="home-zone-card-big zone-bosque">
-                        <div class="home-zone-big-icon-wrap">${AppIcons.bosque}</div>
-                        <div class="home-zone-big-title">Bosque de Palabras</div>
-                        <div class="home-zone-big-desc">Vocabulario, lectoescritura y comprensión lectora.</div>
-                    </div>
-
-                    <div class="home-zone-card-big zone-lab">
-                        <div class="home-zone-big-icon-wrap">${AppIcons.laboratorio}</div>
-                        <div class="home-zone-big-title">Laboratorio</div>
-                        <div class="home-zone-big-desc">El mundo natural, seres vivos y experimentos.</div>
-                    </div>
-
-                    <div class="home-zone-card-big zone-biblioteca">
-                        <div class="home-zone-big-icon-wrap">${AppIcons.biblioteca}</div>
-                        <div class="home-zone-big-title">Biblioteca Mágica</div>
-                        <div class="home-zone-big-desc">Historias de Don Quijote, ingenio y cultura.</div>
-                    </div>
-
-                    <div class="home-zone-card-big zone-taller">
-                        <div class="home-zone-big-icon-wrap">${AppIcons.taller}</div>
-                        <div class="home-zone-big-title">Taller Creativo</div>
-                        <div class="home-zone-big-desc">Formas, colores, arte y agilidad visual.</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Sección de Tres Características Destacadas -->
-            <section class="home-features-full">
-                <div class="home-features-grid">
-                    <div class="home-feature-box feature-box-courses">
-                        <div class="home-feature-icon" style="background: #dbeafe; color: #1d4ed8;">${AppIcons.coursesGraduation}</div>
-                        <div class="home-feature-text">
-                            <h4>6 Cursos de Primaria</h4>
-                            <p>Desde 1.º hasta 6.º de Primaria, cada nivel cuenta con su dificultad calibrada para el aula.</p>
-                        </div>
-                    </div>
-
-                    <div class="home-feature-box feature-box-candies">
-                        <div class="home-feature-icon" style="background: #ecfdf5; color: #047857;">${AppIcons.chuchelete(32, 22)}</div>
-                        <div class="home-feature-text">
-                            <h4>Premio con Chucheletes</h4>
-                            <p>Los alumnos ganan billetes de chucheletes con cada acierto, celebrando el aprendizaje colaborativo en clase.</p>
-                        </div>
-                    </div>
-
-                    <div class="home-feature-box feature-box-screen">
-                        <div class="home-feature-icon" style="background: #cffafe; color: #0891b2;">${AppIcons.screenProjector}</div>
-                        <div class="home-feature-text">
-                            <h4>Pizarra Digital y Proyector</h4>
-                            <p>Diseñado para proyectar en el aula y dinamizar la participación activa de los alumnos.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Footer Informativo Institucional -->
-            <footer class="home-footer-full">
-                <div>
-                    <strong>C.E.I.P. Don Quijote</strong> · Plataforma Educativa Interactiva de Aula
-                </div>
-                <div>
-                    Diseñado para Pizarra Digital y Proyector en el Aula
-                </div>
-            </footer>
+                </footer>
+            </div>
 
         </div>
     `, () => {
@@ -287,7 +299,7 @@ function initApp() {
 
                     <div class="course-right">
                         <div class="student-character-wrap" title="Haz clic para personalizar la mascota de ${c.nombre}" onclick="Avatar.editCourseAvatar('${c.id}')" style="cursor: pointer;">
-                            <div class="mini-avatar-box">
+                            <div class="course-character-standalone">
                                 ${svgPreview}
                             </div>
                             <div class="avatar-name-badge" title="${avatarData.name || 'Aventurero'}">
@@ -323,7 +335,7 @@ function initApp() {
                 </header>
 
                 <!-- Contenedor Principal de Cursos -->
-                <div style="width: 100%; max-width: 920px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem 1.5rem; flex: 1;">
+                <div class="view-body" style="width: 100%; max-width: 920px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem 1.5rem; flex: 1;">
                     
                     <div style="text-align: center; margin-bottom: 2.2rem;">
                         <h1 style="font-size: 2.4rem; font-weight: 900; color: #1e3a8a; margin: 0; letter-spacing: -0.02em;">
@@ -345,51 +357,86 @@ function initApp() {
     Router.addRoute('/configuracion', () => `
         <div class="view" id="view-configuracion" style="min-height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%;">
             
-            <!-- Barra Superior Full-Width Coherente con Inicio -->
+            <!-- Barra Superior Full-Width Coherente con Inicio y Cursos -->
             <header class="home-top-bar">
-                <div style="display: flex; align-items: center; gap: 1.2rem;">
-                    <button class="top-bar-back-btn" onclick="Router.navigate('/')" title="Volver al Inicio">
-                        ${AppIcons.backArrow} Volver al Inicio
-                    </button>
-                    <div class="home-top-brand">
-                        <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" class="home-top-logo">
-                        <div class="home-top-brand-text">
-                            <h2>CEIP Don Quijote</h2>
-                            <span>Ajustes y Configuración</span>
-                        </div>
+                <div class="home-top-brand">
+                    <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" class="home-top-logo">
+                    <div class="home-top-brand-text">
+                        <h2>CEIP Don Quijote</h2>
+                        <span>Colegio de Educación Infantil y Primaria</span>
                     </div>
                 </div>
 
                 <div class="home-top-actions">
-                    <button class="top-bar-icon-btn btn-toggle-fullscreen" onclick="toggleFullscreen()" title="${isFullscreenActive() ? 'Salir de pantalla completa' : 'Pantalla completa'}" aria-label="Pantalla completa">
-                        ${isFullscreenActive() ? AppIcons.exitFullscreen : AppIcons.fullscreen}
+                    <button class="top-bar-back-btn" onclick="Router.navigate('/')" title="Volver al Inicio">
+                        ${AppIcons.backArrow} Volver al Inicio
                     </button>
                 </div>
             </header>
             
-            <div style="width: 100%; max-width: 860px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem 1.5rem; flex: 1;">
-                <div style="background: rgba(255,255,255,0.94); padding: 2.2rem; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 2px solid #ffffff;">
-                    <h2 style="font-size: 1.6rem; color: #1e293b; margin-bottom: 0.5rem;">Opciones de Sonido y Pantalla</h2>
-                    <p style="margin-bottom: 1.5rem; color: #64748b;">Ajusta los efectos sonoros o pon la app a pantalla completa para el proyector del aula.</p>
+            <div class="view-body" style="width: 100%; max-width: 860px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem 1.5rem; flex: 1;">
+                <div style="text-align: center; margin-bottom: 2.2rem;">
+                    <h1 style="font-size: 2.4rem; font-weight: 900; color: #1e3a8a; margin: 0; letter-spacing: -0.02em;">
+                        Ajustes y Configuración
+                    </h1>
+                </div>
+
+                <!-- Tarjeta 1: Volumen de Sonido (0% a 100%) -->
+                <div style="background: rgba(255,255,255,0.96); padding: 2.2rem; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 2px solid #ffffff;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.8rem;">
+                        <h2 style="font-size: 1.6rem; color: #1e293b; margin: 0; font-family: var(--font-heading); font-weight: 900;">
+                            Volumen de Sonido
+                        </h2>
+                        <div class="volume-badge" id="volume-badge">
+                            ${(AppState.settings && AppState.settings.volume !== undefined) ? AppState.settings.volume : 80}%
+                        </div>
+                    </div>
                     
-                    <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
-                        <button id="btn-toggle-sonido" class="btn btn-primary" onclick="TeacherConfig.toggleSonido()">Sonido: ACTIVADO</button>
-                        <button class="btn btn-secondary btn-toggle-fullscreen" onclick="toggleFullscreen()">
-                            ${isFullscreenActive() ? 'Salir de Pantalla Completa' : 'Pantalla Completa'}
+                    <p style="margin-bottom: 1.6rem; color: #64748b; font-size: 1.05rem; font-weight: 600;">
+                        Regula el volumen de los efectos y respuestas en el aula (de 0% a 100%) o siléncialo por completo.
+                    </p>
+                    
+                    <div class="volume-control-wrapper">
+                        <button type="button" class="volume-mute-btn" onclick="TeacherConfig.toggleMute()" title="Silenciar / Activar sonido" id="volume-icon-indicator">
+                            ${((AppState.settings && AppState.settings.volume === 0)) ? AppIcons.volumeMute : (((AppState.settings && AppState.settings.volume < 50)) ? AppIcons.volumeLow : AppIcons.volumeHigh)}
                         </button>
+                        
+                        <div class="volume-track-container">
+                            <input type="range" id="volume-slider" min="0" max="100" step="1" 
+                                value="${(AppState.settings && AppState.settings.volume !== undefined) ? AppState.settings.volume : 80}" 
+                                class="volume-slider-input" 
+                                oninput="TeacherConfig.setVolume(this.value)"
+                                aria-label="Selector de volumen del 0% al 100%">
+                            <div class="volume-marks">
+                                <span>0%</span>
+                                <span>25%</span>
+                                <span>50%</span>
+                                <span>75%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div style="background: rgba(255,255,255,0.94); padding: 2.2rem; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); border: 2px solid #ffffff;">
-                    <h2 style="font-size: 1.6rem; color: #1e293b; margin-bottom: 0.5rem;">Copia de Seguridad para Pendrive (USB)</h2>
-                    <p style="margin-bottom: 1.5rem; color: #64748b;">
+                <!-- Tarjeta 2: Copia de Seguridad para Pendrive (USB) -->
+                <div style="background: rgba(255,255,255,0.96); padding: 2.2rem; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); border: 2px solid #ffffff;">
+                    <h2 style="font-size: 1.6rem; color: #1e293b; margin-bottom: 0.5rem; font-family: var(--font-heading); font-weight: 900;">
+                        Copia de Seguridad para Pendrive (USB)
+                    </h2>
+                    <p style="margin-bottom: 1.6rem; color: #64748b; font-size: 1.05rem; font-weight: 600;">
                         Los personajes animales y los chucheletes se guardan en el navegador. Puedes descargar una copia de seguridad para llevarla en tu USB y cargarla en cualquier otra aula del colegio.
                     </p>
                     
                     <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
-                        <button class="btn btn-primary" style="background: #16a34a;" onclick="TeacherConfig.exportarDatos()">Exportar al USB</button>
-                        <button class="btn btn-primary" style="background: #f59e0b;" onclick="TeacherConfig.importarDatos()">Importar del USB</button>
-                        <button class="btn btn-secondary" style="background: #fee2e2; color: #b91c1c; border-color: #fca5a5;" onclick="TeacherConfig.borrarDatos()">Reiniciar Progresos</button>
+                        <button class="btn-action-green" onclick="TeacherConfig.exportarDatos()">
+                            ${AppIcons.downloadIcon} Exportar al USB
+                        </button>
+                        <button class="btn-action-amber" onclick="TeacherConfig.importarDatos()">
+                            ${AppIcons.uploadIcon} Importar del USB
+                        </button>
+                        <button class="btn-action-danger" onclick="TeacherConfig.borrarDatos()">
+                            ${AppIcons.trashIcon} Reiniciar Progresos
+                        </button>
                     </div>
                 </div>
             </div>
