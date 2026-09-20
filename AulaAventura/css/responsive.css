@@ -1,0 +1,122 @@
+/* Adaptaciones para móviles y tablets pequeños */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.3rem !important;
+    }
+    
+    h2 {
+        font-size: 1.6rem !important;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.4rem;
+        font-size: 1rem;
+    }
+    
+    .btn-large {
+        padding: 1rem 1.8rem;
+        font-size: 1.15rem;
+    }
+
+    .course-card {
+        padding: 1rem 1.2rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .course-left {
+        justify-content: space-between;
+    }
+
+    .course-right {
+        justify-content: space-between;
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 0.8rem;
+    }
+
+    .map-pin {
+        width: 60px;
+        height: 60px;
+        font-size: 2.4rem;
+    }
+    
+    .map-zone .map-label {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    .home-hero-full {
+        padding: 2rem 1.2rem;
+        gap: 1.5rem;
+    }
+
+    .home-hero-title {
+        font-size: 3.2rem;
+    }
+
+    .home-hero-desc {
+        font-size: 1.15rem;
+    }
+
+    .home-top-bar {
+        padding: 0.6rem 1.2rem;
+    }
+
+    .home-top-brand-text span {
+        display: none;
+    }
+
+    .top-bar-back-btn span {
+        display: none;
+    }
+
+    .home-zones-cards-row {
+        grid-template-columns: 1fr;
+    }
+
+    .home-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .home-hero-title {
+        font-size: 4rem;
+    }
+
+    .home-zones-cards-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Pantallas grandes y Proyectores de Aula */
+@media (min-width: 1400px) {
+    .view {
+        padding: 3rem;
+    }
+
+    .course-list {
+        max-width: 1000px;
+    }
+
+    .course-card {
+        padding: 1.5rem 2.2rem;
+    }
+}
+
+/* Soporte especial para pantallas táctiles */
+@media (hover: none) {
+    .btn:hover {
+        transform: none;
+    }
+    .btn:active {
+        transform: translateY(2px);
+    }
+    .map-zone:hover {
+        transform: translate(-50%, -50%);
+    }
+    .course-card:hover {
+        transform: none;
+    }
+}
