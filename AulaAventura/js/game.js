@@ -22,9 +22,9 @@ Router.addRoute('/mapa', () => `
 
             <div class="home-top-actions">
                 <!-- Personaje con su nombre debajo (a la izquierda de los Chucheletes) -->
-                <div class="map-character-badge" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; pointer-events: none; user-select: none; margin-right: 0.3rem;">
-                    <img id="mapa-avatar-img" src="" alt="Mascota" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35)); display: block;">
-                    <span id="mapa-nombre-personaje" style="font-size: 0.78rem; font-weight: 800; color: #ffffff; background: rgba(0,0,0,0.28); padding: 0.12rem 0.55rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); max-width: 95px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+                <div class="map-character-badge" style="display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; user-select: none; margin-right: 0.3rem;">
+                    <img id="mapa-avatar-img" src="" alt="Mascota" style="width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35)); display: block;">
+                    <span id="mapa-nombre-personaje" style="font-size: 0.72rem; font-weight: 800; color: #ffffff; background: rgba(0,0,0,0.28); padding: 0.08rem 0.45rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.25); max-width: 90px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
                         Aventurero
                     </span>
                 </div>
