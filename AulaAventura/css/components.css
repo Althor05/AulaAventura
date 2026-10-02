@@ -905,57 +905,246 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* MAPA DE AVENTURA ESTILO ISLA ILUSTRADA */
-.map-zone {
+/* ==========================================================================
+   MAPA DE AVENTURA ESPECTACULAR: ISLA DEL QUIJOTE & BIOMAS TEMÁTICOS (FASE 24)
+   ========================================================================== */
+
+/* ==========================================================================
+   MAPA DE AVENTURA ESPECTACULAR: ISLA DEL QUIJOTE 3D RENDER (FASE 24)
+   ========================================================================== */
+
+/* ==========================================================================
+   MUNDO DE AVENTURA: MAPA INFANTIL EN CAJITA ENMARCADA (FASE 24)
+   ========================================================================== */
+
+.map-card-wrapper {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.adventure-world-wrap {
+    width: 100%;
+    max-width: 1060px;
+    aspect-ratio: 1376 / 768;
+    max-height: calc(100vh - 110px);
+    background: #7dd3fc url('../assets/mapa_infantil.jpg') center center / 100% 100% no-repeat;
+    border-radius: 32px;
+    border: 6px solid #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 0 0 3.5px #38bdf8;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Nodos interactivos de zona (Pins refinados de Videojuego sobre el mapa infantil) */
+.adventure-zone-node {
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -90%);
     cursor: pointer;
     text-align: center;
     z-index: 10;
-    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.map-zone:hover {
-    transform: translate(-50%, -60%) scale(1.15);
+.adventure-zone-node:hover {
+    transform: translate(-50%, -98%) scale(1.1);
+    z-index: 30;
 }
 
-.map-pin {
-    width: 80px;
-    height: 80px;
-    background: #ffffff;
+/* Medallón del Pin (Más compacto, estilizado y ligero) */
+.zone-medallion {
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    box-shadow: 0 10px 22px rgba(0,0,0,0.2), 0 0 0 6px rgba(255,255,255,0.65);
+    border: 2.5px solid #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.3rem;
-    margin: 0 auto;
-    transition: box-shadow 0.2s;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    cursor: pointer;
 }
 
-.map-zone:hover .map-pin {
-    box-shadow: 0 14px 30px rgba(0,0,0,0.3), 0 0 0 8px rgba(255,255,255,0.9);
+/* Puntero triangular del pin (más pequeño y nítido) */
+.zone-medallion::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #ffffff;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
 }
 
-.map-pin svg {
-    width: 44px;
-    height: 44px;
+/* Colores y relieves temáticos por zona */
+.zone-medallion.zone-castillo {
+    background: linear-gradient(135deg, #581c87 0%, #7c3aed 55%, #a855f7 100%);
+    box-shadow: 0 4px 0 #4c1d95, 0 8px 18px rgba(124, 58, 237, 0.45);
+}
+
+.zone-medallion.zone-bosque {
+    background: linear-gradient(135deg, #065f46 0%, #059669 55%, #34d399 100%);
+    box-shadow: 0 4px 0 #047857, 0 8px 18px rgba(5, 150, 105, 0.45);
+}
+
+.zone-medallion.zone-laboratorio {
+    background: linear-gradient(135deg, #0e7490 0%, #0891b2 55%, #38bdf8 100%);
+    box-shadow: 0 4px 0 #155e75, 0 8px 18px rgba(8, 145, 178, 0.45);
+}
+
+.zone-medallion.zone-biblioteca {
+    background: linear-gradient(135deg, #92400e 0%, #d97706 55%, #fbbf24 100%);
+    box-shadow: 0 4px 0 #78350f, 0 8px 18px rgba(217, 119, 6, 0.45);
+}
+
+.zone-medallion.zone-taller {
+    background: linear-gradient(135deg, #9f1239 0%, #e11d48 55%, #fb7185 100%);
+    box-shadow: 0 4px 0 #881337, 0 8px 18px rgba(225, 29, 72, 0.45);
+}
+
+/* Efecto hover en el medallón */
+.adventure-zone-node:hover .zone-medallion {
+    filter: brightness(1.1);
+}
+
+.adventure-zone-node:hover .zone-medallion.zone-castillo {
+    box-shadow: 0 6px 0 #4c1d95, 0 12px 24px rgba(124, 58, 237, 0.6), 0 0 0 4px rgba(168, 85, 247, 0.5);
+}
+
+.adventure-zone-node:hover .zone-medallion.zone-bosque {
+    box-shadow: 0 6px 0 #047857, 0 12px 24px rgba(5, 150, 105, 0.6), 0 0 0 4px rgba(52, 211, 153, 0.5);
+}
+
+.adventure-zone-node:hover .zone-medallion.zone-laboratorio {
+    box-shadow: 0 6px 0 #155e75, 0 12px 24px rgba(8, 145, 178, 0.6), 0 0 0 4px rgba(56, 189, 248, 0.5);
+}
+
+.adventure-zone-node:hover .zone-medallion.zone-biblioteca {
+    box-shadow: 0 6px 0 #78350f, 0 12px 24px rgba(217, 119, 6, 0.6), 0 0 0 4px rgba(251, 191, 36, 0.5);
+}
+
+.adventure-zone-node:hover .zone-medallion.zone-taller {
+    box-shadow: 0 6px 0 #881337, 0 12px 24px rgba(225, 29, 72, 0.6), 0 0 0 4px rgba(251, 113, 133, 0.5);
+}
+
+/* Iconos SVG finos y proporcionados */
+.zone-medallion svg {
+    width: 25px;
+    height: 25px;
     display: block;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
 }
 
-.map-zone .map-label {
-    background: #ffffff;
-    padding: 0.35rem 1rem;
-    border-radius: 20px;
-    font-weight: 900;
-    font-size: 0.95rem;
-    margin-top: 0.45rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-    color: #0f172a;
-    font-family: var(--font-heading);
-    letter-spacing: 0.02em;
-    border: 2px solid #e2e8f0;
+/* Halo de pulso sutil */
+.zone-pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    animation: zonePulse 2.4s infinite;
+    pointer-events: none;
 }
+
+@keyframes zonePulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* Píldora Mini Compacta de la Zona (Super delgada y limpia, 70% menos de espacio) */
+.zone-info-card {
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    margin-top: 0.35rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14), 0 1px 0 rgba(0,0,0,0.04);
+    border: 1.5px solid #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    transform: translateY(-4px);
+}
+
+.adventure-zone-node:hover .zone-info-card {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.zone-mini-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-castillo { background: #7c3aed; }
+.dot-bosque { background: #059669; }
+.dot-laboratorio { background: #0891b2; }
+.dot-biblioteca { background: #d97706; }
+.dot-taller { background: #e11d48; }
+
+.zone-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #1e293b;
+    font-family: var(--font-heading);
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.zone-reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #047857;
+    background: #ecfdf5;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    border: 1px solid #a7f3d0;
+    line-height: 1;
+}
+
+.zone-hover-cta {
+    display: none;
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #ffffff;
+    background: #16a34a;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.35);
+    line-height: 1.2;
+}
+
+.adventure-zone-node:hover .zone-reward-badge {
+    display: none;
+}
+
+.adventure-zone-node:hover .zone-hover-cta {
+    display: inline-block;
+}
+
+/* ========================================================================== */
+
 
 /* PALETA Y CONTROLES DEL AVATAR */
 .avatar-input-name {

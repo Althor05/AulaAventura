@@ -34,6 +34,36 @@
         padding-top: 0.8rem;
     }
 
+    .adventure-world-wrap {
+        height: 520px;
+        border-radius: 28px;
+    }
+
+    .zone-medallion {
+        width: 66px;
+        height: 66px;
+        border-width: 3px;
+    }
+
+    .zone-medallion svg {
+        width: 38px;
+        height: 38px;
+    }
+
+    .zone-info-card {
+        min-width: 110px;
+        max-width: 135px;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .zone-title {
+        font-size: 0.76rem;
+    }
+
+    .zone-subject-tag {
+        font-size: 0.58rem;
+    }
+
     .map-pin {
         width: 60px;
         height: 60px;
@@ -113,7 +143,8 @@
     .btn:active {
         transform: translateY(2px);
     }
-    .map-zone:hover {
+    .map-zone:hover,
+    .adventure-zone-node:hover {
         transform: translate(-50%, -50%);
     }
     .course-card:hover {

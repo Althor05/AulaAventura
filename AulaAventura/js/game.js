@@ -8,95 +8,138 @@ window.seleccionarCurso = function(cursoId) {
 };
 
 Router.addRoute('/mapa', () => `
-    <div class="view" id="view-mapa" style="align-items: center; justify-content: flex-start; min-height: 100vh;">
-        <div style="width: 100%; max-width: 940px; display: flex; flex-direction: column;">
-            
-            <!-- Barra superior con Escudo CEIP Don Quijote y Personaje -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 55%, #991b1b 100%); padding: 0.85rem 1.8rem; border-radius: 26px; box-shadow: 0 8px 24px rgba(30, 58, 138, 0.22); border: 3px solid #f59e0b; flex-wrap: wrap; gap: 0.8rem;">
-                <button class="btn btn-secondary btn-sm" style="background: rgba(255,255,255,0.18); color: white; border: 1.5px solid rgba(255,255,255,0.4); display: inline-flex; align-items: center; gap: 0.4rem;" onclick="Router.navigate('/seleccionar-curso')">
+    <div class="view" id="view-mapa" style="min-height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%;">
+        
+        <!-- Barra Superior Full-Width Coherente con Inicio y Cursos -->
+        <header class="home-top-bar">
+            <div class="home-top-brand">
+                <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" class="home-top-logo">
+                <div class="home-top-brand-text">
+                    <h2 id="mapa-titulo">1.º de Primaria</h2>
+                    <span>CEIP Don Quijote · Colegio de Educación Infantil y Primaria</span>
+                </div>
+            </div>
+
+            <div class="home-top-actions">
+                <!-- Personaje con su nombre debajo (a la izquierda de los Chucheletes) -->
+                <div class="map-character-badge" style="display: flex; flex-direction: column; align-items: center; gap: 0.15rem; pointer-events: none; user-select: none; margin-right: 0.3rem;">
+                    <img id="mapa-avatar-img" src="" alt="Mascota" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35)); display: block;">
+                    <span id="mapa-nombre-personaje" style="font-size: 0.78rem; font-weight: 800; color: #ffffff; background: rgba(0,0,0,0.28); padding: 0.12rem 0.55rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); max-width: 95px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+                        Aventurero
+                    </span>
+                </div>
+
+                <div class="chuchelete-badge" style="background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35); color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); padding: 0.42rem 0.95rem; font-size: 0.95rem; border-radius: 14px;">
+                    ${window.AppIcons ? window.AppIcons.chuchelete(22, 15) : ''}
+                    <span><span id="mapa-chuches">0</span> Chucheletes</span>
+                </div>
+                <button class="top-bar-back-btn" onclick="Router.navigate('/seleccionar-curso')" title="Cambiar Curso">
                     ${window.AppIcons ? window.AppIcons.backArrow : ''} Cambiar Curso
                 </button>
-                
-                <div style="display: flex; align-items: center; gap: 0.9rem;">
-                    <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" style="height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35)); display: block;">
-                    <div style="text-align: left;">
-                        <h2 id="mapa-titulo" style="color: #ffffff; font-size: 1.45rem; line-height: 1.1; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.25);">Mapa del Curso</h2>
-                        <div style="font-size: 0.9rem; color: #fef08a; font-weight: 800; display: flex; align-items: center; gap: 0.4rem; margin-top: 2px;">
-                            <span>Aventurero/a:</span> <span id="mapa-nombre-personaje" style="color: #ffffff; font-weight: 900;">Aventurero</span>
-                        </div>
-                    </div>
-                    <div class="mini-avatar-box" onclick="Avatar.editCourseAvatar(AppState.currentLevel)" title="Haz clic para personalizar tu mascota" style="width: 46px; height: 46px; border-radius: 12px; padding: 3px; cursor: pointer; border-color: rgba(255,255,255,0.85); box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                        <img id="mapa-avatar-img" src="" alt="Mascota" class="mini-avatar-img">
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 0.8rem; align-items: center;">
-                    <div class="chuchelete-badge">
-                        ${window.AppIcons ? window.AppIcons.chuchelete(26, 18) : ''}
-                        <span><span id="mapa-chuches">0</span> Chucheletes</span>
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="Avatar.editCourseAvatar(AppState.currentLevel)">
-                        Personalizar
-                    </button>
-                    <button class="top-bar-icon-btn btn-toggle-fullscreen" onclick="toggleFullscreen()" title="${window.isFullscreenActive && window.isFullscreenActive() ? 'Salir de pantalla completa' : 'Pantalla completa'}" aria-label="Pantalla completa">
-                        ${window.isFullscreenActive && window.isFullscreenActive() ? window.AppIcons.exitFullscreen : window.AppIcons.fullscreen}
-                    </button>
-                </div>
             </div>
-            
-            <!-- Isla de Aventura Escolar -->
-            <div style="height: 550px; width: 100%; background: linear-gradient(180deg, #86efac 0%, #34d399 35%, #10b981 100%); border-radius: 36px; border: 8px solid #059669; position: relative; overflow: hidden; box-shadow: 0 24px 50px rgba(5, 150, 105, 0.25), inset 0 8px 24px rgba(255,255,255,0.45);">
-                
-                <!-- Nubes mágicas decorativas -->
-                <svg width="100%" height="100%" style="position: absolute; top:0; left:0; pointer-events: none; z-index: 2; opacity: 0.8;">
-                    <ellipse cx="12%" cy="16%" rx="48" ry="18" fill="#ffffff" />
-                    <ellipse cx="16%" cy="12%" rx="28" ry="20" fill="#ffffff" />
-                    
-                    <ellipse cx="88%" cy="20%" rx="55" ry="18" fill="#ffffff" />
-                    <ellipse cx="84%" cy="15%" rx="32" ry="22" fill="#ffffff" />
+        </header>
 
-                    <ellipse cx="50%" cy="90%" rx="52" ry="16" fill="#ffffff" opacity="0.6" />
-                </svg>
+        <!-- Contenedor Principal del Mapa en Cajita Enmarcada (Como al principio) -->
+        <div class="map-card-wrapper">
+            <div class="adventure-world-wrap">
 
-                <!-- Senderos de exploración -->
-                <svg width="100%" height="100%" style="position: absolute; top:0; left:0; pointer-events: none; z-index: 1;">
-                    <path d="M 48% 22% L 22% 42% M 48% 22% L 76% 42% M 22% 52% L 36% 76% M 76% 52% L 66% 76% M 36% 76% L 66% 76%" stroke="#047857" stroke-width="9" stroke-dasharray="14,14" fill="none" opacity="0.6" stroke-linecap="round" />
-                    <path d="M 48% 22% L 22% 42% M 48% 22% L 76% 42% M 22% 52% L 36% 76% M 76% 52% L 66% 76% M 36% 76% L 66% 76%" stroke="#fef08a" stroke-width="4.5" stroke-dasharray="14,14" fill="none" stroke-linecap="round" />
-                </svg>
-                
-                <!-- Zonas temáticas de reto con Iconos SVG Limpios -->
-                
-                <!-- Castillo del Saber -->
-                <div class="map-zone" style="top: 20%; left: 48%;" onclick="GameCore.startZone('castillo')">
-                    <div class="map-pin">${window.AppIcons ? window.AppIcons.castillo : ''}</div>
-                    <div class="map-label">CASTILLO DEL SABER</div>
+                <!-- 1. CASTILLO DEL SABER (Arriba Izquierda - Castillo de Bloques Pastel) -->
+                <div class="adventure-zone-node" style="top: 25%; left: 24%;" onclick="GameCore.startZone('castillo')" title="Entrar al Castillo del Saber">
+                    <div class="zone-medallion zone-castillo">
+                        <div class="zone-pulse-ring"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 20h20"/>
+                            <path d="M4 20V4h4v3.5h2V4h4v3.5h2V4h4v16"/>
+                            <path d="M9.5 20v-5a2.5 2.5 0 0 1 5 0v5"/>
+                            <line x1="7" y1="11" x2="7" y2="14"/>
+                            <line x1="17" y1="11" x2="17" y2="14"/>
+                        </svg>
+                    </div>
+                    <div class="zone-info-card">
+                        <span class="zone-mini-dot dot-castillo"></span>
+                        <span class="zone-title">Castillo del Saber</span>
+                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-hover-cta">¡Jugar!</span>
+                    </div>
                 </div>
 
-                <!-- Bosque de las Palabras -->
-                <div class="map-zone" style="top: 44%; left: 22%;" onclick="GameCore.startZone('bosque')">
-                    <div class="map-pin">${window.AppIcons ? window.AppIcons.bosque : ''}</div>
-                    <div class="map-label">BOSQUE DE PALABRAS</div>
+                <!-- 2. BOSQUE DE LAS PALABRAS (Arriba Derecha - Bosque Mágico de Setas) -->
+                <div class="adventure-zone-node" style="top: 28%; left: 72%;" onclick="GameCore.startZone('bosque')" title="Entrar al Bosque de las Palabras">
+                    <div class="zone-medallion zone-bosque">
+                        <div class="zone-pulse-ring"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 21h14"/>
+                            <path d="M12 21v-6"/>
+                            <path d="M12 15l-3-3"/>
+                            <path d="M12 15l3-3"/>
+                            <path d="M7 16a4.5 4.5 0 0 1-3.5-4.4 4.5 4.5 0 0 1 4-4.4A5.5 5.5 0 0 1 12 2a5.5 5.5 0 0 1 4.5 5.2 4.5 4.5 0 0 1 4 4.4 4.5 4.5 0 0 1-3.5 4.4q-5 -1.5 -10 0z"/>
+                        </svg>
+                    </div>
+                    <div class="zone-info-card">
+                        <span class="zone-mini-dot dot-bosque"></span>
+                        <span class="zone-title">Bosque de Palabras</span>
+                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-hover-cta">¡Jugar!</span>
+                    </div>
                 </div>
 
-                <!-- Laboratorio de Inventos -->
-                <div class="map-zone" style="top: 44%; left: 76%;" onclick="GameCore.startZone('laboratorio')">
-                    <div class="map-pin">${window.AppIcons ? window.AppIcons.laboratorio : ''}</div>
-                    <div class="map-label">LABORATORIO</div>
+                <!-- 3. LABORATORIO DE INVENTOS (Centro - Laboratorio de Pociones y Robot) -->
+                <div class="adventure-zone-node" style="top: 40%; left: 51%;" onclick="GameCore.startZone('laboratorio')" title="Entrar al Laboratorio de Inventos">
+                    <div class="zone-medallion zone-laboratorio">
+                        <div class="zone-pulse-ring"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3l4.5 9A2 2 0 0 1 16.7 21H7.3a2 2 0 0 1-1.8-2.7l4.5-9"/>
+                            <path d="M7 16h10"/>
+                        </svg>
+                    </div>
+                    <div class="zone-info-card">
+                        <span class="zone-mini-dot dot-laboratorio"></span>
+                        <span class="zone-title">Laboratorio</span>
+                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-hover-cta">¡Jugar!</span>
+                    </div>
                 </div>
 
-                <!-- Biblioteca de Don Quijote -->
-                <div class="map-zone" style="top: 76%; left: 34%;" onclick="GameCore.startZone('biblioteca')">
-                    <div class="map-pin">${window.AppIcons ? window.AppIcons.biblioteca : ''}</div>
-                    <div class="map-label">BIBLIOTECA</div>
+                <!-- 4. BIBLIOTECA DE DON QUIJOTE (Abajo Derecha - Molino y Pradera de Flores) -->
+                <div class="adventure-zone-node" style="top: 72%; left: 76%;" onclick="GameCore.startZone('biblioteca')" title="Entrar a la Biblioteca de Don Quijote">
+                    <div class="zone-medallion zone-biblioteca">
+                        <div class="zone-pulse-ring"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            <line x1="8" y1="7" x2="16" y2="7"/>
+                            <line x1="8" y1="11" x2="14" y2="11"/>
+                        </svg>
+                    </div>
+                    <div class="zone-info-card">
+                        <span class="zone-mini-dot dot-biblioteca"></span>
+                        <span class="zone-title">Biblioteca Quijote</span>
+                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-hover-cta">¡Jugar!</span>
+                    </div>
                 </div>
 
-                <!-- Taller Creativo -->
-                <div class="map-zone" style="top: 76%; left: 66%;" onclick="GameCore.startZone('taller')">
-                    <div class="map-pin">${window.AppIcons ? window.AppIcons.taller : ''}</div>
-                    <div class="map-label">TALLER CREATIVO</div>
+                <!-- 5. TALLER CREATIVO (Abajo Centro - Taller de Arte y Lápices) -->
+                <div class="adventure-zone-node" style="top: 78%; left: 46%;" onclick="GameCore.startZone('taller')" title="Entrar al Taller Creativo">
+                    <div class="zone-medallion zone-taller">
+                        <div class="zone-pulse-ring"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="13.5" cy="6.5" r=".8" fill="currentColor"/>
+                            <circle cx="17.5" cy="10.5" r=".8" fill="currentColor"/>
+                            <circle cx="8.5" cy="7.5" r=".8" fill="currentColor"/>
+                            <circle cx="6.5" cy="12.5" r=".8" fill="currentColor"/>
+                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="zone-info-card">
+                        <span class="zone-mini-dot dot-taller"></span>
+                        <span class="zone-title">Taller Creativo</span>
+                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-hover-cta">¡Jugar!</span>
+                    </div>
                 </div>
+
             </div>
-
         </div>
     </div>
 `, () => {
