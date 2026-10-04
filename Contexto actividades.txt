@@ -1,0 +1,55 @@
+Instrucciones para la IA: Este documento detalla las nuevas mecánicas interactivas y minijuegos que formarán parte de la plataforma "Aula Aventura" (nivel 2.º de Primaria, 7-8 años). Debes diseñar actividades, preguntas y dinámicas basándote estrictamente en los siguientes minijuegos propuestos para el "Diario del Explorador" o "Manual del Aventurero".
+
+🗺️ Catálogo de Minijuegos y Actividades por Zonas
+1. 🏰 Matemáticas (El Castillo del Saber)
+Para esta sección, debes generar retos basados en las siguientes mecánicas:
+
+Contar frutas: Aparecen varias frutas en pantalla y los alumnos tienen que decir cuántas hay de una en específico.
+
+Balanza de números: Actividades de equilibrio numérico y operaciones básicas.
+
+Ordenar números: Ejercicios para colocar números de mayor a menor o viceversa.
+
+Adivinanzas de números: Pequeños acertijos matemáticos.
+
+Dados virtuales: Dinámicas que utilicen tiradas de dados en pantalla.
+
+2. 🌳 Lengua (El Bosque de Palabras)
+Diseña ejercicios breves y visuales utilizando estos formatos:
+
+La letra perdida: Palabras incompletas donde los niños deben deducir qué letra falta.
+
+Lluvia de palabras: Dinámicas visuales con palabras que caen.
+
+Ordenar sílabas: Retos para construir palabras desordenadas.
+
+Globos o Burbujas: Un minijuego donde deben encontrar y explotar la palabra que esté bien escrita entre varias opciones.
+
+3. 🧪 Conocimiento del Medio (El Laboratorio)
+Crea situaciones interactivas sobre el entorno y la naturaleza:
+
+Reciclaje: Actividades o preguntas sobre cómo y dónde reciclar.
+
+Hábitats (Ej. "¿Dónde vive el camello?"): Relacionar animales con su lugar de origen o ecosistema.
+
+Seguridad vial: Conceptos básicos y cotidianos de seguridad en la calle.
+
+4. 📚 Historia y Sociales (La Biblioteca Mágica)
+Fomenta la creatividad y el conocimiento cultural con estas dinámicas:
+
+Comprensión lectora: Pequeñas lecturas históricas o sociales.
+
+Continúa la historia: Frases o textos cortados que el alumno debe continuar usando su imaginación.
+
+Memory del Quijote: Un juego de memoria con cartas o parejas de los personajes de Don Quijote.
+
+Crea una historia: Proporcionar diferentes palabras clave para que los niños inventen un cuento con ellas.
+
+5. 🎨 Arte e Ingenio (El Taller Creativo)
+Genera propuestas para dinámicas puramente interactivas:
+
+Dibujar: Retos estilo "Pizarra Mágica" donde un alumno dibuja y los demás adivinan.
+
+Seguir ritmos: Actividades musicales para identificar o replicar patrones rítmicos.
+
+¿Te parece bien cómo ha quedado estructurado este nuevo documento? Podemos añadir más detalles a cada juego si necesitas que la IA sea aún más específica al programarlos.

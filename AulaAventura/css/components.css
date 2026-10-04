@@ -1725,4 +1725,151 @@
     margin-bottom: 3px;
 }
 
+/* ========================================================
+   ESTILOS INFANTILES Y BOTONES TÁCTILES 3D PARA ACTIVIDADES
+/* ========================================================
+   BOTONES DE ELECCIÓN TÁCTILES ESTILO MODERNO INFANTIL (DUOLINGO/LIMPIO)
+   ======================================================== */
+.tactile-btn {
+    border-radius: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s, background-color 0.15s;
+    outline: none;
+    font-family: 'Nunito', 'Quicksand', system-ui, sans-serif;
+    letter-spacing: -0.5px;
+}
+.tactile-btn:hover {
+    transform: translateY(-3px);
+}
+.tactile-btn:active {
+    transform: translateY(3px);
+}
+
+/* Naranja cálido (Frutas) */
+.tactile-btn-amber {
+    background: #ffffff;
+    border: 3px solid #f97316;
+    box-shadow: 0 5px 0 #c2410c, 0 10px 20px rgba(249, 115, 22, 0.15);
+    color: #ea580c;
+    min-width: 100px;
+    height: 72px;
+    font-size: 2.2rem;
+}
+.tactile-btn-amber:hover {
+    background: #fff7ed;
+    box-shadow: 0 6px 0 #c2410c, 0 12px 24px rgba(249, 115, 22, 0.22);
+}
+.tactile-btn-amber:active {
+    box-shadow: 0 2px 0 #c2410c, 0 4px 8px rgba(249, 115, 22, 0.15);
+}
+
+/* Azul cielo (Dados) */
+.tactile-btn-blue {
+    background: #ffffff;
+    border: 3px solid #0284c7;
+    box-shadow: 0 5px 0 #0369a1, 0 10px 20px rgba(2, 132, 199, 0.15);
+    color: #0284c7;
+    min-width: 100px;
+    height: 72px;
+    font-size: 2.2rem;
+}
+.tactile-btn-blue:hover {
+    background: #f0f9ff;
+    box-shadow: 0 6px 0 #0369a1, 0 12px 24px rgba(2, 132, 199, 0.22);
+}
+.tactile-btn-blue:active {
+    box-shadow: 0 2px 0 #0369a1, 0 4px 8px rgba(2, 132, 199, 0.15);
+}
+
+/* Dorado / Latón (Balanza) */
+.tactile-btn-brass {
+    background: #ffffff;
+    border: 3px solid #f59e0b;
+    box-shadow: 0 5px 0 #d97706, 0 10px 20px rgba(245, 158, 11, 0.15);
+    color: #b45309;
+    min-width: 105px;
+    height: 74px;
+}
+.tactile-btn-brass:hover {
+    background: #fffbeb;
+    box-shadow: 0 6px 0 #d97706, 0 12px 24px rgba(245, 158, 11, 0.22);
+}
+.tactile-btn-brass:active {
+    box-shadow: 0 2px 0 #d97706, 0 4px 8px rgba(245, 158, 11, 0.15);
+}
+.tactile-btn-brass-num {
+    font-size: 2.1rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #b45309;
+}
+.tactile-btn-brass-sub {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #d97706;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+}
+
+/* Púrpura mágico (Adivinanzas) */
+.tactile-btn-purple {
+    background: #ffffff;
+    border: 3px solid #8b5cf6;
+    box-shadow: 0 5px 0 #6d28d9, 0 10px 20px rgba(139, 92, 246, 0.15);
+    color: #7c3aed;
+    min-width: 100px;
+    height: 72px;
+    font-size: 2.2rem;
+}
+.tactile-btn-purple:hover {
+    background: #faf5ff;
+    box-shadow: 0 6px 0 #6d28d9, 0 12px 24px rgba(139, 92, 246, 0.22);
+}
+.tactile-btn-purple:active {
+    box-shadow: 0 2px 0 #6d28d9, 0 4px 8px rgba(139, 92, 246, 0.15);
+}
+
+/* Blanco escolar (Ordenar regla) */
+.tactile-btn-white {
+    background: #ffffff;
+    border: 3px solid #3b82f6;
+    box-shadow: 0 5px 0 #1d4ed8, 0 10px 20px rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+    min-width: 100px;
+    height: 72px;
+    font-size: 2.2rem;
+}
+.tactile-btn-white:hover {
+    background: #eff6ff;
+    box-shadow: 0 6px 0 #1d4ed8, 0 12px 24px rgba(59, 130, 246, 0.22);
+}
+.tactile-btn-white:active {
+    box-shadow: 0 2px 0 #1d4ed8, 0 4px 8px rgba(59, 130, 246, 0.15);
+}
+
+@keyframes trophyBounce {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-8px) scale(1.06); }
+}
+
+@keyframes fruitBounce {
+    0% { transform: scale(1) translateY(0); }
+    40% { transform: scale(1.3) translateY(-30px); }
+    70% { transform: scale(0.9) translateY(0); }
+    100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 12px rgba(2, 132, 199, 0.4); border-color: #0284c7; }
+    50% { box-shadow: 0 0 24px rgba(2, 132, 199, 0.85); border-color: #38bdf8; }
+}
+
+
 

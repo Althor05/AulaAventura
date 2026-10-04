@@ -166,32 +166,41 @@ Router.addRoute('/mapa', () => `
 });
 
 Router.addRoute('/actividad', () => `
-    <div class="view" id="view-actividad" style="align-items: center; justify-content: center; min-height: 100vh;">
-        <div style="width: 100%; max-width: 900px; min-height: 500px; display: flex; flex-direction: column; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 32px; box-shadow: 0 16px 40px rgba(0,0,0,0.08); padding: 2.2rem; border: 2px solid #ffffff;">
-            
-            <!-- Cabecera Actividad -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 1.2rem; flex-wrap: wrap; gap: 0.8rem;">
-                <button class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem;" onclick="GameCore.endSession()">
-                    ${window.AppIcons ? window.AppIcons.backArrow : ''} Volver al Mapa
-                </button>
-                <div style="font-weight: 800; font-size: 1.25rem; color: #64748b;">Reto: <span id="act-progreso" style="color: var(--school-blue);">1/1</span></div>
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div class="chuchelete-badge">
-                        ${window.AppIcons ? window.AppIcons.chuchelete(24, 16) : ''}
-                        <span><span id="act-chuches">0</span> Chucheletes</span>
-                    </div>
-                    <button class="top-bar-icon-btn btn-toggle-fullscreen" onclick="toggleFullscreen()" title="${window.isFullscreenActive && window.isFullscreenActive() ? 'Salir de pantalla completa' : 'Pantalla completa'}" aria-label="Pantalla completa">
-                        ${window.isFullscreenActive && window.isFullscreenActive() ? window.AppIcons.exitFullscreen : window.AppIcons.fullscreen}
-                    </button>
+    <div class="view" id="view-actividad" style="min-height: 100vh; height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%; overflow: hidden; position: relative;">
+        
+        <!-- Barra Superior Institucional CEIP Don Quijote (Mismo estilo que Inicio, Cursos y Mapa) -->
+        <header class="home-top-bar">
+            <div class="home-top-brand">
+                <img src="assets/logo_don_quijote.png" alt="Escudo CEIP Don Quijote" class="home-top-logo">
+                <div class="home-top-brand-text">
+                    <h2 id="act-titulo">Bosque de Palabras</h2>
+                    <span id="act-subtitulo">2.º de Primaria · CEIP Don Quijote</span>
                 </div>
             </div>
-            
-            <!-- Contenedor Principal de la Actividad -->
-            <div id="actividad-container" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                <!-- Inyección por activities.js -->
-            </div>
 
+            <div class="home-top-actions">
+                <div class="map-character-badge" style="display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; user-select: none; margin-right: 0.3rem;">
+                    <img id="act-avatar-img" src="" alt="Mascota" style="width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35)); display: block;">
+                    <span id="act-nombre-personaje" style="font-size: 0.72rem; font-weight: 800; color: #ffffff; background: rgba(0,0,0,0.28); padding: 0.08rem 0.45rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.25); max-width: 90px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+                        Aventurero
+                    </span>
+                </div>
+
+                <div class="chuchelete-badge" style="background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35); color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); padding: 0.42rem 0.95rem; font-size: 0.95rem; border-radius: 14px;">
+                    ${window.AppIcons ? window.AppIcons.chuchelete(22, 15) : ''}
+                    <span><span id="act-chuches">0</span> Chucheletes</span>
+                </div>
+                <button class="top-bar-back-btn" onclick="GameCore.endSession()" title="Volver al Mapa">
+                    ${window.AppIcons ? window.AppIcons.backArrow : ''} Volver al Mapa
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor Principal a PANTALLA COMPLETA -->
+        <div id="actividad-container" style="flex: 1; width: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <!-- Inyección interactiva por activities.js -->
         </div>
+
     </div>
 `, () => {
     GameCore.startSession();
@@ -220,7 +229,25 @@ window.GameCore = {
 
         const dataNivel = window.AULA_DATA[nivel];
         if (dataNivel && dataNivel[this.currentZone]) {
-            this.activitiesList = dataNivel[this.currentZone];
+            const pool = dataNivel[this.currentZone];
+            if (pool && pool.length > 0) {
+                const bubbleAct = pool.find(a => a.tipo === 'burbujas');
+                if (this.currentZone === 'bosque' && bubbleAct && !this._playedBubbleOnce) {
+                    this.activitiesList = [bubbleAct];
+                    this._playedBubbleOnce = true;
+                } else {
+                    let available = pool;
+                    if (pool.length > 1 && this._lastPlayedType) {
+                        const filtered = pool.filter(a => a.tipo !== this._lastPlayedType);
+                        if (filtered.length > 0) available = filtered;
+                    }
+                    const randomIndex = Math.floor(Math.random() * available.length);
+                    this.activitiesList = [available[randomIndex]];
+                    this._lastPlayedType = this.activitiesList[0]?.tipo;
+                }
+            } else {
+                this.activitiesList = [];
+            }
         } else {
             this.activitiesList = [];
         }
@@ -272,46 +299,79 @@ window.GameCore = {
 
     updateHeader() {
         const nivel = AppState.currentLevel || 'primaria1';
-        document.getElementById('act-progreso').textContent = `${this.currentIndex + 1}/${this.activitiesList.length}`;
-        document.getElementById('act-chuches').textContent = Avatar.getCourseChucheletes(nivel);
+        const nombresCursos = {
+            'primaria1': '1.º de Primaria',
+            'primaria2': '2.º de Primaria',
+            'primaria3': '3.º de Primaria',
+            'primaria4': '4.º de Primaria',
+            'primaria5': '5.º de Primaria',
+            'primaria6': '6.º de Primaria'
+        };
+        const zoneInfo = {
+            'castillo': { title: 'Castillo del Saber', icon: '🏰' },
+            'bosque': { title: 'Bosque de Palabras', icon: '🌳' },
+            'laboratorio': { title: 'Laboratorio', icon: '🧪' },
+            'biblioteca': { title: 'Biblioteca de Don Quijote', icon: '📚' },
+            'taller': { title: 'Taller Creativo', icon: '🎨' }
+        };
+        const currentZ = zoneInfo[this.currentZone] || { title: 'Reto de Aula Aventura', icon: '✨' };
+        
+        const titleEl = document.getElementById('act-titulo');
+        if (titleEl) titleEl.textContent = `${currentZ.icon} ${currentZ.title}`;
+        
+        const subEl = document.getElementById('act-subtitulo');
+        if (subEl) subEl.textContent = `${nombresCursos[nivel] || 'Primaria'} · CEIP Don Quijote`;
+
+        const avatarData = Avatar.getCourseAvatar(nivel);
+        const nameEl = document.getElementById('act-nombre-personaje');
+        if (nameEl) nameEl.textContent = avatarData.name || 'Aventurero';
+
+        const mapImg = document.getElementById('act-avatar-img');
+        if (mapImg) {
+            mapImg.src = Avatar.getSkinImgSrc(avatarData.skinId || avatarData.species);
+            mapImg.onerror = () => { mapImg.src = `assets/Nueva carpeta (2)/${avatarData.file}`; };
+        }
+        
+        const chuchesEl = document.getElementById('act-chuches');
+        if (chuchesEl) chuchesEl.textContent = Avatar.getCourseChucheletes(nivel);
     },
 
     showResults() {
-        const total = this.sessionStats.correctas + this.sessionStats.errores;
-        const pct = Math.round((this.sessionStats.correctas / total) * 100) || 0;
         const nivel = AppState.currentLevel || 'primaria1';
         const avatarData = Avatar.getCourseAvatar(nivel);
         
         const container = document.getElementById('actividad-container');
         container.innerHTML = `
-            <div style="animation: smoothFadeIn 0.5s; width: 100%; max-width: 550px;">
-                <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-                    <div style="width: 80px; height: 80px; border-radius: 50%; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(22, 163, 74, 0.2);">
-                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                </div>
-                <h1 style="color: var(--school-red); font-size: 2.6rem; margin-bottom: 0.5rem; font-weight: 900;">¡Reto Superado!</h1>
-                <p style="font-size: 1.25rem; color: #334155; font-weight: 800;">¡Enhorabuena, <b>${avatarData.name || 'Aventurero'}</b>!</p>
+            <div style="opacity: 1; width: 100%; max-width: 520px; background: #ffffff; border-radius: 32px; padding: 2.2rem 2.6rem; box-shadow: 0 20px 45px rgba(0,0,0,0.1), 0 0 0 3px rgba(255,255,255,0.9); text-align: center; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto;">
                 
-                <div style="background: #ecfdf5; border: 3px dashed #10b981; padding: 1.6rem; border-radius: 24px; text-align: center; margin: 1.5rem 0; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);">
-                    <div style="margin-bottom: 0.6rem; display: flex; justify-content: center; gap: 0.6rem;">
-                        ${window.AppIcons ? window.AppIcons.chuchelete(52, 34) : ''}
-                        ${window.AppIcons ? window.AppIcons.chuchelete(52, 34) : ''}
-                    </div>
-                    <h2 style="color: #065f46; font-size: 2.2rem; font-weight: 900;">+${this.sessionChuches} Chucheletes ganados</h2>
-                    <p style="color: #047857; margin-top: 0.3rem; font-weight: 700;">¡Guardados en el personaje de tu clase!</p>
+                <!-- Trofeo Animado -->
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.2rem;">
+                    <div style="font-size: 4.5rem; line-height: 1; filter: drop-shadow(0 6px 14px rgba(245, 158, 11, 0.45)); animation: trophyBounce 1s ease-in-out infinite alternate;">🏆</div>
                 </div>
 
-                <div style="background: #f8fafc; padding: 1.2rem 1.6rem; border-radius: 20px; text-align: left; margin-bottom: 2rem; border: 2px solid #e2e8f0;">
-                    <h3 style="margin-bottom: 0.8rem; text-align: center; font-size: 1.25rem; color: #334155;">Resumen de la Partida</h3>
-                    <p style="font-size: 1.1rem; margin-bottom: 0.4rem; color: #16a34a; font-weight: 800;">Aciertos: <strong>${this.sessionStats.correctas}</strong></p>
-                    <p style="font-size: 1.1rem; margin-bottom: 0.4rem; color: #e11d48; font-weight: 800;">Intentos adicionales: <strong>${this.sessionStats.errores}</strong></p>
-                    <p style="font-size: 1.1rem; color: #1e3a8a; font-weight: 800;">Precisión: <strong>${pct}%</strong></p>
-                </div>
+                <!-- Título Celebratorio -->
+                <h1 style="color: #1e3a8a; font-size: 2.5rem; margin: 0.4rem 0 0.2rem 0; font-weight: 900; letter-spacing: -0.5px;">¡Reto Superado!</h1>
+                <p style="font-size: 1.2rem; color: #475569; font-weight: 800; margin: 0 0 1.4rem 0;">¡Enhorabuena, <b style="color: #2563eb;">${avatarData.name || 'Aventurero'}</b>! ¡Lo has hecho genial!</p>
                 
-                <div style="display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn btn-primary btn-large" onclick="Router.navigate('/mapa')">Volver al Mapa</button>
-                    <button class="btn btn-secondary btn-large" onclick="Router.navigate('/seleccionar-curso')">Cursos de Primaria</button>
+                <!-- Tarjeta de Chucheletes Ganados (con el billete oficial de Chuchelete) -->
+                <div style="width: 100%; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2.5px solid #22c55e; border-radius: 22px; padding: 1.1rem 1.6rem; display: flex; align-items: center; justify-content: center; gap: 1.2rem; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.16); margin-bottom: 1.8rem; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        ${window.AppIcons ? window.AppIcons.chuchelete(58, 38) : ''}
+                    </div>
+                    <div style="text-align: left;">
+                        <div style="color: #15803d; font-size: 1.8rem; font-weight: 900; line-height: 1.1;">+${this.sessionChuches} Chucheletes</div>
+                        <div style="color: #16a34a; font-size: 0.95rem; font-weight: 800;">¡Guardados en tu personaje!</div>
+                    </div>
+                </div>
+
+                <!-- Botones Horizontales sin emojis -->
+                <div style="display: flex; flex-direction: row; gap: 1.2rem; justify-content: center; width: 100%; box-sizing: border-box;">
+                    <button class="tactile-btn" onclick="GameCore.endSession()" style="flex: 1; min-width: 0; height: 58px; font-size: 1.15rem; font-weight: 900; border-radius: 18px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; border: 2.5px solid #1e40af; box-shadow: 0 5px 0 #1e3a8a, 0 8px 18px rgba(37, 99, 235, 0.25); display: flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer;">
+                        Volver al Mapa
+                    </button>
+                    <button class="tactile-btn" onclick="Router.navigate('/seleccionar-curso')" style="flex: 1; min-width: 0; height: 58px; font-size: 1.15rem; font-weight: 900; border-radius: 18px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; border: 2.5px solid #b45309; box-shadow: 0 5px 0 #92400e, 0 8px 18px rgba(245, 158, 11, 0.25); display: flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer;">
+                        Cursos de Primaria
+                    </button>
                 </div>
             </div>
         `;
