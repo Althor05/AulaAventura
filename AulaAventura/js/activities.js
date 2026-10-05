@@ -1654,7 +1654,21 @@ window.Activities = {
             // Escalar volumen del 0% al 100% (amplitud máxima segura 0.35)
             const targetGain = (vol / 100) * 0.35;
             
-            if(type === 'dice') {
+            if(type === 'tick') {
+                const now = ctx.currentTime;
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.connect(g);
+                g.connect(ctx.destination);
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(620, now);
+                o.frequency.exponentialRampToValueAtTime(320, now + 0.025);
+                g.gain.setValueAtTime(targetGain * 0.45, now);
+                g.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+                o.start(now);
+                o.stop(now + 0.025);
+                return;
+            } else if(type === 'dice') {
                 const now = ctx.currentTime;
                 for (let i = 0; i < 5; i++) {
                     const o = ctx.createOscillator();

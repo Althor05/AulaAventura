@@ -39,8 +39,49 @@ Router.addRoute('/mapa', () => `
             </div>
         </header>
 
-        <!-- Contenedor Principal del Mapa en Cajita Enmarcada (Como al principio) -->
+        <!-- Contenedor Principal del Mapa en Cajita Enmarcada -->
         <div class="map-card-wrapper">
+            <!-- Mini-etiqueta lateral a la derecha para deslizar la ruleta -->
+            <button class="map-side-roulette-tab" onclick="RuletaSaber.toggle()" id="btn-side-ruleta" title="Girar la Ruleta del Saber">
+                <img src="assets/ruleta/girar.png" alt="" class="side-tab-icon">
+                <span class="side-tab-text">Ruleta</span>
+            </button>
+
+            <!-- Fondo oscuro con desenfoque -->
+            <div id="ruleta-overlay" class="ruleta-drawer-backdrop" onclick="RuletaSaber.close()"></div>
+
+            <!-- Panel Lateral Deslizante (Slide-in Drawer) -->
+            <aside id="ruleta-drawer" class="ruleta-side-drawer" aria-label="Ruleta del Saber">
+                <!-- Cabecera -->
+                <div class="ruleta-drawer-header">
+                    <div class="ruleta-drawer-title-wrap">
+                        <div>
+                            <h3 class="ruleta-drawer-title">Ruleta de la Suerte</h3>
+                            <span class="ruleta-drawer-subtitle">¿Qué reto escolar jugaremos hoy?</span>
+                        </div>
+                    </div>
+                    <button class="ruleta-drawer-close-btn" onclick="RuletaSaber.close()" title="Cerrar ruleta" aria-label="Cerrar">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Contenido central de la Ruleta -->
+                <div class="ruleta-drawer-content">
+                    <!-- Canvas de la Ruleta centrada -->
+                    <div class="ruleta-wheel-stage">
+                        <canvas id="ruleta-canvas" width="350" height="350"></canvas>
+                    </div>
+
+                    <!-- Botón de Girar -->
+                    <div class="ruleta-action-row">
+                        <button id="btn-spin-ruleta" class="btn-spin-fun" onclick="RuletaSaber.spin()" type="button">
+                            <img src="assets/ruleta/girar.png" alt="" class="spin-fun-icon">
+                            <span>¡GIRAR RULETA!</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
             <div class="adventure-world-wrap">
 
                 <!-- 1. CASTILLO DEL SABER (Arriba Izquierda - Castillo de Bloques Pastel) -->
@@ -161,6 +202,9 @@ Router.addRoute('/mapa', () => `
     if (mapImg) {
         mapImg.src = Avatar.getSkinImgSrc(avatarData.skinId || avatarData.species);
         mapImg.onerror = () => { mapImg.src = `assets/Nueva carpeta (2)/${avatarData.file}`; };
+    }
+    if (window.RuletaSaber) {
+        RuletaSaber.init();
     }
     if (window.updateFullscreenButtons) window.updateFullscreenButtons();
 });
