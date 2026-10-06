@@ -1,0 +1,42 @@
+DIARIO DEL EXPLORADOR/MANUAL DEL AVENTURERO (o algo así)
+
+
+
+Mates
+-----
+-Contar frutas: salen varias frutas y tienen que decir cuantas de una en especifico. ----------OK
+-Balanza de números ----------Corregir los números que la suma sea correcta. Añadir varios casos de uso, tipo suma, resta... 
+-Ordenar números (regla numérica) ----------En lugar de pulsar los números, arrastrarlos. 
+-Adivinanzas de números ----------Añadir muchas adivinanzas para que haya variedad. 
+-Dados virtuales ----------Hay que hacer que los dados giren aleatoriamente. 
+
+
+
+
+Lengua
+------
+-La letra perdida ----------Añadir más palabras
+-Lluvia de palabras (burbujas) ----------Hay que ponerle tiempo de 20 segundos y 3 rounds. 
+-Ordenar sílabas ----------Por hacer
+-Tarjetas de relacionar: Sinónimos y Antónimos ----------ESPERAR HASTA EL FINAL.
+
+
+Conocimiento del medio
+----------------------
+-Reciclaje (unir contenedores con sus desperdicios) ----------Con sus 4 colores primarios de contenedores, por hacer
+-Donde vive el camello ----------Que salgan imágenes de animales junto con sus hábitats y que ellos tengan que arrastrarlos para llevarlos a su "casa".
+-Algo de seguridad vial ----------Que tengan a mano la cera de color verde y roja "¿Es seguro o no hacer tales cosas?", por hacer. Que salgan las preguntas con el color verde y rojo debajo y que pinches en rojo o verde y te de las recompensas. 
+
+
+Historia
+--------
+-Comprensión lectora ----------Poner un texto y que, después de leerlo, respondan una serie de preguntas.
+-Continua la historia ----------Poner frases con espacios entre ellas y que ellos respondan libremente lo que quieran en esos espacios. 
+-Crea una historia con diferentes palabras ----------Les damos varias palabras al azar y tienen que hacer una historia con ellas. 
+
+
+Arte
+----
+-Dibujar --> Gartic Phone
+-El dibujo viajero ----------Que las libretas vayan circulando por la clase y tengan 30 segundos con cada una de ellas. Al final verán los resultados de sus dibujos. 
+-Paso a paso ----------Sale un niño/a a dibujar y otro tiene que indicarle lo que tiene que hacer paso por paso. (El dibujo que tienen que hacer se lo facilito yo en una hoja).
