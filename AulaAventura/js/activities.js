@@ -2482,28 +2482,29 @@ window.Activities = {
 
         hud.innerHTML = `
             <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>♻️ ¡Misión Reciclaje!</span>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.78 1.78 0 0 0 .004-1.78L17 9.5"/><path d="m14 2-3 4.5h6L14 2Z"/></svg>
+                <span>¡Misión Reciclaje!</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 800; font-size: 1rem; padding: 0.3rem 1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45);">
-                Arrastra o pulsa el contenedor
+                Arrastra o pulsa el contenedor adecuado
             </div>
         `;
         container.appendChild(hud);
 
-        // Tarjeta Central del Residuo
+        // Tarjeta Central del Residuo (Solo texto limpio sin emojis)
         const centerStage = document.createElement('div');
         centerStage.style.display = 'flex';
         centerStage.style.flexDirection = 'column';
         centerStage.style.alignItems = 'center';
         centerStage.style.justifyContent = 'center';
-        centerStage.style.gap = '0.8rem';
+        centerStage.style.gap = '0.9rem';
         centerStage.style.margin = 'auto 0';
         centerStage.style.position = 'relative';
 
         const wasteCard = document.createElement('div');
         wasteCard.className = 'reciclaje-waste-card';
         wasteCard.style.background = '#ffffff';
-        wasteCard.style.padding = '1.4rem 2.8rem';
+        wasteCard.style.padding = '1.6rem 3.2rem';
         wasteCard.style.borderRadius = '28px';
         wasteCard.style.boxShadow = '0 18px 40px rgba(0, 0, 0, 0.1), 0 0 0 4px #ecfdf5';
         wasteCard.style.border = '3.5px solid #10b981';
@@ -2511,24 +2512,35 @@ window.Activities = {
         wasteCard.style.flexDirection = 'column';
         wasteCard.style.alignItems = 'center';
         wasteCard.style.justifyContent = 'center';
+        wasteCard.style.gap = '0.7rem';
         wasteCard.style.cursor = 'grab';
         wasteCard.style.touchAction = 'none';
         wasteCard.style.userSelect = 'none';
         wasteCard.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease';
 
-        const wasteEmoji = document.createElement('div');
-        wasteEmoji.textContent = actividad.residuo.emoji;
-        wasteEmoji.style.fontSize = '5.2rem';
-        wasteEmoji.style.filter = 'drop-shadow(0 8px 18px rgba(0,0,0,0.12))';
-        wasteCard.appendChild(wasteEmoji);
+        const wasteTag = document.createElement('div');
+        wasteTag.style.display = 'inline-flex';
+        wasteTag.style.alignItems = 'center';
+        wasteTag.style.gap = '8px';
+        wasteTag.style.padding = '0.45rem 1.4rem';
+        wasteTag.style.borderRadius = '9999px';
+        wasteTag.style.background = '#ecfdf5';
+        wasteTag.style.border = '2px solid #a7f3d0';
+        wasteTag.style.color = '#047857';
+        wasteTag.style.fontSize = '1.05rem';
+        wasteTag.style.fontWeight = '800';
+        wasteTag.style.letterSpacing = '0.5px';
+        wasteTag.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981;"></span> Residuo para clasificar`;
+        wasteCard.appendChild(wasteTag);
 
         const wasteName = document.createElement('div');
         wasteName.textContent = actividad.residuo.nombre;
-        wasteName.style.fontSize = '1.85rem';
+        wasteName.style.fontSize = '2.2rem';
         wasteName.style.fontWeight = '900';
         wasteName.style.color = '#0f172a';
-        wasteName.style.marginTop = '0.4rem';
         wasteName.style.textAlign = 'center';
+        wasteName.style.lineHeight = '1.25';
+        wasteName.style.maxWidth = '550px';
         wasteCard.appendChild(wasteName);
 
         centerStage.appendChild(wasteCard);
@@ -2626,11 +2638,13 @@ window.Activities = {
             binBtn.style.userSelect = 'none';
 
             binBtn.innerHTML = `
-                <div style="font-size: 2.8rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));">${info.emoji}</div>
+                <div style="width: 100%; height: 95px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.2rem;">
+                    <img src="assets/reciclaje/contenedor_${key}.jpg" alt="${info.nombre}" style="width: 90px; height: 90px; object-fit: contain; border-radius: 16px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.22)); background: #ffffff; padding: 3px;">
+                </div>
                 <div style="font-size: 1.15rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.4); text-align: center; line-height: 1.2;">
                     ${info.nombre}
                 </div>
-                <div style="font-size: 0.82rem; font-weight: 700; opacity: 0.92; text-align: center; line-height: 1.1;">
+                <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.95; text-align: center; line-height: 1.1;">
                     ${info.desc.split(',')[0]}...
                 </div>
             `;
@@ -2674,16 +2688,15 @@ window.Activities = {
                     floatingEl.style.zIndex = '99999';
                     floatingEl.style.pointerEvents = 'none';
                     floatingEl.style.background = '#ffffff';
-                    floatingEl.style.padding = '1rem 2rem';
+                    floatingEl.style.padding = '0.9rem 2.2rem';
                     floatingEl.style.borderRadius = '24px';
                     floatingEl.style.border = '3.5px solid #10b981';
                     floatingEl.style.boxShadow = '0 18px 36px rgba(0,0,0,0.25)';
                     floatingEl.style.display = 'flex';
                     floatingEl.style.alignItems = 'center';
-                    floatingEl.style.gap = '0.8rem';
+                    floatingEl.style.justifyContent = 'center';
                     floatingEl.innerHTML = `
-                        <span style="font-size: 2.8rem;">${actividad.residuo.emoji}</span>
-                        <span style="font-size: 1.3rem; font-weight: 900; color: #0f172a;">${actividad.residuo.nombre}</span>
+                        <span style="font-size: 1.35rem; font-weight: 900; color: #0f172a;">${actividad.residuo.nombre}</span>
                     `;
                     document.body.appendChild(floatingEl);
                 }
@@ -2785,27 +2798,28 @@ window.Activities = {
 
         hud.innerHTML = `
             <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>🏡 ¿Dónde vive el animal?</span>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>¿Dónde vive el animal?</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 800; font-size: 1rem; padding: 0.3rem 1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45);">
-                ¡Llévalo a su casa!
+                ¡Llévalo a su hábitat natural!
             </div>
         `;
         container.appendChild(hud);
 
-        // Tarjeta Central del Animal
+        // Tarjeta Central del Animal (Solo texto limpio sin emojis)
         const centerStage = document.createElement('div');
         centerStage.style.display = 'flex';
         centerStage.style.flexDirection = 'column';
         centerStage.style.alignItems = 'center';
         centerStage.style.justifyContent = 'center';
-        centerStage.style.gap = '0.8rem';
+        centerStage.style.gap = '0.9rem';
         centerStage.style.margin = 'auto 0';
 
         const animalCard = document.createElement('div');
         animalCard.className = 'habitats-animal-card';
         animalCard.style.background = '#ffffff';
-        animalCard.style.padding = '1.4rem 3rem';
+        animalCard.style.padding = '1.6rem 3.4rem';
         animalCard.style.borderRadius = '28px';
         animalCard.style.boxShadow = '0 18px 40px rgba(0, 0, 0, 0.1), 0 0 0 4px #e0f2fe';
         animalCard.style.border = '3.5px solid #0284c7';
@@ -2813,24 +2827,34 @@ window.Activities = {
         animalCard.style.flexDirection = 'column';
         animalCard.style.alignItems = 'center';
         animalCard.style.justifyContent = 'center';
+        animalCard.style.gap = '0.7rem';
         animalCard.style.cursor = 'grab';
         animalCard.style.touchAction = 'none';
         animalCard.style.userSelect = 'none';
         animalCard.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease';
 
-        const animalEmoji = document.createElement('div');
-        animalEmoji.textContent = actividad.animal.emoji;
-        animalEmoji.style.fontSize = '5.4rem';
-        animalEmoji.style.filter = 'drop-shadow(0 10px 20px rgba(0,0,0,0.15))';
-        animalCard.appendChild(animalEmoji);
+        const animalTag = document.createElement('div');
+        animalTag.style.display = 'inline-flex';
+        animalTag.style.alignItems = 'center';
+        animalTag.style.gap = '8px';
+        animalTag.style.padding = '0.45rem 1.4rem';
+        animalTag.style.borderRadius = '9999px';
+        animalTag.style.background = '#e0f2fe';
+        animalTag.style.border = '2px solid #7dd3fc';
+        animalTag.style.color = '#0369a1';
+        animalTag.style.fontSize = '1.05rem';
+        animalTag.style.fontWeight = '800';
+        animalTag.style.letterSpacing = '0.5px';
+        animalTag.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#0284c7;"></span> Animal a clasificar`;
+        animalCard.appendChild(animalTag);
 
         const animalName = document.createElement('div');
         animalName.textContent = actividad.animal.nombre;
-        animalName.style.fontSize = '2rem';
+        animalName.style.fontSize = '2.4rem';
         animalName.style.fontWeight = '900';
         animalName.style.color = '#0f172a';
-        animalName.style.marginTop = '0.3rem';
         animalName.style.textAlign = 'center';
+        animalName.style.letterSpacing = '0.5px';
         animalCard.appendChild(animalName);
 
         centerStage.appendChild(animalCard);
@@ -2925,11 +2949,13 @@ window.Activities = {
             habBtn.style.userSelect = 'none';
 
             habBtn.innerHTML = `
-                <div style="font-size: 3.4rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">${hab.emoji}</div>
+                <div style="width: 100%; height: 105px; border-radius: 16px; overflow: hidden; margin-bottom: 0.35rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 2.5px solid rgba(255,255,255,0.7);">
+                    <img src="assets/habitats/${hab.id}.jpg" alt="${hab.nombre}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                </div>
                 <div style="font-size: 1.25rem; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.45); text-align: center; line-height: 1.2;">
                     ${hab.nombre}
                 </div>
-                <div style="font-size: 0.85rem; font-weight: 700; opacity: 0.95; text-align: center; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                <div style="font-size: 0.82rem; font-weight: 700; opacity: 0.95; text-align: center; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                     ${hab.clima.split(',')[0]}
                 </div>
             `;
@@ -2973,15 +2999,14 @@ window.Activities = {
                     floatingEl.style.zIndex = '99999';
                     floatingEl.style.pointerEvents = 'none';
                     floatingEl.style.background = '#ffffff';
-                    floatingEl.style.padding = '1rem 2.2rem';
+                    floatingEl.style.padding = '0.9rem 2.2rem';
                     floatingEl.style.borderRadius = '24px';
                     floatingEl.style.border = '3.5px solid #0284c7';
                     floatingEl.style.boxShadow = '0 20px 40px rgba(0,0,0,0.25)';
                     floatingEl.style.display = 'flex';
                     floatingEl.style.alignItems = 'center';
-                    floatingEl.style.gap = '0.8rem';
+                    floatingEl.style.justifyContent = 'center';
                     floatingEl.innerHTML = `
-                        <span style="font-size: 3rem;">${actividad.animal.emoji}</span>
                         <span style="font-size: 1.4rem; font-weight: 900; color: #0f172a;">${actividad.animal.nombre}</span>
                     `;
                     document.body.appendChild(floatingEl);
@@ -3083,7 +3108,8 @@ window.Activities = {
 
         hud.innerHTML = `
             <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>🚦 Educación Vial</span>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><circle cx="12" cy="7" r="2" fill="#ef4444"/><circle cx="12" cy="12" r="2" fill="#eab308"/><circle cx="12" cy="17" r="2" fill="#22c55e"/></svg>
+                <span>Educación Vial</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.18); color: #fef08a; font-weight: 800; font-size: 1rem; padding: 0.3rem 1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.35);">
                 ¿Es Seguro o Peligroso?
@@ -3091,7 +3117,7 @@ window.Activities = {
         `;
         container.appendChild(hud);
 
-        // Tarjeta Central de la Situación Vial
+        // Tarjeta Central de la Situación Vial (Sin emojis)
         const centerStage = document.createElement('div');
         centerStage.style.display = 'flex';
         centerStage.style.flexDirection = 'column';
@@ -3103,7 +3129,7 @@ window.Activities = {
         const situationCard = document.createElement('div');
         situationCard.className = 'vial-situation-card';
         situationCard.style.background = '#ffffff';
-        situationCard.style.padding = '2rem 2.8rem';
+        situationCard.style.padding = '2.2rem 3rem';
         situationCard.style.borderRadius = '28px';
         situationCard.style.boxShadow = '0 20px 45px rgba(0, 0, 0, 0.08), 0 0 0 4px #f1f5f9';
         situationCard.style.border = '3.5px solid #cbd5e1';
@@ -3115,27 +3141,35 @@ window.Activities = {
         situationCard.style.textAlign = 'center';
         situationCard.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
 
-        const situationEmoji = document.createElement('div');
-        situationEmoji.textContent = actividad.emoji;
-        situationEmoji.style.fontSize = '4.6rem';
-        situationEmoji.style.filter = 'drop-shadow(0 8px 16px rgba(0,0,0,0.12))';
-        situationCard.appendChild(situationEmoji);
+        const badgeEl = document.createElement('div');
+        badgeEl.style.display = 'inline-flex';
+        badgeEl.style.alignItems = 'center';
+        badgeEl.style.gap = '8px';
+        badgeEl.style.padding = '0.45rem 1.4rem';
+        badgeEl.style.borderRadius = '9999px';
+        badgeEl.style.background = '#f1f5f9';
+        badgeEl.style.border = '2px solid #cbd5e1';
+        badgeEl.style.color = '#334155';
+        badgeEl.style.fontSize = '1.05rem';
+        badgeEl.style.fontWeight = '800';
+        badgeEl.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Situación en la Vía Pública`;
+        situationCard.appendChild(badgeEl);
 
         const situationText = document.createElement('div');
         situationText.textContent = actividad.situacion;
-        situationText.style.fontSize = '1.7rem';
+        situationText.style.fontSize = '1.85rem';
         situationText.style.fontWeight = '800';
         situationText.style.color = '#1e293b';
-        situationText.style.marginTop = '0.6rem';
-        situationText.style.lineHeight = '1.35';
+        situationText.style.marginTop = '0.8rem';
+        situationText.style.lineHeight = '1.4';
         situationCard.appendChild(situationText);
 
         const situationPrompt = document.createElement('div');
-        situationPrompt.textContent = 'Pinta con la cera verde si es seguro, o con la roja si es peligroso:';
+        situationPrompt.textContent = 'Selecciona la opción correcta según las normas de tráfico:';
         situationPrompt.style.fontSize = '1.05rem';
         situationPrompt.style.fontWeight = '700';
         situationPrompt.style.color = '#64748b';
-        situationPrompt.style.marginTop = '0.6rem';
+        situationPrompt.style.marginTop = '0.7rem';
         situationCard.appendChild(situationPrompt);
 
         centerStage.appendChild(situationCard);
@@ -3188,7 +3222,7 @@ window.Activities = {
                 triggerCrayon.style.transform = 'scale(1.12) translateY(-8px)';
                 triggerCrayon.style.filter = 'brightness(1.15)';
 
-                expBanner.textContent = (actividad.esSeguro ? '🟢 ' : '🔴 ') + actividad.explicacion;
+                expBanner.textContent = (actividad.esSeguro ? '✓ ¡Conducta Segura! ' : '✕ ¡Conducta Peligrosa! ') + actividad.explicacion;
                 expBanner.style.borderColor = actividad.esSeguro ? '#10b981' : '#ef4444';
                 expBanner.style.color = actividad.esSeguro ? '#065f46' : '#991b1b';
                 expBanner.style.display = 'block';
@@ -3219,7 +3253,7 @@ window.Activities = {
         greenCrayon.style.userSelect = 'none';
 
         greenCrayon.innerHTML = `
-            <span style="font-size: 2.8rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">🖍️</span>
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><polyline points="20 6 9 17 4 12"/></svg>
             <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
                 <span style="font-size: 1.45rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">¡ES SEGURO!</span>
                 <span style="font-size: 0.85rem; font-weight: 800; color: #d1fae5;">Cera Verde ✓</span>
@@ -3245,7 +3279,7 @@ window.Activities = {
         redCrayon.style.userSelect = 'none';
 
         redCrayon.innerHTML = `
-            <span style="font-size: 2.8rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">🖍️</span>
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
                 <span style="font-size: 1.45rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">¡ES PELIGROSO!</span>
                 <span style="font-size: 0.85rem; font-weight: 800; color: #fee2e2;">Cera Roja ✕</span>
