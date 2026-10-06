@@ -107,32 +107,65 @@ window.Activities = {
         roundOverlay.style.position = 'absolute';
         roundOverlay.style.inset = '0';
         roundOverlay.style.zIndex = '100';
-        roundOverlay.style.background = 'rgba(15, 23, 42, 0.65)';
-        roundOverlay.style.backdropFilter = 'blur(6px)';
+        roundOverlay.style.background = 'radial-gradient(ellipse at center, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%)';
+        roundOverlay.style.backdropFilter = 'blur(8px)';
         roundOverlay.style.display = 'none';
         roundOverlay.style.alignItems = 'center';
         roundOverlay.style.justifyContent = 'center';
         roundOverlay.style.flexDirection = 'column';
-        roundOverlay.style.gap = '1.2rem';
+        roundOverlay.style.gap = '1.5rem';
+        roundOverlay.style.padding = '2rem';
+        roundOverlay.style.boxSizing = 'border-box';
+        roundOverlay.style.textAlign = 'center';
         roundOverlay.style.color = '#ffffff';
         container.appendChild(roundOverlay);
 
         const getWordsForRound = (rNum) => {
-            if (actividad.rondas && actividad.rondas[rNum - 1]) {
-                return actividad.rondas[rNum - 1];
-            }
             const pairs = (window.LanguageBank && window.LanguageBank.bubbleWordPairs) || [];
             if (pairs.length > 0) {
-                const start = Math.floor(Math.random() * (pairs.length - 6));
-                const slice = pairs.slice(start, start + 6);
+                // Seleccionar 30 parejas completamente aleatorias y diversas de todo el diccionario global
+                const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5).slice(0, 30);
+                // Garantizar 50% de palabras correctas y 50% incorrectas de manera perfectamente equilibrada
+                const items = [];
+                for (let i = 0; i < 15; i++) {
+                    const p1 = shuffledPairs[i * 2];
+                    const p2 = shuffledPairs[i * 2 + 1];
+                    const pair = [
+                        { text: p1[0], correct: true },
+                        { text: p2[1], correct: false }
+                    ].sort(() => Math.random() - 0.5);
+                    items.push(pair[0], pair[1]);
+                }
                 return {
-                    correctas: slice.map(p => p[0]),
-                    incorrectas: slice.map(p => p[1])
+                    items: items,
+                    correctas: shuffledPairs.map(p => p[0]),
+                    incorrectas: shuffledPairs.map(p => p[1])
+                };
+            }
+            if (actividad.rondas && actividad.rondas[rNum - 1]) {
+                const rData = actividad.rondas[rNum - 1];
+                const pool = [];
+                const len = Math.min((rData.correctas || []).length, (rData.incorrectas || []).length);
+                for (let i = 0; i < len; i += 2) {
+                    const pair = [
+                        { text: rData.correctas[i], correct: true },
+                        { text: rData.incorrectas[i], correct: false }
+                    ].sort(() => Math.random() - 0.5);
+                    pool.push(pair[0], pair[1]);
+                }
+                return {
+                    items: pool,
+                    correctas: rData.correctas,
+                    incorrectas: rData.incorrectas
                 };
             }
             return {
-                correctas: actividad.correctas || ['Sol', 'Mano', 'Pato'],
-                incorrectas: actividad.incorrectas || ['Zol', 'Namo', 'Pt']
+                items: [
+                    { text: 'Sol', correct: true }, { text: 'Zol', correct: false },
+                    { text: 'Mano', correct: true }, { text: 'Namo', correct: false }
+                ],
+                correctas: ['Sol', 'Mano'],
+                incorrectas: ['Zol', 'Namo']
             };
         };
 
@@ -250,13 +283,13 @@ window.Activities = {
             stage.innerHTML = '';
 
             const roundData = getWordsForRound(rNum);
-            const allWords = [...(roundData.correctas || []), ...(roundData.incorrectas || [])].sort(() => Math.random() - 0.5);
+            const roundItems = roundData.items || [];
 
-            // Spawn inicial de burbujas
+            // Spawn inicial de burbujas con 2 palabras totalmente distintas
             setTimeout(() => {
                 const h = stage.clientHeight || 550;
-                if (allWords[0]) spawnBubble(allWords[0], (roundData.correctas || []).includes(allWords[0]), h * 0.25);
-                if (allWords[1]) spawnBubble(allWords[1], (roundData.correctas || []).includes(allWords[1]), h * 0.05);
+                if (roundItems[0]) spawnBubble(roundItems[0].text, roundItems[0].correct, h * 0.25);
+                if (roundItems[1]) spawnBubble(roundItems[1].text, roundItems[1].correct, h * 0.05);
             }, 80);
 
             let wordIdx = 2;
@@ -265,11 +298,18 @@ window.Activities = {
                     clearInterval(spawnInterval);
                     return;
                 }
-                if (wordIdx >= allWords.length) wordIdx = 0;
-                const word = allWords[wordIdx];
-                spawnBubble(word, (roundData.correctas || []).includes(word));
-                wordIdx++;
-            }, 2500);
+                if (wordIdx < roundItems.length) {
+                    const item = roundItems[wordIdx];
+                    spawnBubble(item.text, item.correct);
+                    wordIdx++;
+                } else {
+                    const pairs = (window.LanguageBank && window.LanguageBank.bubbleWordPairs) || [];
+                    const p = pairs[Math.floor(Math.random() * pairs.length)];
+                    const isCorrect = (wordIdx % 2 === 0);
+                    spawnBubble(isCorrect ? p[0] : p[1], isCorrect);
+                    wordIdx++;
+                }
+            }, 2300);
 
             // Temporizador de 20 segundos por ronda
             clearInterval(timerInterval);
@@ -302,33 +342,81 @@ window.Activities = {
             isTransitioning = true;
             clearInterval(timerInterval);
             clearInterval(spawnInterval);
+            stage.innerHTML = ''; // Limpiar burbujas de la ronda anterior
 
             if (rNum < totalRounds) {
                 if (AppState.settings.soundEnabled) this.playSound('success');
                 roundOverlay.innerHTML = `
-                    <div style="font-size: 4rem;">⭐</div>
-                    <h2 style="font-size: 2.2rem; font-weight: 900; margin: 0; color: #ffffff;">¡Ronda ${rNum} Superada!</h2>
-                    <p style="font-size: 1.25rem; font-weight: 800; color: #fef08a; margin: 0;">¡Prepárate para la Ronda ${rNum + 1}!</p>
+                    <div style="background: rgba(255, 255, 255, 0.12); padding: 1.2rem; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" width="68" height="68" fill="#facc15" stroke="#ca8a04" stroke-width="1.5">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+                        <h2 style="font-size: 2.3rem; font-weight: 900; margin: 0; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.45);">
+                            ¡Ronda ${rNum} Superada!
+                        </h2>
+                        <p style="font-size: 1.3rem; font-weight: 800; color: #fef08a; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.3);">
+                            ¡Prepárate para la Ronda ${rNum + 1}!
+                        </p>
+                        <p style="font-size: 1.05rem; font-weight: 700; color: #bae6fd; margin: 0.2rem 0 0 0;">
+                            Palabras acertadas hasta ahora: <strong style="color: #ffffff; font-size: 1.25rem;">${totalPopped}</strong>
+                        </p>
+                    </div>
+                    <button id="btn-next-round" class="tactile-btn tactile-btn-blue" style="margin-top: 0.6rem; padding: 0.85rem 2.6rem; font-size: 1.3rem; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; cursor: pointer; border-radius: 20px; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);">
+                        <span>Siguiente Ronda</span>
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
                 `;
                 roundOverlay.style.display = 'flex';
 
-                setTimeout(() => {
-                    roundOverlay.style.display = 'none';
-                    currentRound++;
-                    startRound(currentRound);
-                }, 2000);
+                const nextBtn = roundOverlay.querySelector('#btn-next-round');
+                if (nextBtn) {
+                    nextBtn.onclick = () => {
+                        roundOverlay.style.display = 'none';
+                        currentRound++;
+                        startRound(currentRound);
+                    };
+                }
             } else {
                 if (AppState.settings.soundEnabled) this.playSound('success');
                 roundOverlay.innerHTML = `
-                    <div style="font-size: 4.5rem;">🏆</div>
-                    <h2 style="font-size: 2.5rem; font-weight: 900; margin: 0; color: #ffffff;">¡Misión del Bosque Superada!</h2>
-                    <p style="font-size: 1.35rem; font-weight: 800; color: #86efac; margin: 0;">¡Has superado las 3 rondas y atrapado ${totalPopped} palabras!</p>
+                    <div style="background: rgba(255, 255, 255, 0.12); padding: 1.2rem; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" width="72" height="72" fill="#facc15" stroke="#ca8a04" stroke-width="1.5">
+                            <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"/>
+                            <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                        </svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+                        <h2 style="font-size: 2.4rem; font-weight: 900; margin: 0; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.45);">
+                            ¡Misión del Bosque Superada!
+                        </h2>
+                        <p style="font-size: 1.35rem; font-weight: 800; color: #86efac; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.3);">
+                            ¡Has superado las 3 rondas y atrapado ${totalPopped} palabras!
+                        </p>
+                    </div>
+                    <button id="btn-finish-mission" class="tactile-btn tactile-btn-blue" style="margin-top: 0.6rem; padding: 0.85rem 2.6rem; font-size: 1.3rem; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; cursor: pointer; border-radius: 20px; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);">
+                        <span>Ver Resultados</span>
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </button>
                 `;
                 roundOverlay.style.display = 'flex';
 
-                setTimeout(() => {
-                    onComplete(true);
-                }, 1800);
+                const finishBtn = roundOverlay.querySelector('#btn-finish-mission');
+                if (finishBtn) {
+                    finishBtn.onclick = () => {
+                        onComplete(true);
+                    };
+                }
             }
         };
 
@@ -381,22 +469,14 @@ window.Activities = {
         `;
         container.appendChild(hud);
 
-        // Escenario Central con Casillas de Letras Grandes
+        // Escenario Central con Casillas de Letras Grandes (Limpio y profesional)
         const centerStage = document.createElement('div');
         centerStage.style.display = 'flex';
         centerStage.style.flexDirection = 'column';
         centerStage.style.alignItems = 'center';
         centerStage.style.justifyContent = 'center';
-        centerStage.style.gap = '1.8rem';
+        centerStage.style.gap = '2.2rem';
         centerStage.style.margin = 'auto 0';
-
-        if (actividad.imagen) {
-            const iconEl = document.createElement('div');
-            iconEl.textContent = actividad.imagen;
-            iconEl.style.fontSize = '5.5rem';
-            iconEl.style.filter = 'drop-shadow(0 10px 20px rgba(0,0,0,0.15))';
-            centerStage.appendChild(iconEl);
-        }
 
         // Fila de Casillas de Letras
         const wordTilesRow = document.createElement('div');
@@ -411,13 +491,13 @@ window.Activities = {
 
         wordLetters.forEach(char => {
             const tile = document.createElement('div');
-            tile.style.width = '64px';
-            tile.style.height = '74px';
+            tile.style.width = '68px';
+            tile.style.height = '78px';
             tile.style.borderRadius = '18px';
             tile.style.display = 'flex';
             tile.style.alignItems = 'center';
             tile.style.justifyContent = 'center';
-            tile.style.fontSize = '2.4rem';
+            tile.style.fontSize = '2.5rem';
             tile.style.fontWeight = '900';
             tile.style.userSelect = 'none';
 
@@ -458,7 +538,20 @@ window.Activities = {
             btn.textContent = letra;
 
             btn.onclick = () => {
-                const esCorrecto = (index === actividad.respuesta) || (letra === actividad.letraCorrecta);
+                const rawWord = actividad.palabraCompleta || (actividad.palabra ? actividad.palabra.replace(/\s+/g, '') : '');
+                let targetIdx = actividad.targetIdx;
+                if (targetIdx === undefined || targetIdx === -1) {
+                    const letters = actividad.palabra ? actividad.palabra.split(' ') : rawWord.split('');
+                    targetIdx = letters.indexOf('_');
+                    if (targetIdx === -1) targetIdx = 0;
+                }
+                const wordFormed = (rawWord.slice(0, targetIdx) + letra + rawWord.slice(targetIdx + 1)).toUpperCase();
+
+                const esCorrecto = (index === actividad.respuesta) ||
+                                   (letra === actividad.letraCorrecta) ||
+                                   (actividad.letrasValidas && actividad.letrasValidas.includes(letra)) ||
+                                   (window.LanguageBank && window.LanguageBank.esPalabraValida && window.LanguageBank.esPalabraValida(wordFormed));
+
                 if (esCorrecto) {
                     if (emptySlotTile) {
                         emptySlotTile.style.background = 'linear-gradient(180deg, #10b981 0%, #059669 100%)';
@@ -543,13 +636,22 @@ window.Activities = {
         centerStage.style.gap = '1.6rem';
         centerStage.style.margin = 'auto 0';
 
-        if (actividad.imagen) {
-            const iconEl = document.createElement('div');
-            iconEl.textContent = actividad.imagen;
-            iconEl.style.fontSize = '5.8rem';
-            iconEl.style.filter = 'drop-shadow(0 12px 24px rgba(0,0,0,0.15))';
-            centerStage.appendChild(iconEl);
-        }
+        // Indicador didáctico profesional (sin emojis distractores)
+        const badgeEl = document.createElement('div');
+        badgeEl.style.display = 'inline-flex';
+        badgeEl.style.alignItems = 'center';
+        badgeEl.style.gap = '8px';
+        badgeEl.style.padding = '0.5rem 1.4rem';
+        badgeEl.style.borderRadius = '9999px';
+        badgeEl.style.background = 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)';
+        badgeEl.style.border = '2px solid #cbd5e1';
+        badgeEl.style.boxShadow = '0 4px 12px rgba(100, 116, 139, 0.12)';
+        badgeEl.style.color = '#334155';
+        badgeEl.style.fontSize = '1.05rem';
+        badgeEl.style.fontWeight = '800';
+        badgeEl.style.letterSpacing = '0.5px';
+        badgeEl.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#0284c7;"></span> Palabra de ${totalSlots} sílabas`;
+        centerStage.appendChild(badgeEl);
 
         // Fila de Casillas Destino de Sílabas
         const slotsRow = document.createElement('div');

@@ -186,94 +186,113 @@
     ];
 
     // =========================================================================
-    // 2. BANCO DE PALABRAS SILABIFICADAS (ORDENAR SÍLABAS)
+    // 2. BANCO DE PALABRAS SILABIFICADAS (ORDENAR SÍLABAS - 2 Y 3 SÍLABAS, SIN EMOJIS)
     // =========================================================================
     const silabasPorNivel = {
         primaria1: [
-            { p: 'MESA', s: ['ME', 'SA'], i: '🪑' }, { p: 'PATO', s: ['PA', 'TO'], i: '🦆' },
-            { p: 'GATO', s: ['GA', 'TO'], i: '🐱' }, { p: 'CASA', s: ['CA', 'SA'], i: '🏠' },
-            { p: 'LOBO', s: ['LO', 'BO'], i: '🐺' }, { p: 'RANA', s: ['RA', 'NA'], i: '🐸' },
-            { p: 'SAPO', s: ['SA', 'PO'], i: '🐸' }, { p: 'SOPA', s: ['SO', 'PA'], i: '🥣' },
-            { p: 'TAZA', s: ['TA', 'ZA'], i: '☕' }, { p: 'LUNA', s: ['LU', 'NA'], i: '🌙' },
-            { p: 'BOLA', s: ['BO', 'LA'], i: '⚽' }, { p: 'ROSA', s: ['RO', 'SA'], i: '🌹' },
-            { p: 'VELA', s: ['VE', 'LA'], i: '🕯️' }, { p: 'PERA', s: ['PE', 'RA'], i: '🍐' },
-            { p: 'PIÑA', s: ['PI', 'ÑA'], i: '🍍' }, { p: 'FOCA', s: ['FO', 'CA'], i: '🦭' },
-            { p: 'MAPA', s: ['MA', 'PA'], i: '🗺️' }, { p: 'PELO', s: ['PE', 'LO'], i: '💇' },
-            { p: 'BOCA', s: ['BO', 'CA'], i: '👄' }, { p: 'MANO', s: ['MA', 'NO'], i: '✋' },
-            { p: 'DEDO', s: ['DE', 'DO'], i: '👆' }, { p: 'NUBE', s: ['NU', 'BE'], i: '☁️' },
-            { p: 'PALA', s: ['PA', 'LA'], i: '🥣' }, { p: 'VACA', s: ['VA', 'CA'], i: '🐮' },
-            { p: 'TORO', s: ['TO', 'RO'], i: '🐂' }, { p: 'LECHE', s: ['LE', 'CHE'], i: '🥛' },
-            { p: 'QUESO', s: ['QUE', 'SO'], i: '🧀' }, { p: 'COPA', s: ['CO', 'PA'], i: '🏆' },
-            { p: 'CUNA', s: ['CU', 'NA'], i: '👶' }, { p: 'LANA', s: ['LA', 'NA'], i: '🧶' },
-            { p: 'TELA', s: ['TE', 'LA'], i: '🧵' }, { p: 'GOMA', s: ['GO', 'MA'], i: '✏️' },
-            { p: 'CAJA', s: ['CA', 'JA'], i: '📦' }, { p: 'PINO', s: ['PI', 'NO'], i: '🌲' },
-            { p: 'VINO', s: ['VI', 'NO'], i: '🍇' }, { p: 'NIDO', s: ['NI', 'DO'], i: '🪺' }
+            // Palabras de 2 sílabas
+            { p: 'MESA', s: ['ME', 'SA'] }, { p: 'PATO', s: ['PA', 'TO'] },
+            { p: 'GATO', s: ['GA', 'TO'] }, { p: 'CASA', s: ['CA', 'SA'] },
+            { p: 'LOBO', s: ['LO', 'BO'] }, { p: 'RANA', s: ['RA', 'NA'] },
+            { p: 'SAPO', s: ['SA', 'PO'] }, { p: 'SOPA', s: ['SO', 'PA'] },
+            { p: 'TAZA', s: ['TA', 'ZA'] }, { p: 'LUNA', s: ['LU', 'NA'] },
+            { p: 'BOLA', s: ['BO', 'LA'] }, { p: 'ROSA', s: ['RO', 'SA'] },
+            { p: 'VELA', s: ['VE', 'LA'] }, { p: 'PERA', s: ['PE', 'RA'] },
+            { p: 'PIÑA', s: ['PI', 'ÑA'] }, { p: 'FOCA', s: ['FO', 'CA'] },
+            { p: 'MAPA', s: ['MA', 'PA'] }, { p: 'PELO', s: ['PE', 'LO'] },
+            { p: 'BOCA', s: ['BO', 'CA'] }, { p: 'MANO', s: ['MA', 'NO'] },
+            { p: 'DEDO', s: ['DE', 'DO'] }, { p: 'NUBE', s: ['NU', 'BE'] },
+            { p: 'PALA', s: ['PA', 'LA'] }, { p: 'VACA', s: ['VA', 'CA'] },
+            { p: 'TORO', s: ['TO', 'RO'] }, { p: 'LECHE', s: ['LE', 'CHE'] },
+            { p: 'QUESO', s: ['QUE', 'SO'] }, { p: 'COPA', s: ['CO', 'PA'] },
+            { p: 'CUNA', s: ['CU', 'NA'] }, { p: 'LANA', s: ['LA', 'NA'] },
+            { p: 'TELA', s: ['TE', 'LA'] }, { p: 'GOMA', s: ['GO', 'MA'] },
+            { p: 'CAJA', s: ['CA', 'JA'] }, { p: 'PINO', s: ['PI', 'NO'] },
+            { p: 'VINO', s: ['VI', 'NO'] }, { p: 'NIDO', s: ['NI', 'DO'] },
+            // Palabras de 3 sílabas para enriquecer 1.º de Primaria
+            { p: 'PELOTA', s: ['PE', 'LO', 'TA'] }, { p: 'TOMATE', s: ['TO', 'MA', 'TE'] },
+            { p: 'ZAPATO', s: ['ZA', 'PA', 'TO'] }, { p: 'COMETA', s: ['CO', 'ME', 'TA'] },
+            { p: 'MALETA', s: ['MA', 'LE', 'TA'] }, { p: 'CONEJO', s: ['CO', 'NE', 'JO'] },
+            { p: 'PALOMA', s: ['PA', 'LO', 'MA'] }, { p: 'BOTELLA', s: ['BO', 'TE', 'LLA'] },
+            { p: 'CAMISA', s: ['CA', 'MI', 'SA'] }, { p: 'CEREZA', s: ['CE', 'RE', 'ZA'] },
+            { p: 'OVEJA', s: ['O', 'VE', 'JA'] }, { p: 'PAYASO', s: ['PA', 'YA', 'SO'] },
+            { p: 'PIRATA', s: ['PI', 'RA', 'TA'] }, { p: 'DIBUJO', s: ['DI', 'BU', 'JO'] },
+            { p: 'CORONA', s: ['CO', 'RO', 'NA'] }, { p: 'CAMINO', s: ['CA', 'MI', 'NO'] },
+            { p: 'GALLETA', s: ['GA', 'LLE', 'TA'] }, { p: 'TORTUGA', s: ['TOR', 'TU', 'GA'] },
+            { p: 'VENTANA', s: ['VEN', 'TA', 'NA'] }, { p: 'ESTRELLA', s: ['ES', 'TRE', 'LLA'] },
+            { p: 'MANZANA', s: ['MAN', 'ZA', 'NA'] }, { p: 'NARANJA', s: ['NA', 'RAN', 'JA'] },
+            { p: 'PLÁTANO', s: ['PLÁ', 'TA', 'NO'] }, { p: 'CAMPANA', s: ['CAM', 'PA', 'NA'] },
+            { p: 'BOMBERO', s: ['BOM', 'BE', 'RO'] }, { p: 'SOMBRERO', s: ['SOM', 'BRE', 'RO'] }
         ],
         primaria2: [
-            { p: 'PELOTA', s: ['PE', 'LO', 'TA'], i: '⚽' }, { p: 'TOMATE', s: ['TO', 'MA', 'TE'], i: '🍅' },
-            { p: 'ZAPATO', s: ['ZA', 'PA', 'TO'], i: '👞' }, { p: 'GALLETA', s: ['GA', 'LLE', 'TA'], i: '🍪' },
-            { p: 'COMETA', s: ['CO', 'ME', 'TA'], i: '🪁' }, { p: 'MALETA', s: ['MA', 'LE', 'TA'], i: '🧳' },
-            { p: 'CONEJO', s: ['CO', 'NE', 'JO'], i: '🐰' }, { p: 'PALOMA', s: ['PA', 'LO', 'MA'], i: '🕊️' },
-            { p: 'CABALLO', s: ['CA', 'BA', 'LLO'], i: '🐴' }, { p: 'BOTELLA', s: ['BO', 'TE', 'LLA'], i: '🍾' },
-            { p: 'CEBOLLA', s: ['CE', 'BO', 'LLA'], i: '🧅' }, { p: 'CAMINO', s: ['CA', 'MI', 'NO'], i: '🛣️' },
-            { p: 'MOCHILA', s: ['MO', 'CHI', 'LA'], i: '🎒' }, { p: 'LIBRETA', s: ['LI', 'BRE', 'TA'], i: '📓' },
-            { p: 'CORONA', s: ['CO', 'RO', 'NA'], i: '👑' }, { p: 'CAMISA', s: ['CA', 'MI', 'SA'], i: '👔' },
-            { p: 'CEREZA', s: ['CE', 'RE', 'ZA'], i: '🍒' }, { p: 'OVEJA', s: ['O', 'VE', 'JA'], i: '🐑' },
-            { p: 'JIRAFA', s: ['JI', 'RA', 'FA'], i: '🦒' }, { p: 'BALLENA', s: ['BA', 'LLE', 'NA'], i: '🐋' },
-            { p: 'TESORO', s: ['TE', 'SO', 'RO'], i: '💎' }, { p: 'PAYASO', s: ['PA', 'YA', 'SO'], i: '🤡' },
-            { p: 'PIRATA', s: ['PI', 'RA', 'TA'], i: '🏴‍☠️' }, { p: 'DIBUJO', s: ['DI', 'BU', 'JO'], i: '🎨' },
-            { p: 'RODILLA', s: ['RO', 'DI', 'LLA'], i: '🦵' }, { p: 'CASTILLO', s: ['CAS', 'TI', 'LLO'], i: '🏰' }
+            // Palabras de 2 y 3 sílabas
+            { p: 'BARCO', s: ['BAR', 'CO'] }, { p: 'CIELO', s: ['CIE', 'LO'] },
+            { p: 'FUEGO', s: ['FUE', 'GO'] }, { p: 'PLAYA', s: ['PLA', 'YA'] },
+            { p: 'TIGRE', s: ['TI', 'GRE'] }, { p: 'PERRO', s: ['PE', 'RRO'] },
+            { p: 'PELOTA', s: ['PE', 'LO', 'TA'] }, { p: 'TOMATE', s: ['TO', 'MA', 'TE'] },
+            { p: 'ZAPATO', s: ['ZA', 'PA', 'TO'] }, { p: 'GALLETA', s: ['GA', 'LLE', 'TA'] },
+            { p: 'COMETA', s: ['CO', 'ME', 'TA'] }, { p: 'MALETA', s: ['MA', 'LE', 'TA'] },
+            { p: 'CONEJO', s: ['CO', 'NE', 'JO'] }, { p: 'PALOMA', s: ['PA', 'LO', 'MA'] },
+            { p: 'CABALLO', s: ['CA', 'BA', 'LLO'] }, { p: 'BOTELLA', s: ['BO', 'TE', 'LLA'] },
+            { p: 'CEBOLLA', s: ['CE', 'BO', 'LLA'] }, { p: 'CAMINO', s: ['CA', 'MI', 'NO'] },
+            { p: 'MOCHILA', s: ['MO', 'CHI', 'LA'] }, { p: 'LIBRETA', s: ['LI', 'BRE', 'TA'] },
+            { p: 'CORONA', s: ['CO', 'RO', 'NA'] }, { p: 'CAMISA', s: ['CA', 'MI', 'SA'] },
+            { p: 'CEREZA', s: ['CE', 'RE', 'ZA'] }, { p: 'OVEJA', s: ['O', 'VE', 'JA'] },
+            { p: 'JIRAFA', s: ['JI', 'RA', 'FA'] }, { p: 'BALLENA', s: ['BA', 'LLE', 'NA'] },
+            { p: 'TESORO', s: ['TE', 'SO', 'RO'] }, { p: 'PAYASO', s: ['PA', 'YA', 'SO'] },
+            { p: 'PIRATA', s: ['PI', 'RA', 'TA'] }, { p: 'DIBUJO', s: ['DI', 'BU', 'JO'] },
+            { p: 'RODILLA', s: ['RO', 'DI', 'LLA'] }, { p: 'CASTILLO', s: ['CAS', 'TI', 'LLO'] }
         ],
         primaria3: [
-            { p: 'VENTANA', s: ['VEN', 'TA', 'NA'], i: '🪟' }, { p: 'CASTILLO', s: ['CAS', 'TI', 'LLO'], i: '🏰' },
-            { p: 'ESCUELA', s: ['ES', 'CUE', 'LA'], i: '🏫' }, { p: 'ESTRELLA', s: ['ES', 'TRE', 'LLA'], i: '⭐' },
-            { p: 'PLANETA', s: ['PLA', 'NE', 'TA'], i: '🪐' }, { p: 'GUITARRA', s: ['GUI', 'TA', 'RRA'], i: '🎸' },
-            { p: 'TORTUGA', s: ['TOR', 'TU', 'GA'], i: '🐢' }, { p: 'DELFÍN', s: ['DEL', 'FÍN'], i: '🐬' },
-            { p: 'PIZARRA', s: ['PI', 'ZA', 'RRA'], i: '📋' }, { p: 'GIGANTE', s: ['GI', 'GAN', 'TE'], i: '👤' },
-            { p: 'MONTAÑA', s: ['MON', 'TA', 'ÑA'], i: '⛰️' }, { p: 'DRAGÓN', s: ['DRA', 'GÓN'], i: '🐉' },
-            { p: 'PINTURA', s: ['PIN', 'TU', 'RA'], i: '🎨' }, { p: 'MANZANA', s: ['MAN', 'ZA', 'NA'], i: '🍎' },
-            { p: 'NARANJA', s: ['NA', 'RAN', 'JA'], i: '🍊' }, { p: 'PLÁTANO', s: ['PLÁ', 'TA', 'NO'], i: '🍌' },
-            { p: 'CAMPANA', s: ['CAM', 'PA', 'NA'], i: '🔔' }, { p: 'LÁMPARA', s: ['LÁM', 'PA', 'RA'], i: '💡' },
-            { p: 'BOMBERO', s: ['BOM', 'BE', 'RO'], i: '🧑‍🚒' }, { p: 'SOMBRERO', s: ['SOM', 'BRE', 'RO'], i: '👒' },
-            { p: 'COLUMPIO', s: ['CO', 'LUM', 'PIO'], i: '🛝' }, { p: 'TROMPETA', s: ['TROM', 'PE', 'TA'], i: '🎺' },
-            { p: 'PINGÜINO', s: ['PIN', 'GÜI', 'NO'], i: '🐧' }, { p: 'CIGÜEÑA', s: ['CI', 'GÜE', 'ÑA'], i: '🪶' }
+            { p: 'VENTANA', s: ['VEN', 'TA', 'NA'] }, { p: 'CASTILLO', s: ['CAS', 'TI', 'LLO'] },
+            { p: 'ESCUELA', s: ['ES', 'CUE', 'LA'] }, { p: 'ESTRELLA', s: ['ES', 'TRE', 'LLA'] },
+            { p: 'PLANETA', s: ['PLA', 'NE', 'TA'] }, { p: 'GUITARRA', s: ['GUI', 'TA', 'RRA'] },
+            { p: 'TORTUGA', s: ['TOR', 'TU', 'GA'] }, { p: 'DELFÍN', s: ['DEL', 'FÍN'] },
+            { p: 'PIZARRA', s: ['PI', 'ZA', 'RRA'] }, { p: 'GIGANTE', s: ['GI', 'GAN', 'TE'] },
+            { p: 'MONTAÑA', s: ['MON', 'TA', 'ÑA'] }, { p: 'DRAGÓN', s: ['DRA', 'GÓN'] },
+            { p: 'PINTURA', s: ['PIN', 'TU', 'RA'] }, { p: 'MANZANA', s: ['MAN', 'ZA', 'NA'] },
+            { p: 'NARANJA', s: ['NA', 'RAN', 'JA'] }, { p: 'PLÁTANO', s: ['PLÁ', 'TA', 'NO'] },
+            { p: 'CAMPANA', s: ['CAM', 'PA', 'NA'] }, { p: 'LÁMPARA', s: ['LÁM', 'PA', 'RA'] },
+            { p: 'BOMBERO', s: ['BOM', 'BE', 'RO'] }, { p: 'SOMBRERO', s: ['SOM', 'BRE', 'RO'] },
+            { p: 'COLUMPIO', s: ['CO', 'LUM', 'PIO'] }, { p: 'TROMPETA', s: ['TROM', 'PE', 'TA'] },
+            { p: 'PINGÜINO', s: ['PIN', 'GÜI', 'NO'] }, { p: 'CIGÜEÑA', s: ['CI', 'GÜE', 'ÑA'] }
         ],
         primaria4: [
-            { p: 'MARIPOSA', s: ['MA', 'RI', 'PO', 'SA'], i: '🦋' }, { p: 'CHOCOLATE', s: ['CHO', 'CO', 'LA', 'TE'], i: '🍫' },
-            { p: 'CALABAZA', s: ['CA', 'LA', 'BA', 'ZA'], i: '🎃' }, { p: 'BICICLETA', s: ['BI', 'CI', 'CLE', 'TA'], i: '🚲' },
-            { p: 'ELEFANTE', s: ['E', 'LE', 'FAN', 'TE'], i: '🐘' }, { p: 'CARPINTERO', s: ['CAR', 'PIN', 'TE', 'RO'], i: '🪚' },
-            { p: 'BOLÍGRAFO', s: ['BO', 'LÍ', 'GRA', 'FO'], i: '🖊️' }, { p: 'ASTRONAUTA', s: ['AS', 'TRO', 'NAU', 'TA'], i: '👨‍🚀' },
-            { p: 'HELICÓPTERO', s: ['HE', 'LI', 'CÓP', 'TE', 'RO'], i: '🚁' }, { p: 'PRIMAVERA', s: ['PRI', 'MA', 'VE', 'RA'], i: '🌸' },
-            { p: 'ESCARABAJO', s: ['ES', 'CA', 'RA', 'BA', 'JO'], i: '🪲' }, { p: 'MARIQUITA', s: ['MA', 'RI', 'QUI', 'TA'], i: '🐞' },
-            { p: 'TERMÓMETRO', s: ['TER', 'MÓ', 'ME', 'TRO'], i: '🌡️' }, { p: 'COCODRILO', s: ['CO', 'CO', 'DRI', 'LO'], i: '🐊' },
-            { p: 'DINOSAURIO', s: ['DI', 'NO', 'SAU', 'RIO'], i: '🦖' }, { p: 'SUBMARINO', s: ['SUB', 'MA', 'RI', 'NO'], i: '🚢' },
-            { p: 'AMBULANCIA', s: ['AM', 'BU', 'LAN', 'CIA'], i: '🚑' }, { p: 'CAMPAMENTO', s: ['CAM', 'PA', 'MEN', 'TO'], i: '⛺' }
+            { p: 'MARIPOSA', s: ['MA', 'RI', 'PO', 'SA'] }, { p: 'CHOCOLATE', s: ['CHO', 'CO', 'LA', 'TE'] },
+            { p: 'CALABAZA', s: ['CA', 'LA', 'BA', 'ZA'] }, { p: 'BICICLETA', s: ['BI', 'CI', 'CLE', 'TA'] },
+            { p: 'ELEFANTE', s: ['E', 'LE', 'FAN', 'TE'] }, { p: 'CARPINTERO', s: ['CAR', 'PIN', 'TE', 'RO'] },
+            { p: 'BOLÍGRAFO', s: ['BO', 'LÍ', 'GRA', 'FO'] }, { p: 'ASTRONAUTA', s: ['AS', 'TRO', 'NAU', 'TA'] },
+            { p: 'HELICÓPTERO', s: ['HE', 'LI', 'CÓP', 'TE', 'RO'] }, { p: 'PRIMAVERA', s: ['PRI', 'MA', 'VE', 'RA'] },
+            { p: 'ESCARABAJO', s: ['ES', 'CA', 'RA', 'BA', 'JO'] }, { p: 'MARIQUITA', s: ['MA', 'RI', 'QUI', 'TA'] },
+            { p: 'TERMÓMETRO', s: ['TER', 'MÓ', 'ME', 'TRO'] }, { p: 'COCODRILO', s: ['CO', 'CO', 'DRI', 'LO'] },
+            { p: 'DINOSAURIO', s: ['DI', 'NO', 'SAU', 'RIO'] }, { p: 'SUBMARINO', s: ['SUB', 'MA', 'RI', 'NO'] },
+            { p: 'AMBULANCIA', s: ['AM', 'BU', 'LAN', 'CIA'] }, { p: 'CAMPAMENTO', s: ['CAM', 'PA', 'MEN', 'TO'] }
         ],
         primaria5: [
-            { p: 'ORDENADOR', s: ['OR', 'DE', 'NA', 'DOR'], i: '💻' }, { p: 'TELESCOPIO', s: ['TE', 'LES', 'CO', 'PIO'], i: '🔭' },
-            { p: 'MICROSCOPIO', s: ['MI', 'CROS', 'CO', 'PIO'], i: '🔬' }, { p: 'BIBLIOTECA', s: ['BI', 'BLIO', 'TE', 'CA'], i: '📚' },
-            { p: 'SUPERMERCADO', s: ['SU', 'PER', 'MER', 'CA', 'DO'], i: '🛒' }, { p: 'LABORATORIO', s: ['LA', 'BO', 'RA', 'TO', 'RIO'], i: '🧪' },
-            { p: 'RINOCERONTE', s: ['RI', 'NO', 'CE', 'RON', 'TE'], i: '🦏' }, { p: 'HIPOPÓTAMO', s: ['HI', 'PO', 'PÓ', 'TA', 'MO'], i: '🦛' },
-            { p: 'ESPANTAPÁJAROS', s: ['ES', 'PAN', 'TA', 'PÁ', 'JA', 'ROS'], i: '🌾' }, { p: 'AVENTURERO', s: ['A', 'VEN', 'TU', 'RE', 'RO'], i: '🧭' },
-            { p: 'EMPERADOR', s: ['EM', 'PE', 'RA', 'DOR'], i: '👑' }, { p: 'CABALLERO', s: ['CA', 'BA', 'LLE', 'RO'], i: '🛡️' },
-            { p: 'QUIJOTESCO', s: ['QUI', 'JO', 'TES', 'CO'], i: '📖' }, { p: 'ELECTRICIDAD', s: ['E', 'LEC', 'TRI', 'CI', 'DAD'], i: '⚡' }
+            { p: 'ORDENADOR', s: ['OR', 'DE', 'NA', 'DOR'] }, { p: 'TELESCOPIO', s: ['TE', 'LES', 'CO', 'PIO'] },
+            { p: 'MICROSCOPIO', s: ['MI', 'CROS', 'CO', 'PIO'] }, { p: 'BIBLIOTECA', s: ['BI', 'BLIO', 'TE', 'CA'] },
+            { p: 'SUPERMERCADO', s: ['SU', 'PER', 'MER', 'CA', 'DO'] }, { p: 'LABORATORIO', s: ['LA', 'BO', 'RA', 'TO', 'RIO'] },
+            { p: 'RINOCERONTE', s: ['RI', 'NO', 'CE', 'RON', 'TE'] }, { p: 'HIPOPÓTAMO', s: ['HI', 'PO', 'PÓ', 'TA', 'MO'] },
+            { p: 'ESPANTAPÁJAROS', s: ['ES', 'PAN', 'TA', 'PÁ', 'JA', 'ROS'] }, { p: 'AVENTURERO', s: ['A', 'VEN', 'TU', 'RE', 'RO'] },
+            { p: 'EMPERADOR', s: ['EM', 'PE', 'RA', 'DOR'] }, { p: 'CABALLERO', s: ['CA', 'BA', 'LLE', 'RO'] },
+            { p: 'QUIJOTESCO', s: ['QUI', 'JO', 'TES', 'CO'] }, { p: 'ELECTRICIDAD', s: ['E', 'LEC', 'TRI', 'CI', 'DAD'] }
         ],
         primaria6: [
-            { p: 'LITERATURA', s: ['LI', 'TE', 'RA', 'TU', 'RA'], i: '📚' }, { p: 'NATURALEZA', s: ['NA', 'TU', 'RA', 'LE', 'ZA'], i: '🌿' },
-            { p: 'EXPERIMENTO', s: ['EX', 'PE', 'RI', 'MEN', 'TO'], i: '⚗️' }, { p: 'CONTAMINACIÓN', s: ['CON', 'TA', 'MI', 'NA', 'CIÓN'], i: '🏭' },
-            { p: 'INVESTIGADOR', s: ['IN', 'VES', 'TI', 'GA', 'DOR'], i: '🔍' }, { p: 'DESCUBRIMIENTO', s: ['DES', 'CU', 'BRI', 'MIEN', 'TO'], i: '🗺️' },
-            { p: 'CONSTITUCIÓN', s: ['CONS', 'TI', 'TU', 'CIÓN'], i: '📜' }, { p: 'CIVILIZACIÓN', s: ['CI', 'VI', 'LI', 'ZA', 'CIÓN'], i: '🏛️' },
-            { p: 'ASTRONOMÍA', s: ['AS', 'TRO', 'NO', 'MÍ', 'A'], i: '🌌' }, { p: 'GEOGRAFÍA', s: ['GEO', 'GRA', 'FÍ', 'A'], i: '🌍' },
-            { p: 'BIODIVERSIDAD', s: ['BIO', 'DI', 'VER', 'SI', 'DAD'], i: '🌱' }, { p: 'REVOLUCIÓN', s: ['RE', 'VO', 'LU', 'CIÓN'], i: '⚙️' }
+            { p: 'LITERATURA', s: ['LI', 'TE', 'RA', 'TU', 'RA'] }, { p: 'NATURALEZA', s: ['NA', 'TU', 'RA', 'LE', 'ZA'] },
+            { p: 'EXPERIMENTO', s: ['EX', 'PE', 'RI', 'MEN', 'TO'] }, { p: 'CONTAMINACIÓN', s: ['CON', 'TA', 'MI', 'NA', 'CIÓN'] },
+            { p: 'INVESTIGADOR', s: ['IN', 'VES', 'TI', 'GA', 'DOR'] }, { p: 'DESCUBRIMIENTO', s: ['DES', 'CU', 'BRI', 'MIEN', 'TO'] },
+            { p: 'CONSTITUCIÓN', s: ['CONS', 'TI', 'TU', 'CIÓN'] }, { p: 'CIVILIZACIÓN', s: ['CI', 'VI', 'LI', 'ZA', 'CIÓN'] },
+            { p: 'ASTRONOMÍA', s: ['AS', 'TRO', 'NO', 'MÍ', 'A'] }, { p: 'GEOGRAFÍA', s: ['GEO', 'GRA', 'FÍ', 'A'] },
+            { p: 'BIODIVERSIDAD', s: ['BIO', 'DI', 'VER', 'SI', 'DAD'] }, { p: 'REVOLUCIÓN', s: ['RE', 'VO', 'LU', 'CIÓN'] }
         ]
     };
 
     function scrambleSyllables(silabas) {
         if (silabas.length <= 1) return [...silabas];
-        let scrambled = shuffle(silabas);
+        let scrambled = shuffle([...silabas]);
         let attempts = 0;
         while (scrambled.join('') === silabas.join('') && attempts < 10) {
-            scrambled = shuffle(silabas);
+            scrambled = shuffle([...silabas]);
             attempts++;
         }
         if (scrambled.join('') === silabas.join('')) {
@@ -285,21 +304,58 @@
     }
 
     // =========================================================================
-    // 3. GENERADOR DE ACTIVIDADES DE LENGUA
+    // 3. DICCIONARIO LÉXICO Y VALIDADOR ORTOGRÁFICO
+    // =========================================================================
+    const VOCABULARIO_ESPANOL = new Set();
+    bubbleWordPairs.forEach(p => {
+        VOCABULARIO_ESPANOL.add(p[0].toUpperCase());
+    });
+    for (const lvl in silabasPorNivel) {
+        silabasPorNivel[lvl].forEach(item => {
+            VOCABULARIO_ESPANOL.add(item.p.toUpperCase());
+        });
+    }
+    const palabrasComunes = [
+        'CIELO', 'HIELO', 'CASA', 'PASA', 'MASA', 'TASA', 'RASA', 'PATO', 'GATO', 'RATO', 'MATO',
+        'BOLA', 'COLA', 'SOLA', 'POLA', 'MOLA', 'BOTE', 'VOTE', 'LOTE', 'ROJA', 'HOJA', 'SOJA',
+        'PALA', 'MALA', 'BALA', 'SALA', 'TALA', 'CALA', 'GALA', 'LUNA', 'CUNA', 'DUNA',
+        'MANO', 'PANO', 'VANO', 'BOCA', 'ROCA', 'FOCA', 'TOCA', 'LOCA', 'SOFA',
+        'BARCO', 'MARCO', 'PARCO', 'VIENTO', 'CIENTO', 'SIENTO', 'DIENTE',
+        'PISTA', 'VISTA', 'LISTA', 'CARTA', 'TARTA', 'PARTE', 'MARTE',
+        'QUESO', 'HUESO', 'CUEVA', 'NUEVA', 'HUEVO', 'NUEVO', 'PIEL', 'MIEL', 'FIEL'
+    ];
+    palabrasComunes.forEach(w => VOCABULARIO_ESPANOL.add(w.toUpperCase()));
+
+    function getValidLettersForWord(word, targetIdx) {
+        const validLetters = new Set();
+        const alphabet = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
+        const prefix = word.slice(0, targetIdx);
+        const suffix = word.slice(targetIdx + 1);
+
+        alphabet.forEach(letter => {
+            const candidateWord = prefix + letter + suffix;
+            if (VOCABULARIO_ESPANOL.has(candidateWord)) {
+                validLetters.add(letter);
+            }
+        });
+        validLetters.add(word[targetIdx]);
+        return Array.from(validLetters);
+    }
+
+    // =========================================================================
+    // 4. GENERADOR DE ACTIVIDADES DE LENGUA
     // =========================================================================
 
-    // Generador Letra Perdida
+    // Generador Letra Perdida (100% libre de ambigüedades y validación de palabras reales)
     function generateLetraPerdida(nivel, id) {
         const itemPair = bubbleWordPairs[id % bubbleWordPairs.length];
         const correctWord = itemPair[0].toUpperCase();
         
-        // Identificar qué letra reemplazar por '_'
         let targetIdx = -1;
         let candidateLetter = '';
-        const vowels = ['A', 'E', 'I', 'O', 'U'];
         const trickyConsonants = ['B', 'V', 'C', 'Z', 'S', 'G', 'J', 'H', 'LL', 'Y', 'R'];
+        const vowels = ['A', 'E', 'I', 'O', 'U'];
 
-        // Buscar letra conflictiva primero
         for (let i = 0; i < correctWord.length; i++) {
             if (trickyConsonants.includes(correctWord[i])) {
                 targetIdx = i;
@@ -307,21 +363,28 @@
                 break;
             }
         }
-        // Si no, tomar vocal intermedia
         if (targetIdx === -1) {
             targetIdx = Math.floor(correctWord.length / 2);
             candidateLetter = correctWord[targetIdx];
         }
 
-        // Crear opciones de letras
-        let distractorPool = ['B', 'V', 'C', 'Z', 'S', 'G', 'J', 'H', 'LL', 'Y', 'R', 'M', 'N', 'P', 'T'];
+        // Obtener TODAS las letras del alfabeto que formarían una palabra válida en español
+        const validLetters = getValidLettersForWord(correctWord, targetIdx);
+
+        // Para evitar ambigüedades confusas, seleccionamos distractores que NO formen palabras reales
+        const alphabet = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
+        let invalidLetters = alphabet.filter(l => !validLetters.includes(l));
+        
         if (vowels.includes(candidateLetter)) {
-            distractorPool = vowels.filter(v => v !== candidateLetter);
-        } else {
-            distractorPool = distractorPool.filter(l => l !== candidateLetter);
+            const invalidVowels = vowels.filter(v => !validLetters.includes(v));
+            if (invalidVowels.length >= 2) {
+                invalidLetters = invalidVowels.concat(invalidLetters.filter(l => !vowels.includes(l)));
+            }
         }
-        shuffle(distractorPool);
-        const options = shuffle([candidateLetter, distractorPool[0], distractorPool[1], distractorPool[2]]);
+        
+        shuffle(invalidLetters);
+        const distractors = invalidLetters.slice(0, 3);
+        const options = shuffle([candidateLetter, ...distractors]);
 
         // Formato con espacios y '_'
         const chars = correctWord.split('');
@@ -334,13 +397,15 @@
             pregunta: '¡Encuentra la letra perdida para completar la palabra!',
             palabra: spacedWord,
             palabraCompleta: correctWord,
+            targetIdx: targetIdx,
             letraCorrecta: candidateLetter,
+            letrasValidas: validLetters,
             opciones: options,
             respuesta: options.indexOf(candidateLetter)
         };
     }
 
-    // Generador Ordenar Sílabas
+    // Generador Ordenar Sílabas (Sin emojis distractores, 2 y 3 sílabas pedagógicas)
     function generateOrdenarSilabas(nivel, id) {
         const pool = silabasPorNivel[nivel] || silabasPorNivel.primaria1;
         const base = pool[id % pool.length];
@@ -352,23 +417,20 @@
             pregunta: '¡Ordena las sílabas para formar la palabra correcta!',
             palabra: base.p,
             silabas: base.s,
-            silabasDesordenadas: scrambled,
-            imagen: base.i
+            silabasDesordenadas: scrambled
         };
     }
 
-    // Generador Burbujas Multi-Ronda (3 Rondas de 20s, banco dinámico)
+    // Generador Burbujas Multi-Ronda (Máxima variedad global: palabras de todo el diccionario)
     function generateBurbujas(nivel, id) {
-        // Seleccionamos palabras de las parejas para cada una de las 3 rondas
         const rounds = [];
+        const shuffledAll = shuffle([...bubbleWordPairs]);
+        
         for (let r = 0; r < 3; r++) {
-            const startIdx = ((id * 3 + r) * 6) % bubbleWordPairs.length;
-            const chosenPairs = [];
-            for (let k = 0; k < 4; k++) {
-                chosenPairs.push(bubbleWordPairs[(startIdx + k) % bubbleWordPairs.length]);
-            }
-            const correctas = chosenPairs.map(p => p[0]);
-            const incorrectas = chosenPairs.map(p => p[1]);
+            // 25 parejas distintas por ronda extraídas de todas las categorías ortográficas
+            const roundPairs = shuffledAll.slice(r * 25, (r + 1) * 25);
+            const correctas = roundPairs.map(p => p[0]);
+            const incorrectas = roundPairs.map(p => p[1]);
             rounds.push({
                 ronda: r + 1,
                 duracion: 20,
@@ -384,7 +446,6 @@
             totalRondas: 3,
             duracionRonda: 20,
             rondas: rounds,
-            // Compatibilidad con actividad simple
             correctas: rounds[0].correctas,
             incorrectas: rounds[0].incorrectas
         };
@@ -393,6 +454,10 @@
     // Constructor Maestro de Lengua
     const LanguageBank = {
         bubbleWordPairs: bubbleWordPairs,
+        VOCABULARIO_ESPANOL: VOCABULARIO_ESPANOL,
+        esPalabraValida(palabra) {
+            return VOCABULARIO_ESPANOL.has(palabra.toUpperCase());
+        },
 
         generateBankForLevel(nivel) {
             const list = [];
