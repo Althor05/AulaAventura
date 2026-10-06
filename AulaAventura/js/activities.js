@@ -971,7 +971,8 @@ window.Activities = {
         container.style.background = 'radial-gradient(ellipse at 50% 90%, #e0f2fe 0%, #f0fdf4 40%, #ffffff 100%)';
         container.style.overflow = 'hidden';
 
-        const targetFruit = actividad.frutaObjetivo || '🍎';
+        const targetFruit = actividad.frutaObjetivo || 'manzanas';
+        const targetFruitImg = actividad.frutaObjetivoImg || null;
         let count = 0;
 
         // HUD flotante estilo Burbujas
@@ -996,11 +997,13 @@ window.Activities = {
         hud.style.boxSizing = 'border-box';
 
         hud.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; white-space: nowrap; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+            <div style="display: flex; align-items: center; gap: 0.8rem; font-size: 1.15rem; white-space: nowrap; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                ${targetFruitImg ? `<img src="${targetFruitImg}" alt="${actividad.nombreFruta || ''}" style="width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); vertical-align: middle;">` : ''}
                 <span>${actividad.pregunta || `¿Cuántas ${targetFruit} hay en la mesa? (¡Tócalas para contarlas!)`}</span>
             </div>
-            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.1rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                ${targetFruit} ${actividad.textoContadas || 'Contadas'}: <span id="fruit-count-val" style="color: #ffffff;">0</span>
+            <div style="display: flex; align-items: center; gap: 0.6rem; background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.1rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                ${targetFruitImg ? `<img src="${targetFruitImg}" style="width: 24px; height: 24px; object-fit: contain;">` : ''}
+                <span>${actividad.textoContadas || 'Contadas'}:</span> <span id="fruit-count-val" style="color: #ffffff;">0</span>
             </div>
         `;
         container.appendChild(hud);
@@ -1057,10 +1060,13 @@ window.Activities = {
         ];
 
         fruitPool.forEach((item) => {
-            const emoji = typeof item === 'string' ? item : (item.emoji || targetFruit);
-            const isTarget = typeof item === 'string' ? (item === targetFruit) : (item.esObjetivo !== undefined ? item.esObjetivo : (item.emoji === targetFruit));
+            const fruitImg = typeof item === 'object' && item.img ? item.img : (typeof item === 'string' && (item.endsWith('.png') || item.includes('/')) ? item : null);
+            const isTarget = typeof item === 'object' && item.esObjetivo !== undefined 
+                ? item.esObjetivo 
+                : (fruitImg ? (fruitImg === targetFruitImg) : (item === targetFruit || item.name === targetFruit || item.emoji === targetFruit));
 
             const fruitWrap = document.createElement('div');
+            fruitWrap.className = 'market-fruit-item';
             fruitWrap.style.position = 'relative';
             fruitWrap.style.cursor = 'pointer';
             fruitWrap.style.display = 'flex';
@@ -1070,7 +1076,7 @@ window.Activities = {
             // Pin con número que aparece al tocar
             const pin = document.createElement('div');
             pin.style.position = 'absolute';
-            pin.style.top = '-14px';
+            pin.style.top = '-12px';
             pin.style.width = '34px';
             pin.style.height = '34px';
             pin.style.borderRadius = '50%';
@@ -1083,15 +1089,32 @@ window.Activities = {
             pin.style.alignItems = 'center';
             pin.style.justifyContent = 'center';
             pin.style.boxShadow = '0 3px 8px rgba(0,0,0,0.25)';
+            pin.style.zIndex = '10';
             fruitWrap.appendChild(pin);
 
-            const icon = document.createElement('span');
-            icon.textContent = emoji;
-            icon.style.fontSize = '4.6rem';
-            icon.style.userSelect = 'none';
-            icon.style.filter = 'drop-shadow(0 8px 12px rgba(0,0,0,0.2))';
-            icon.style.display = 'block';
-            icon.style.transition = 'transform 0.15s ease';
+            let icon;
+            if (fruitImg) {
+                icon = document.createElement('img');
+                icon.src = fruitImg;
+                icon.alt = (typeof item === 'object' && item.name) ? item.name : 'Fruta';
+                icon.style.width = '74px';
+                icon.style.height = '74px';
+                icon.style.objectFit = 'contain';
+                icon.style.userSelect = 'none';
+                icon.style.pointerEvents = 'none';
+                icon.style.filter = 'drop-shadow(0 8px 14px rgba(0,0,0,0.22))';
+                icon.style.display = 'block';
+                icon.style.transition = 'transform 0.15s ease';
+            } else {
+                icon = document.createElement('span');
+                icon.textContent = typeof item === 'string' ? item : (item.emoji || '🍎');
+                icon.style.fontSize = '4.6rem';
+                icon.style.userSelect = 'none';
+                icon.style.pointerEvents = 'none';
+                icon.style.filter = 'drop-shadow(0 8px 12px rgba(0,0,0,0.2))';
+                icon.style.display = 'block';
+                icon.style.transition = 'transform 0.15s ease';
+            }
             fruitWrap.appendChild(icon);
 
             let isMarked = false;
@@ -1105,7 +1128,7 @@ window.Activities = {
                         count++;
                         pin.style.display = 'flex';
                         pin.textContent = count;
-                        icon.style.transform = 'scale(1.1)';
+                        icon.style.transform = 'scale(1.15)';
                         if (AppState.settings.soundEnabled) this.playSound('success');
                     } else {
                         count = Math.max(0, count - 1);
@@ -1114,6 +1137,8 @@ window.Activities = {
                     }
                     const countValEl = hud.querySelector('#fruit-count-val');
                     if (countValEl) countValEl.textContent = count;
+                } else {
+                    if (AppState.settings.soundEnabled) this.playSound('click');
                 }
             };
 
@@ -1386,8 +1411,9 @@ window.Activities = {
         container.style.overflow = 'hidden';
 
         const isMenorMayor = actividad.direccion !== 'mayor_a_menor';
-        const sortedTarget = [...actividad.numeros].sort((a, b) => isMenorMayor ? a - b : b - a);
-        const totalSlots = sortedTarget.length;
+        const totalSlots = actividad.numeros.length;
+        let placedCount = 0;
+        let selectedToken = null;
 
         // HUD flotante estilo Burbujas
         const hud = document.createElement('div');
@@ -1412,7 +1438,7 @@ window.Activities = {
 
         hud.innerHTML = `
             <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; white-space: nowrap; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>¡Arrastra los números a la regla ${isMenorMayor ? 'de MENOR a MAYOR' : 'de MAYOR a MENOR'}!</span>
+                <span>¡Coloca cada número en su casilla de la regla!</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.1rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                 Colocados: <span id="ordenar-counter" style="color: #ffffff;">0</span> / ${totalSlots}
@@ -1509,9 +1535,8 @@ window.Activities = {
         rulerBody.appendChild(ticks);
         rulerStage.appendChild(rulerBody);
 
-        const slotMap = new Map();
-
-        actividad.numeros.forEach(num => {
+        // Crear casillas (slots) de la regla - 100% libres, ninguna preseleccionada
+        const slots = actividad.numeros.map(num => {
             const pct = 8 + (((num - rMin) / (rMax - rMin)) * 84);
 
             const slotWrap = document.createElement('div');
@@ -1523,6 +1548,7 @@ window.Activities = {
             slotWrap.style.flexDirection = 'column';
             slotWrap.style.alignItems = 'center';
             slotWrap.style.zIndex = '5';
+            slotWrap.style.cursor = 'pointer';
 
             const pinCircle = document.createElement('div');
             pinCircle.style.width = '68px';
@@ -1537,7 +1563,7 @@ window.Activities = {
             pinCircle.style.fontWeight = '900';
             pinCircle.style.color = '#94a3b8';
             pinCircle.style.boxShadow = '0 6px 14px rgba(0,0,0,0.1)';
-            pinCircle.style.transition = 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+            pinCircle.style.transition = 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
             pinCircle.textContent = '?';
             slotWrap.appendChild(pinCircle);
 
@@ -1549,10 +1575,112 @@ window.Activities = {
             slotWrap.appendChild(arrow);
 
             rulerStage.appendChild(slotWrap);
-            slotMap.set(num, pinCircle);
+
+            return {
+                targetNum: num,
+                isFilled: false,
+                wrap: slotWrap,
+                pin: pinCircle,
+                arrow: arrow
+            };
         });
 
         container.appendChild(rulerStage);
+
+        const resetSlotNeutral = (slot) => {
+            if (slot.isFilled) return;
+            slot.pin.style.background = 'rgba(255, 255, 255, 0.95)';
+            slot.pin.style.border = '3.5px dashed #94a3b8';
+            slot.pin.style.color = '#94a3b8';
+            slot.pin.style.boxShadow = '0 6px 14px rgba(0,0,0,0.1)';
+            slot.pin.style.transform = 'scale(1)';
+            slot.pin.textContent = '?';
+            slot.pin.style.animation = '';
+        };
+
+        const showSlotHover = (slot) => {
+            if (slot.isFilled) return;
+            slot.pin.style.border = '3.5px solid #0284c7';
+            slot.pin.style.boxShadow = '0 0 22px rgba(2, 132, 199, 0.7)';
+            slot.pin.style.background = '#e0f2fe';
+            slot.pin.style.color = '#0284c7';
+            slot.pin.style.transform = 'scale(1.15)';
+        };
+
+        const deselectToken = () => {
+            if (selectedToken) {
+                selectedToken.btn.style.transform = 'scale(1)';
+                selectedToken.btn.style.boxShadow = '';
+                selectedToken.btn.style.borderColor = '';
+                selectedToken = null;
+            }
+            slots.filter(s => !s.isFilled).forEach(s => resetSlotNeutral(s));
+        };
+
+        const evaluatePlacement = (num, btn, slot) => {
+            if (slot.isFilled) return;
+
+            if (num === slot.targetNum) {
+                // ¡Acierto! Se bloquea en verde en su posición exacta
+                slot.isFilled = true;
+                slot.pin.style.background = 'linear-gradient(180deg, #10b981 0%, #059669 100%)';
+                slot.pin.style.border = '3.5px solid #047857';
+                slot.pin.style.color = '#ffffff';
+                slot.pin.style.boxShadow = '0 8px 22px rgba(16, 185, 129, 0.45)';
+                slot.pin.style.transform = 'scale(1.18)';
+                slot.pin.textContent = num;
+                slot.pin.style.animation = '';
+                setTimeout(() => { slot.pin.style.transform = 'scale(1)'; }, 220);
+
+                const tickLbl = tickLabelsMap.get(num);
+                if (tickLbl) {
+                    tickLbl.textContent = num;
+                    tickLbl.style.color = '#15803d';
+                    tickLbl.style.background = '#dcfce7';
+                    tickLbl.style.padding = '2px 6px';
+                    tickLbl.style.borderRadius = '6px';
+                    tickLbl.style.fontWeight = '900';
+                }
+
+                btn.style.visibility = 'hidden';
+                btn.disabled = true;
+
+                if (selectedToken && selectedToken.btn === btn) {
+                    selectedToken = null;
+                }
+
+                placedCount++;
+                const ordCounterEl = hud.querySelector('#ordenar-counter');
+                if (ordCounterEl) ordCounterEl.textContent = placedCount;
+
+                if (AppState.settings.soundEnabled) Activities.playSound('success');
+
+                slots.filter(s => !s.isFilled).forEach(s => resetSlotNeutral(s));
+
+                if (placedCount === totalSlots) {
+                    setTimeout(() => onComplete(true), 900);
+                }
+            } else {
+                // ¡Error! La casilla se pone en ROJO con animación shake
+                slot.pin.style.background = 'linear-gradient(180deg, #ef4444 0%, #dc2626 100%)';
+                slot.pin.style.border = '3.5px solid #b91c1c';
+                slot.pin.style.color = '#ffffff';
+                slot.pin.style.boxShadow = '0 8px 22px rgba(239, 68, 68, 0.55)';
+                slot.pin.style.transform = 'scale(1.15)';
+                slot.pin.textContent = num;
+                slot.pin.style.animation = 'shake 0.45s ease';
+
+                btn.style.animation = 'shake 0.45s ease';
+                if (AppState.settings.soundEnabled) Activities.playSound('error');
+
+                setTimeout(() => {
+                    btn.style.animation = '';
+                    if (!slot.isFilled) {
+                        resetSlotNeutral(slot);
+                    }
+                }, 550);
+            }
+        };
 
         // Fichas Numéricas Táctiles Arrastrables (Bandeja Inferior)
         const optionsRow = document.createElement('div');
@@ -1565,67 +1693,21 @@ window.Activities = {
         optionsRow.style.margin = '0 auto';
         optionsRow.style.flexShrink = '0';
 
-        let currentStep = 0;
-
-        const highlightCurrentSlot = () => {
-            sortedTarget.forEach((num, idx) => {
-                const s = slotMap.get(num);
-                if (s) {
-                    if (idx === currentStep) {
-                        s.style.border = '3.5px solid #0284c7';
-                        s.style.boxShadow = '0 0 22px rgba(2, 132, 199, 0.65)';
-                        s.style.background = '#e0f2fe';
-                        s.style.color = '#0284c7';
-                        s.style.transform = 'scale(1.08)';
-                    } else if (idx > currentStep) {
-                        s.style.border = '3.5px dashed #94a3b8';
-                        s.style.boxShadow = '0 4px 10px rgba(0,0,0,0.08)';
-                        s.style.background = 'rgba(255, 255, 255, 0.9)';
-                        s.style.color = '#94a3b8';
-                        s.style.transform = 'scale(1)';
-                    }
+        // Permitir tocar cualquier casilla directamente para colocar ficha seleccionada
+        slots.forEach(slot => {
+            const onSlotClick = (e) => {
+                if (e) e.stopPropagation();
+                if (slot.isFilled) return;
+                if (selectedToken) {
+                    evaluatePlacement(selectedToken.num, selectedToken.btn, slot);
+                } else {
+                    slot.pin.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => { slot.pin.style.animation = ''; }, 300);
                 }
-            });
-        };
-        highlightCurrentSlot();
-
-        const placeTokenSuccess = (num, btn) => {
-            const slot = slotMap.get(num);
-            if (slot) {
-                slot.style.background = 'linear-gradient(180deg, #10b981 0%, #059669 100%)';
-                slot.style.border = '3.5px solid #047857';
-                slot.style.color = '#ffffff';
-                slot.style.boxShadow = '0 8px 22px rgba(16, 185, 129, 0.45)';
-                slot.style.transform = 'scale(1.15)';
-                slot.textContent = num;
-                setTimeout(() => { slot.style.transform = 'scale(1)'; }, 220);
-            }
-
-            const tickLbl = tickLabelsMap.get(num);
-            if (tickLbl) {
-                tickLbl.textContent = num;
-                tickLbl.style.color = '#15803d';
-                tickLbl.style.background = '#dcfce7';
-                tickLbl.style.padding = '2px 6px';
-                tickLbl.style.borderRadius = '6px';
-                tickLbl.style.fontWeight = '900';
-            }
-
-            btn.style.visibility = 'hidden';
-            btn.disabled = true;
-
-            currentStep++;
-            const ordCounterEl = hud.querySelector('#ordenar-counter');
-            if (ordCounterEl) ordCounterEl.textContent = currentStep;
-
-            highlightCurrentSlot();
-
-            if (AppState.settings.soundEnabled) Activities.playSound('success');
-
-            if (currentStep === totalSlots) {
-                setTimeout(() => onComplete(true), 900);
-            }
-        };
+            };
+            slot.wrap.onclick = onSlotClick;
+            slot.pin.onclick = onSlotClick;
+        });
 
         const shuffled = [...actividad.numeros].sort(() => Math.random() - 0.5);
 
@@ -1638,10 +1720,10 @@ window.Activities = {
             btn.style.userSelect = 'none';
             btn.style.position = 'relative';
 
-            // Drag and Drop con Pointer Events (Soporta ratón, táctil y pizarras digitales)
             let isDragging = false;
             let startX = 0, startY = 0;
             let floatingEl = null;
+            let activeHoveredSlot = null;
 
             const onPointerDown = (e) => {
                 if (e.button !== undefined && e.button !== 0) return;
@@ -1676,22 +1758,24 @@ window.Activities = {
                         floatingEl.style.left = `${moveEvt.clientX}px`;
                         floatingEl.style.top = `${moveEvt.clientY}px`;
 
-                        const nextExpected = sortedTarget[currentStep];
-                        const s = slotMap.get(nextExpected);
-                        if (s) {
-                            const rect = s.getBoundingClientRect();
-                            const dist = Math.hypot(moveEvt.clientX - (rect.left + rect.width / 2), moveEvt.clientY - (rect.top + rect.height / 2));
-                            if (dist < 90) {
-                                s.style.transform = 'scale(1.22)';
-                                s.style.boxShadow = '0 0 25px rgba(16, 185, 129, 0.8)';
-                                s.style.borderColor = '#10b981';
-                                s.style.background = '#dcfce7';
-                            } else {
-                                s.style.transform = 'scale(1.08)';
-                                s.style.boxShadow = '0 0 22px rgba(2, 132, 199, 0.65)';
-                                s.style.borderColor = '#0284c7';
-                                s.style.background = '#e0f2fe';
+                        let closestSlot = null;
+                        let minDist = Infinity;
+                        slots.filter(s => !s.isFilled).forEach(s => {
+                            const rect = s.pin.getBoundingClientRect();
+                            const dist = Math.hypot(
+                                moveEvt.clientX - (rect.left + rect.width / 2),
+                                moveEvt.clientY - (rect.top + rect.height / 2)
+                            );
+                            if (dist < 85 && dist < minDist) {
+                                minDist = dist;
+                                closestSlot = s;
                             }
+                        });
+
+                        if (closestSlot !== activeHoveredSlot) {
+                            if (activeHoveredSlot) resetSlotNeutral(activeHoveredSlot);
+                            activeHoveredSlot = closestSlot;
+                            if (activeHoveredSlot) showSlotHover(activeHoveredSlot);
                         }
                     }
                 };
@@ -1708,46 +1792,73 @@ window.Activities = {
                         floatingEl.remove();
                         floatingEl = null;
 
-                        const nextExpected = sortedTarget[currentStep];
-                        const s = slotMap.get(nextExpected);
-                        let isDroppedOnTarget = false;
-                        if (s) {
-                            const rect = s.getBoundingClientRect();
-                            const dist = Math.hypot(upEvt.clientX - (rect.left + rect.width / 2), upEvt.clientY - (rect.top + rect.height / 2));
-                            if (dist < 95) {
-                                isDroppedOnTarget = true;
+                        let droppedSlot = null;
+                        let minDist = Infinity;
+                        slots.filter(s => !s.isFilled).forEach(s => {
+                            const rect = s.pin.getBoundingClientRect();
+                            const dist = Math.hypot(
+                                upEvt.clientX - (rect.left + rect.width / 2),
+                                upEvt.clientY - (rect.top + rect.height / 2)
+                            );
+                            if (dist < 95 && dist < minDist) {
+                                minDist = dist;
+                                droppedSlot = s;
                             }
-                        }
+                        });
 
-                        if (isDroppedOnTarget) {
-                            if (num === nextExpected) {
-                                placeTokenSuccess(num, btn);
-                            } else {
-                                if (s) s.style.transform = 'scale(1.08)';
-                                highlightCurrentSlot();
-                                btn.style.animation = 'shake 0.4s';
-                                if (AppState.settings.soundEnabled) Activities.playSound('error');
-                                setTimeout(() => { btn.style.animation = ''; }, 450);
-                            }
+                        if (activeHoveredSlot && activeHoveredSlot !== droppedSlot) {
+                            resetSlotNeutral(activeHoveredSlot);
+                        }
+                        activeHoveredSlot = null;
+
+                        if (droppedSlot) {
+                            evaluatePlacement(num, btn, droppedSlot);
                         } else {
-                            highlightCurrentSlot();
+                            slots.filter(s => !s.isFilled).forEach(s => resetSlotNeutral(s));
                         }
                     } else {
-                        // Tocar / Clic directo como alternativa intuitiva y accesible
-                        const nextExpected = sortedTarget[currentStep];
-                        if (num === nextExpected) {
-                            placeTokenSuccess(num, btn);
-                        } else {
-                            btn.style.animation = 'shake 0.4s';
-                            if (AppState.settings.soundEnabled) Activities.playSound('error');
-                            setTimeout(() => { btn.style.animation = ''; }, 450);
-                        }
+                        onBtnTap();
                     }
                 };
 
                 window.addEventListener('pointermove', onPointerMove);
                 window.addEventListener('pointerup', onPointerUp);
                 window.addEventListener('pointercancel', onPointerUp);
+            };
+
+            const onBtnTap = () => {
+                const unfilled = slots.filter(s => !s.isFilled);
+                if (unfilled.length === 1) {
+                    evaluatePlacement(num, btn, unfilled[0]);
+                    return;
+                }
+
+                if (selectedToken && selectedToken.btn === btn) {
+                    deselectToken();
+                } else {
+                    if (selectedToken) {
+                        selectedToken.btn.style.transform = 'scale(1)';
+                        selectedToken.btn.style.boxShadow = '';
+                        selectedToken.btn.style.borderColor = '';
+                    }
+                    selectedToken = { num, btn };
+                    btn.style.transform = 'scale(1.15)';
+                    btn.style.borderColor = '#0284c7';
+                    btn.style.boxShadow = '0 0 18px rgba(2, 132, 199, 0.7)';
+
+                    slots.filter(s => !s.isFilled).forEach(s => {
+                        s.pin.style.borderColor = '#0284c7';
+                        s.pin.style.background = '#f0f9ff';
+                    });
+                }
+            };
+
+            let lastTapTime = 0;
+            btn.onclick = (e) => {
+                if (e) e.stopPropagation();
+                if (Date.now() - lastTapTime < 250) return;
+                lastTapTime = Date.now();
+                onBtnTap();
             };
 
             btn.addEventListener('pointerdown', onPointerDown);
@@ -1954,15 +2065,23 @@ window.Activities = {
         diceStage.style.width = '100%';
         diceStage.style.maxWidth = '850px';
 
-        // Dados 3D de Color Verde Esmeralda
-        const diceValues = actividad.dados || [actividad.dado1 || 3, actividad.dado2 || 2];
-        if (actividad.dado3) diceValues.push(actividad.dado3);
+        // Dados 3D de Color Verde Esmeralda (Siempre 3 dados)
+        let currentDiceValues = (actividad.dados && actividad.dados.length === 3)
+            ? [...actividad.dados]
+            : [actividad.dado1 || 3, actividad.dado2 || 4, actividad.dado3 || 5];
+        while (currentDiceValues.length < 3) {
+            currentDiceValues.push(Math.floor(Math.random() * 6) + 1);
+        }
+        if (currentDiceValues.length > 3) {
+            currentDiceValues = currentDiceValues.slice(0, 3);
+        }
+        let currentSum = currentDiceValues.reduce((a, b) => a + b, 0);
 
         const diceRow = document.createElement('div');
         diceRow.style.display = 'flex';
         diceRow.style.alignItems = 'center';
         diceRow.style.justifyContent = 'center';
-        diceRow.style.gap = '3rem';
+        diceRow.style.gap = '2.5rem';
         diceRow.style.perspective = '1000px';
 
         const dotPositions = {
@@ -2056,15 +2175,15 @@ window.Activities = {
             return d;
         };
 
-        diceValues.forEach((val, idx) => {
+        currentDiceValues.forEach((val, idx) => {
             const die = makeDie(val, idx);
             diceElements.push({ die, val });
             diceRow.appendChild(die);
 
-            if (idx < diceValues.length - 1) {
+            if (idx < 2) {
                 const plus = document.createElement('span');
                 plus.textContent = '+';
-                plus.style.fontSize = '3.8rem';
+                plus.style.fontSize = '3.5rem';
                 plus.style.fontWeight = '900';
                 plus.style.color = '#0284c7';
                 plus.style.textShadow = '0 3px 8px rgba(2, 132, 199, 0.25)';
@@ -2089,7 +2208,7 @@ window.Activities = {
         eq.style.fontSize = '1.6rem';
         eq.style.fontWeight = '900';
         eq.style.boxShadow = '0 8px 24px rgba(2, 132, 199, 0.15)';
-        eq.innerHTML = `<span>${diceValues.join(' + ')} = <strong style="color: #0284c7;">?</strong></span>`;
+        eq.innerHTML = `<span>${currentDiceValues.join(' + ')} = <strong style="color: #0284c7;">?</strong></span>`;
         footer.appendChild(eq);
 
         const rollBtn = document.createElement('button');
@@ -2097,20 +2216,88 @@ window.Activities = {
         rollBtn.style.padding = '0.65rem 1.8rem';
         rollBtn.style.fontSize = '1.15rem';
         rollBtn.style.borderRadius = '9999px';
-        rollBtn.textContent = '¡Agitar Dados!';
+        rollBtn.textContent = '🎲 ¡Lanzar Dados Nuevos!';
+
+        // Fila de Botones Azules Táctiles Centrados
+        const optionsRow = document.createElement('div');
+        optionsRow.style.display = 'flex';
+        optionsRow.style.alignItems = 'center';
+        optionsRow.style.justifyContent = 'center';
+        optionsRow.style.gap = '1.5rem';
+        optionsRow.style.width = '100%';
+        optionsRow.style.maxWidth = '850px';
+        optionsRow.style.margin = '0 auto';
+        optionsRow.style.flexShrink = '0';
+
+        // Generador dinámico de 4 opciones para una suma
+        const generateOptionsForSum = (sum) => {
+            const opts = new Set([sum]);
+            const deltas = [-3, -2, -1, 1, 2, 3, 4, -4, 5, -5];
+            for (let i = deltas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deltas[i], deltas[j]] = [deltas[j], deltas[i]];
+            }
+            for (const d of deltas) {
+                if (opts.size >= 4) break;
+                const cand = sum + d;
+                if (cand >= 3 && cand <= 18) opts.add(cand);
+            }
+            let fill = 3;
+            while (opts.size < 4) {
+                if (!opts.has(fill)) opts.add(fill);
+                fill++;
+            }
+            const arr = Array.from(opts);
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        };
+
+        const renderOptionButtons = (sum) => {
+            optionsRow.innerHTML = '';
+            const opts = generateOptionsForSum(sum);
+            opts.forEach((num) => {
+                const btn = document.createElement('button');
+                btn.className = 'tactile-btn tactile-btn-blue';
+                btn.textContent = num;
+
+                btn.onclick = () => {
+                    const esCorrecto = (num === sum);
+                    if (esCorrecto) {
+                        btn.style.background = 'linear-gradient(180deg, #34d399 0%, #059669 100%)';
+                        btn.style.borderColor = '#047857';
+                        btn.style.boxShadow = '0 8px 0 #064e3b, 0 12px 20px rgba(5, 150, 105, 0.4)';
+                        eq.innerHTML = `<span>${currentDiceValues.join(' + ')} = <strong style="color: #34d399;">${num}</strong> ✓</span>`;
+                    }
+                    this.feedback(esCorrecto, btn, null, onComplete);
+                };
+                optionsRow.appendChild(btn);
+            });
+        };
 
         const rollDice = (isInitial = false) => {
             if (AppState.settings.soundEnabled) Activities.playSound('dice');
             rollBtn.disabled = true;
 
+            pips = 0;
+            const pipsValEl = hud.querySelector('#pips-count-val');
+            if (pipsValEl) pipsValEl.textContent = 0;
+
             if (!isInitial) {
-                pips = 0;
-                const pipsValEl = hud.querySelector('#pips-count-val');
-                if (pipsValEl) pipsValEl.textContent = 0;
+                // Generar 3 valores completamente nuevos aleatorios
+                currentDiceValues = [
+                    Math.floor(Math.random() * 6) + 1,
+                    Math.floor(Math.random() * 6) + 1,
+                    Math.floor(Math.random() * 6) + 1
+                ];
+                currentSum = currentDiceValues.reduce((a, b) => a + b, 0);
             }
 
-            diceElements.forEach((item) => {
-                const { die, val } = item;
+            diceElements.forEach((item, idx) => {
+                const { die } = item;
+                const targetVal = currentDiceValues[idx];
                 const spinDirection = Math.random() > 0.5 ? 1 : -1;
                 const fullSpins = (Math.floor(Math.random() * 2) + 1) * 360 * spinDirection;
                 const restingAngle = Math.floor(Math.random() * 24) - 12;
@@ -2126,18 +2313,23 @@ window.Activities = {
                     setDieDots(die, tempVal);
                     if (flickerCount >= 6) {
                         clearInterval(flickerInterval);
-                        setDieDots(die, val);
+                        setDieDots(die, targetVal);
                         die.style.transform = `rotate(${restingAngle}deg) scale(1)`;
                     }
                 }, 75);
             });
 
             setTimeout(() => {
+                eq.innerHTML = `<span>${currentDiceValues.join(' + ')} = <strong style="color: #0284c7;">?</strong></span>`;
+                renderOptionButtons(currentSum);
                 rollBtn.disabled = false;
             }, 720);
         };
 
         rollBtn.onclick = () => rollDice(false);
+
+        // Inicializar opciones acordes a los dados iniciales
+        renderOptionButtons(currentSum);
 
         // Giro aleatorio inicial al entrar a la actividad
         setTimeout(() => rollDice(true), 150);
@@ -2145,35 +2337,6 @@ window.Activities = {
         footer.appendChild(rollBtn);
         diceStage.appendChild(footer);
         container.appendChild(diceStage);
-
-        // Fila de Botones Azules Táctiles Centrados
-        const optionsRow = document.createElement('div');
-        optionsRow.style.display = 'flex';
-        optionsRow.style.alignItems = 'center';
-        optionsRow.style.justifyContent = 'center';
-        optionsRow.style.gap = '1.5rem';
-        optionsRow.style.width = '100%';
-        optionsRow.style.maxWidth = '850px';
-        optionsRow.style.margin = '0 auto';
-        optionsRow.style.flexShrink = '0';
-
-        actividad.opciones.forEach((num, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'tactile-btn tactile-btn-blue';
-            btn.textContent = num;
-
-            btn.onclick = () => {
-                const esCorrecto = (index === actividad.respuesta) || (num === actividad.respuesta);
-                if (esCorrecto) {
-                    btn.style.background = 'linear-gradient(180deg, #34d399 0%, #059669 100%)';
-                    btn.style.borderColor = '#047857';
-                    btn.style.boxShadow = '0 8px 0 #064e3b, 0 12px 20px rgba(5, 150, 105, 0.4)';
-                    eq.innerHTML = `<span>${diceValues.join(' + ')} = <strong style="color: #34d399;">${num}</strong> ✓</span>`;
-                }
-                this.feedback(esCorrecto, btn, null, onComplete);
-            };
-            optionsRow.appendChild(btn);
-        });
         container.appendChild(optionsRow);
     },
 

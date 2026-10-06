@@ -275,20 +275,20 @@ window.GameCore = {
         if (dataNivel && dataNivel[this.currentZone]) {
             const pool = dataNivel[this.currentZone];
             if (pool && pool.length > 0) {
-                const bubbleAct = pool.find(a => a.tipo === 'burbujas');
-                if (this.currentZone === 'bosque' && bubbleAct && !this._playedBubbleOnce) {
-                    this.activitiesList = [bubbleAct];
-                    this._playedBubbleOnce = true;
-                } else {
-                    let available = pool;
-                    if (pool.length > 1 && this._lastPlayedType) {
-                        const filtered = pool.filter(a => a.tipo !== this._lastPlayedType);
-                        if (filtered.length > 0) available = filtered;
-                    }
-                    const randomIndex = Math.floor(Math.random() * available.length);
-                    this.activitiesList = [available[randomIndex]];
-                    this._lastPlayedType = this.activitiesList[0]?.tipo;
+                // Obtener todos los tipos únicos de actividades presentes en esta zona
+                const tiposDisponibles = [...new Set(pool.map(a => a.tipo))];
+                let tiposCandidatos = tiposDisponibles;
+                if (tiposDisponibles.length > 1 && this._lastPlayedType) {
+                    const sinRepetir = tiposDisponibles.filter(t => t !== this._lastPlayedType);
+                    if (sinRepetir.length > 0) tiposCandidatos = sinRepetir;
                 }
+                // Selección estrictamente equiprobable (1/N) de cada tipo de actividad
+                const tipoElegido = tiposCandidatos[Math.floor(Math.random() * tiposCandidatos.length)];
+                const subPool = pool.filter(a => a.tipo === tipoElegido);
+                const randomActividad = subPool[Math.floor(Math.random() * subPool.length)];
+
+                this.activitiesList = [randomActividad];
+                this._lastPlayedType = tipoElegido;
             } else {
                 this.activitiesList = [];
             }

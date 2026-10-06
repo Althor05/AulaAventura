@@ -72,10 +72,12 @@ window.AULA_DATA.primaria1.castillo = [
     {
         id: 'p1_c_dados',
         tipo: 'dados',
-        pregunta: '¡Tira los dados! ¿Cuánto suman los puntos?',
+        pregunta: '¡Han rodado 3 dados mágicos! ¿Cuánto suman en total?',
+        dados: [3, 2, 4],
         dado1: 3,
         dado2: 2,
-        opciones: [4, 5, 6, 7],
+        dado3: 4,
+        opciones: [8, 9, 10, 11],
         respuesta: 1
     },
     {

@@ -13,25 +13,22 @@
     'use strict';
 
     const frutasList = [
-        { name: 'manzanas', emoji: '🍎', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'plátanos', emoji: '🍌', articulo: 'Cuántos', contadas: 'Contados' },
-        { name: 'fresas', emoji: '🍓', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'naranjas', emoji: '🍊', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'peras', emoji: '🍐', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'uvas', emoji: '🍇', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'sandías', emoji: '🍉', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'cerezas', emoji: '🍒', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'piñas', emoji: '🍍', articulo: 'Cuántas', contadas: 'Contadas' },
-        { name: 'kiwis', emoji: '🥝', articulo: 'Cuántos', contadas: 'Contados' }
+        { id: 'manzana', name: 'manzanas', singular: 'manzana', img: 'assets/frutas/MANZANA.png', emoji: '🍎', articulo: 'Cuántas', contadas: 'Contadas' },
+        { id: 'platano', name: 'plátanos', singular: 'plátano', img: 'assets/frutas/PLATANO.png', emoji: '🍌', articulo: 'Cuántos', contadas: 'Contados' },
+        { id: 'pera', name: 'peras', singular: 'pera', img: 'assets/frutas/PERA.png', emoji: '🍐', articulo: 'Cuántas', contadas: 'Contadas' },
+        { id: 'sandia', name: 'sandías', singular: 'sandía', img: 'assets/frutas/SANDIAS.png', emoji: '🍉', articulo: 'Cuántas', contadas: 'Contadas' },
+        { id: 'pina', name: 'piñas', singular: 'piña', img: 'assets/frutas/PINA.png', emoji: '🍍', articulo: 'Cuántas', contadas: 'Contadas' },
+        { id: 'melocoton', name: 'melocotones', singular: 'melocotón', img: 'assets/frutas/MELOCOTON.png', emoji: '🍑', articulo: 'Cuántos', contadas: 'Contados' },
+        { id: 'melon', name: 'melones', singular: 'melón', img: 'assets/frutas/MELON.png', emoji: '🍈', articulo: 'Cuántos', contadas: 'Contados' },
+        { id: 'papaya', name: 'papayas', singular: 'papaya', img: 'assets/frutas/PAPAYA.png', emoji: '🥭', articulo: 'Cuántas', contadas: 'Contadas' }
     ];
 
     function shuffle(arr) {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
+        for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-        return a;
+        return arr;
     }
 
     function makeUniqueOptions(correct, minVal = 1, maxVal = 100, count = 4) {
@@ -53,7 +50,7 @@
         return shuffle(Array.from(opts));
     }
 
-    // 1. Contar Frutas
+    // 1. Contar Frutas (Utilizando los iconos PNG de la carpeta Frutas)
     function generateContarFrutas(nivel, id) {
         const cfg = {
             primaria1: { minTotal: 6, maxTotal: 9, minTarget: 2, maxTarget: 5 },
@@ -68,11 +65,26 @@
         const targetCount = Math.floor(Math.random() * (cfg.maxTarget - cfg.minTarget + 1)) + cfg.minTarget;
         const otherCount = Math.floor(Math.random() * (cfg.maxTotal - cfg.minTotal + 1)) + cfg.minTotal - targetCount;
 
-        const otherFruits = frutasList.filter(f => f.emoji !== targetFruit.emoji);
+        const otherFruits = frutasList.filter(f => f.id !== targetFruit.id);
         const tableFruits = [];
-        for (let i = 0; i < targetCount; i++) tableFruits.push(targetFruit.emoji);
+        for (let i = 0; i < targetCount; i++) {
+            tableFruits.push({
+                id: targetFruit.id,
+                name: targetFruit.name,
+                img: targetFruit.img,
+                emoji: targetFruit.emoji,
+                esObjetivo: true
+            });
+        }
         for (let i = 0; i < otherCount; i++) {
-            tableFruits.push(otherFruits[Math.floor(Math.random() * otherFruits.length)].emoji);
+            const of = otherFruits[Math.floor(Math.random() * otherFruits.length)];
+            tableFruits.push({
+                id: of.id,
+                name: of.name,
+                img: of.img,
+                emoji: of.emoji,
+                esObjetivo: false
+            });
         }
         const shuffledFruits = shuffle(tableFruits);
         const options = makeUniqueOptions(targetCount, 1, Math.max(15, targetCount + 5), 4);
@@ -80,8 +92,10 @@
         return {
             id: `${nivel}_c_frutas_${id}`,
             tipo: 'contar_frutas',
-            pregunta: `¿${targetFruit.articulo} ${targetFruit.name} ${targetFruit.emoji} hay en la mesa del mercado?`,
-            frutaObjetivo: targetFruit.emoji,
+            pregunta: `¿${targetFruit.articulo} ${targetFruit.name} hay en la mesa del mercado?`,
+            frutaObjetivo: targetFruit.name,
+            frutaObjetivoImg: targetFruit.img,
+            frutaObjetivoEmoji: targetFruit.emoji,
             nombreFruta: targetFruit.name,
             textoContadas: targetFruit.contadas,
             frutas: shuffledFruits,
@@ -198,18 +212,50 @@
 
     // 3. Ordenar Números en Regla (Diseñado para Drag & Drop)
     function generateOrdenarNumeros(nivel, id) {
-        const isMenorMayor = Math.random() < 0.75;
+        const isMenorMayor = Math.random() < 0.7;
         const dir = isMenorMayor ? 'menor_a_mayor' : 'mayor_a_menor';
 
-        const cfg = {
-            primaria1: { min: 0, max: 10, step: 1, count: 3 },
-            primaria2: { min: 0, max: 50, step: 5, count: 3 },
-            primaria3: { min: 0, max: 200, step: 20, count: 4 },
-            primaria4: { min: 0, max: 1000, step: 100, count: 4 },
-            primaria5: { min: 0, max: 2000, step: 200, count: 4 },
-            primaria6: { min: 0, max: 5000, step: 500, count: 4 }
-        }[nivel] || { min: 0, max: 10, step: 1, count: 3 };
+        let configs = [];
+        if (nivel === 'primaria1') {
+            configs = [
+                { min: 0, max: 10, step: 1, count: 3 },
+                { min: 0, max: 20, step: 2, count: 3 },
+                { min: 1, max: 15, step: 1, count: 3 },
+                { min: 5, max: 25, step: 2, count: 3 }
+            ];
+        } else if (nivel === 'primaria2') {
+            configs = [
+                { min: 0, max: 50, step: 5, count: 3 },
+                { min: 0, max: 100, step: 10, count: 3 },
+                { min: 10, max: 60, step: 5, count: 3 },
+                { min: 0, max: 30, step: 2, count: 4 },
+                { min: 20, max: 80, step: 5, count: 4 }
+            ];
+        } else if (nivel === 'primaria3') {
+            configs = [
+                { min: 0, max: 200, step: 20, count: 4 },
+                { min: 0, max: 500, step: 50, count: 4 },
+                { min: 50, max: 350, step: 25, count: 4 }
+            ];
+        } else if (nivel === 'primaria4') {
+            configs = [
+                { min: 0, max: 1000, step: 100, count: 4 },
+                { min: 500, max: 1500, step: 100, count: 4 },
+                { min: 0, max: 2000, step: 200, count: 4 }
+            ];
+        } else if (nivel === 'primaria5') {
+            configs = [
+                { min: 0, max: 5000, step: 500, count: 4 },
+                { min: 1000, max: 6000, step: 500, count: 4 }
+            ];
+        } else {
+            configs = [
+                { min: 0, max: 10000, step: 1000, count: 4 },
+                { min: 5000, max: 20000, step: 1500, count: 4 }
+            ];
+        }
 
+        const cfg = configs[Math.floor(Math.random() * configs.length)];
         const pool = [];
         for (let v = cfg.min + cfg.step; v < cfg.max; v += cfg.step) {
             pool.push(v);
@@ -357,23 +403,20 @@
         };
     }
 
-    // 5. Dados Virtuales
+    // 5. Dados Virtuales (Siempre 3 dados)
     function generateDados(nivel, id) {
-        const is3Dice = ['primaria3', 'primaria4', 'primaria5', 'primaria6'].includes(nivel) || (nivel === 'primaria2' && id % 2 === 1);
         const d1 = Math.floor(Math.random() * 6) + 1;
         const d2 = Math.floor(Math.random() * 6) + 1;
-        const d3 = is3Dice ? (Math.floor(Math.random() * 6) + 1) : null;
+        const d3 = Math.floor(Math.random() * 6) + 1;
 
-        const diceArr = is3Dice ? [d1, d2, d3] : [d1, d2];
-        const sum = diceArr.reduce((a, b) => a + b, 0);
-        const options = makeUniqueOptions(sum, is3Dice ? 3 : 2, is3Dice ? 20 : 13, 4);
+        const diceArr = [d1, d2, d3];
+        const sum = d1 + d2 + d3;
+        const options = makeUniqueOptions(sum, 3, 18, 4);
 
         return {
             id: `${nivel}_c_dados_${id}`,
             tipo: 'dados',
-            pregunta: is3Dice
-                ? '¡Han rodado 3 dados mágicos! ¿Cuánto suman en total?'
-                : '¡Han rodado los dados! ¿Cuánto suman sus puntos?',
+            pregunta: '¡Han rodado 3 dados mágicos! ¿Cuánto suman en total?',
             dados: diceArr,
             dado1: d1,
             dado2: d2,
