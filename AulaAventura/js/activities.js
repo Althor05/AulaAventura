@@ -43,10 +43,6 @@ window.Activities = {
             this.renderDibujoViajero(actividad, container, onComplete);
         } else if (actividad.tipo === 'paso_a_paso') {
             this.renderPasoAPaso(actividad, container, onComplete);
-        } else if (actividad.tipo === 'seguir_ritmos') {
-            this.renderSeguirRitmos(actividad, container, onComplete);
-        } else if (actividad.tipo === 'mezcla_colores') {
-            this.renderMezclaColores(actividad, container, onComplete);
         } else {
             this.renderStandard(actividad, container, onComplete);
         }
@@ -96,8 +92,9 @@ window.Activities = {
             <div id="burbujas-round-badge" style="background: rgba(255, 255, 255, 0.22); color: #ffffff; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                 Ronda 1 / 3
             </div>
-            <div id="burbujas-timer-badge" style="background: rgba(245, 158, 11, 0.28); color: #fef08a; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 65px; text-align: center;">
-                ⏱️ 20s
+            <div id="burbujas-timer-badge" style="background: rgba(245, 158, 11, 0.28); color: #fef08a; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 75px; text-align: center; display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.45rem;">
+                <img src="assets/Reloj.png" alt="Tiempo" style="width: 22px; height: 22px; object-fit: contain; display: inline-block;">
+                <span id="burbujas-timer-val">20s</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                 ⭐ Atrapadas: <span id="burbujas-counter" style="color: #ffffff;">0</span>
@@ -292,7 +289,12 @@ window.Activities = {
 
             if (roundBadgeEl) roundBadgeEl.textContent = `Ronda ${rNum} / ${totalRounds}`;
             if (timerBadgeEl) {
-                timerBadgeEl.textContent = `⏱️ ${roundTimeLeft}s`;
+                const valEl = timerBadgeEl.querySelector('#burbujas-timer-val');
+                if (valEl) {
+                    valEl.textContent = `${roundTimeLeft}s`;
+                } else {
+                    timerBadgeEl.textContent = `${roundTimeLeft}s`;
+                }
                 timerBadgeEl.style.background = 'rgba(245, 158, 11, 0.28)';
                 timerBadgeEl.style.color = '#fef08a';
                 timerBadgeEl.style.borderColor = '#fef08a';
@@ -340,7 +342,12 @@ window.Activities = {
 
                 roundTimeLeft--;
                 if (timerBadgeEl) {
-                    timerBadgeEl.textContent = `⏱️ ${roundTimeLeft}s`;
+                    const valEl = timerBadgeEl.querySelector('#burbujas-timer-val');
+                    if (valEl) {
+                        valEl.textContent = `${roundTimeLeft}s`;
+                    } else {
+                        timerBadgeEl.textContent = `${roundTimeLeft}s`;
+                    }
                     if (roundTimeLeft <= 5) {
                         timerBadgeEl.style.background = 'rgba(239, 68, 68, 0.45)';
                         timerBadgeEl.style.color = '#fee2e2';
@@ -3886,79 +3893,9 @@ window.Activities = {
 
         stage.appendChild(parchment);
 
-        // Panel de Valoración de la Profe (3 Botones: Oops, Bien, Genial - Sin puntos visibles)
-        const evalCard = document.createElement('div');
-        evalCard.style.width = '100%';
-        evalCard.style.maxWidth = '680px';
-        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
-        evalCard.style.border = '2.5px solid #e2e8f0';
-        evalCard.style.borderRadius = '22px';
-        evalCard.style.padding = '0.9rem 1.8rem';
-        evalCard.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.06)';
-        evalCard.style.display = 'flex';
-        evalCard.style.flexDirection = 'column';
-        evalCard.style.alignItems = 'center';
-        evalCard.style.gap = '0.7rem';
-        evalCard.style.boxSizing = 'border-box';
-
-        const evalLabel = document.createElement('div');
-        evalLabel.style.fontSize = '0.92rem';
-        evalLabel.style.fontWeight = '900';
-        evalLabel.style.color = '#64748b';
-        evalLabel.style.textTransform = 'uppercase';
-        evalLabel.style.letterSpacing = '0.5px';
-        evalLabel.textContent = 'Valoración de la profe';
-        evalCard.appendChild(evalLabel);
-
-        const evalButtonsRow = document.createElement('div');
-        evalButtonsRow.style.display = 'flex';
-        evalButtonsRow.style.gap = '1.2rem';
-        evalButtonsRow.style.width = '100%';
-        evalButtonsRow.style.justifyContent = 'center';
-
-        const evalActions = [
-            { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
-            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
-            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
-        ];
-
-        evalActions.forEach(act => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.id = 'btn-eval-' + act.id;
-            btn.className = 'tactile-btn';
-            btn.style.flex = '1';
-            btn.style.height = '54px';
-            btn.style.fontSize = '1.25rem';
-            btn.style.fontWeight = '900';
-            btn.style.borderRadius = '18px';
-            btn.style.background = act.bg;
-            btn.style.color = act.color;
-            btn.style.border = `2.5px solid ${act.border}`;
-            btn.style.boxShadow = `0 5px 0 ${act.shadow}`;
-            btn.style.cursor = 'pointer';
-            btn.style.display = 'inline-flex';
-            btn.style.flexDirection = 'row';
-            btn.style.alignItems = 'center';
-            btn.style.justifyContent = 'center';
-            btn.style.boxSizing = 'border-box';
-            btn.textContent = act.label;
-
-            btn.onclick = () => {
-                evalButtonsRow.style.pointerEvents = 'none';
-                btn.style.transform = 'translateY(3px)';
-                btn.style.boxShadow = `0 2px 0 ${act.shadow}`;
-                if (AppState.settings.soundEnabled) Activities.playSound(act.sound);
-                setTimeout(() => {
-                    onComplete({ success: act.success, chuches: act.chuches });
-                }, 650);
-            };
-
-            evalButtonsRow.appendChild(btn);
-        });
-
-        evalCard.appendChild(evalButtonsRow);
-        stage.appendChild(evalCard);
+        // Valoración de la Profe (3 Botones directos sin recuadro blanco: Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar(onComplete);
+        stage.appendChild(evalBar);
         container.appendChild(stage);
     },
 
@@ -4153,41 +4090,36 @@ window.Activities = {
         toolRow.appendChild(btnRoll);
         stage.appendChild(toolRow);
 
-        // Panel de Valoración de la Profe (3 Botones: Oops, Bien, Genial - Sin puntos visibles)
-        const evalCard = document.createElement('div');
-        evalCard.style.width = '100%';
-        evalCard.style.maxWidth = '680px';
-        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
-        evalCard.style.border = '2.5px solid #e2e8f0';
-        evalCard.style.borderRadius = '22px';
-        evalCard.style.padding = '0.9rem 1.8rem';
-        evalCard.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.06)';
-        evalCard.style.display = 'flex';
-        evalCard.style.flexDirection = 'column';
-        evalCard.style.alignItems = 'center';
-        evalCard.style.gap = '0.7rem';
-        evalCard.style.boxSizing = 'border-box';
+        // Valoración de la Profe (3 Botones directos sin recuadro blanco: Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar(onComplete);
+        stage.appendChild(evalBar);
+        container.appendChild(stage);
+    },
 
-        const evalLabel = document.createElement('div');
-        evalLabel.style.fontSize = '0.92rem';
-        evalLabel.style.fontWeight = '900';
-        evalLabel.style.color = '#64748b';
-        evalLabel.style.textTransform = 'uppercase';
-        evalLabel.style.letterSpacing = '0.5px';
-        evalLabel.textContent = 'Valoración de la profe';
-        evalCard.appendChild(evalLabel);
-
+    // ==============================================================
+    // HELPERS Y COMPONENTES REUTILIZABLES PARA TALLER CREATIVO
+    // ==============================================================
+    createTeacherEvalBar(onComplete, options = {}) {
         const evalButtonsRow = document.createElement('div');
         evalButtonsRow.style.display = 'flex';
-        evalButtonsRow.style.gap = '1.2rem';
+        evalButtonsRow.style.gap = '1.4rem';
         evalButtonsRow.style.width = '100%';
+        evalButtonsRow.style.maxWidth = options.twoButtons ? '480px' : '680px';
         evalButtonsRow.style.justifyContent = 'center';
+        evalButtonsRow.style.alignItems = 'center';
+        evalButtonsRow.style.boxSizing = 'border-box';
+        evalButtonsRow.style.zIndex = '30';
+        evalButtonsRow.style.marginTop = options.marginTop || '0.9rem';
 
-        const evalActions = [
+        const allActions = [
             { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
             { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
             { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
         ];
+
+        const evalActions = options.twoButtons 
+            ? allActions.filter(a => a.id === 'oops' || a.id === 'genial')
+            : allActions;
 
         evalActions.forEach(act => {
             const btn = document.createElement('button');
@@ -4195,6 +4127,7 @@ window.Activities = {
             btn.id = 'btn-eval-' + act.id;
             btn.className = 'tactile-btn';
             btn.style.flex = '1';
+            btn.style.maxWidth = options.twoButtons ? '220px' : '200px';
             btn.style.height = '54px';
             btn.style.fontSize = '1.25rem';
             btn.style.fontWeight = '900';
@@ -4224,92 +4157,10 @@ window.Activities = {
             evalButtonsRow.appendChild(btn);
         });
 
-        evalCard.appendChild(evalButtonsRow);
-        stage.appendChild(evalCard);
-        container.appendChild(stage);
+        return evalButtonsRow;
     },
 
-    // ==============================================================
-    // HELPERS Y COMPONENTES REUTILIZABLES PARA TALLER CREATIVO
-    // ==============================================================
-    createTeacherEvalBar(onComplete) {
-        const evalCard = document.createElement('div');
-        evalCard.style.width = '100%';
-        evalCard.style.maxWidth = '680px';
-        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
-        evalCard.style.border = '2.5px solid #e2e8f0';
-        evalCard.style.borderRadius = '22px';
-        evalCard.style.padding = '0.7rem 1.8rem';
-        evalCard.style.boxShadow = '0 8px 22px rgba(0, 0, 0, 0.06)';
-        evalCard.style.display = 'flex';
-        evalCard.style.flexDirection = 'column';
-        evalCard.style.alignItems = 'center';
-        evalCard.style.gap = '0.55rem';
-        evalCard.style.boxSizing = 'border-box';
-        evalCard.style.flexShrink = '0';
-        evalCard.style.marginTop = '0.4rem';
-
-        const evalLabel = document.createElement('div');
-        evalLabel.style.fontSize = '0.9rem';
-        evalLabel.style.fontWeight = '900';
-        evalLabel.style.color = '#64748b';
-        evalLabel.style.textTransform = 'uppercase';
-        evalLabel.style.letterSpacing = '0.5px';
-        evalLabel.textContent = 'Valoración de la profe';
-        evalCard.appendChild(evalLabel);
-
-        const evalButtonsRow = document.createElement('div');
-        evalButtonsRow.style.display = 'flex';
-        evalButtonsRow.style.gap = '1.2rem';
-        evalButtonsRow.style.width = '100%';
-        evalButtonsRow.style.justifyContent = 'center';
-
-        const evalActions = [
-            { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
-            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
-            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
-        ];
-
-        evalActions.forEach(act => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.id = 'btn-eval-' + act.id;
-            btn.className = 'tactile-btn';
-            btn.style.flex = '1';
-            btn.style.height = '50px';
-            btn.style.fontSize = '1.22rem';
-            btn.style.fontWeight = '900';
-            btn.style.borderRadius = '18px';
-            btn.style.background = act.bg;
-            btn.style.color = act.color;
-            btn.style.border = `2.5px solid ${act.border}`;
-            btn.style.boxShadow = `0 5px 0 ${act.shadow}`;
-            btn.style.cursor = 'pointer';
-            btn.style.display = 'inline-flex';
-            btn.style.flexDirection = 'row';
-            btn.style.alignItems = 'center';
-            btn.style.justifyContent = 'center';
-            btn.style.boxSizing = 'border-box';
-            btn.textContent = act.label;
-
-            btn.onclick = () => {
-                evalButtonsRow.style.pointerEvents = 'none';
-                btn.style.transform = 'translateY(3px)';
-                btn.style.boxShadow = `0 2px 0 ${act.shadow}`;
-                if (AppState.settings.soundEnabled) Activities.playSound(act.sound);
-                setTimeout(() => {
-                    onComplete({ success: act.success, chuches: act.chuches });
-                }, 650);
-            };
-
-            evalButtonsRow.appendChild(btn);
-        });
-
-        evalCard.appendChild(evalButtonsRow);
-        return evalCard;
-    },
-
-    createDrawingCanvas(width = 720, height = 310) {
+    createDrawingCanvas(width = 940, height = 430, options = {}) {
         const wrap = document.createElement('div');
         wrap.style.display = 'flex';
         wrap.style.flexDirection = 'column';
@@ -4323,12 +4174,24 @@ window.Activities = {
         canvasBox.style.width = '100%';
         canvasBox.style.height = `${height}px`;
         canvasBox.style.background = '#ffffff';
-        canvasBox.style.borderRadius = '20px';
-        canvasBox.style.border = '3px solid #cbd5e1';
-        canvasBox.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)';
+        canvasBox.style.borderRadius = '22px';
+        canvasBox.style.border = '3.5px solid #cbd5e1';
+        canvasBox.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
         canvasBox.style.position = 'relative';
         canvasBox.style.overflow = 'hidden';
         canvasBox.style.touchAction = 'none';
+
+        // Puntero de cursor circular dinámico que indica grosor y goma
+        const cursorCircle = document.createElement('div');
+        cursorCircle.id = 'drawing-cursor-circle';
+        cursorCircle.style.position = 'absolute';
+        cursorCircle.style.pointerEvents = 'none';
+        cursorCircle.style.borderRadius = '50%';
+        cursorCircle.style.transform = 'translate(-50%, -50%)';
+        cursorCircle.style.display = 'none';
+        cursorCircle.style.zIndex = '35';
+        cursorCircle.style.boxSizing = 'border-box';
+        canvasBox.appendChild(cursorCircle);
 
         const canvas = document.createElement('canvas');
         canvas.width = width * 2;
@@ -4336,7 +4199,7 @@ window.Activities = {
         canvas.style.width = '100%';
         canvas.style.height = '100%';
         canvas.style.display = 'block';
-        canvas.style.cursor = 'crosshair';
+        canvas.style.cursor = 'none'; // ocultar cursor normal
         canvasBox.appendChild(canvas);
         wrap.appendChild(canvasBox);
 
@@ -4348,11 +4211,31 @@ window.Activities = {
         ctx.lineJoin = 'round';
 
         let currentColor = '#0f172a';
-        let currentSize = 5;
+        let currentSize = 10; // Fino: 4, Medio: 10, Grueso: 22
         let isEraser = false;
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
+
+        function updateCursorStyle() {
+            if (isEraser) {
+                cursorCircle.style.width = '44px';
+                cursorCircle.style.height = '44px';
+                cursorCircle.style.border = '2.5px dashed #ef4444';
+                cursorCircle.style.background = 'rgba(239, 68, 68, 0.15)';
+            } else {
+                let diam = 18;
+                if (currentSize === 4) diam = 8;
+                else if (currentSize === 10) diam = 18;
+                else if (currentSize === 22) diam = 34;
+
+                cursorCircle.style.width = `${diam}px`;
+                cursorCircle.style.height = `${diam}px`;
+                cursorCircle.style.border = '2px solid rgba(15, 23, 42, 0.75)';
+                cursorCircle.style.background = currentColor + '55';
+            }
+        }
+        updateCursorStyle();
 
         function getCoords(e) {
             const rect = canvas.getBoundingClientRect();
@@ -4373,13 +4256,13 @@ window.Activities = {
 
         function move(e) {
             if (!isDrawing) return;
-            if (e.cancelable) e.preventDefault();
+            if (e.cancelable && e.touches) e.preventDefault();
             const p = getCoords(e);
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(p.x, p.y);
             ctx.strokeStyle = isEraser ? '#ffffff' : currentColor;
-            ctx.lineWidth = isEraser ? currentSize * 3.5 : currentSize;
+            ctx.lineWidth = isEraser ? 40 : currentSize;
             ctx.stroke();
             lastX = p.x;
             lastY = p.y;
@@ -4390,10 +4273,29 @@ window.Activities = {
         }
 
         canvas.addEventListener('mousedown', start);
-        canvas.addEventListener('mousemove', move);
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvasBox.getBoundingClientRect();
+            cursorCircle.style.left = `${e.clientX - rect.left}px`;
+            cursorCircle.style.top = `${e.clientY - rect.top}px`;
+            cursorCircle.style.display = 'block';
+            move(e);
+        });
+        canvas.addEventListener('mouseenter', () => {
+            cursorCircle.style.display = 'block';
+            updateCursorStyle();
+        });
+        canvas.addEventListener('mouseleave', () => {
+            cursorCircle.style.display = 'none';
+            stop();
+        });
         window.addEventListener('mouseup', stop);
-        canvas.addEventListener('touchstart', start, { passive: false });
-        canvas.addEventListener('touchmove', move, { passive: false });
+
+        canvas.addEventListener('touchstart', (e) => {
+            start(e);
+        }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => {
+            move(e);
+        }, { passive: false });
         window.addEventListener('touchend', stop);
 
         // Barra de herramientas de dibujo
@@ -4402,16 +4304,17 @@ window.Activities = {
         bar.style.alignItems = 'center';
         bar.style.justifyContent = 'space-between';
         bar.style.width = '100%';
-        bar.style.padding = '0.55rem 0.8rem';
-        bar.style.gap = '0.8rem';
+        bar.style.padding = '0.65rem 0';
+        bar.style.gap = '0.7rem';
         bar.style.boxSizing = 'border-box';
-        bar.style.flexWrap = 'wrap';
+        bar.style.flexWrap = 'nowrap';
 
         // Swatches de colores
         const colorsRow = document.createElement('div');
         colorsRow.style.display = 'flex';
-        colorsRow.style.gap = '0.5rem';
+        colorsRow.style.gap = '0.45rem';
         colorsRow.style.alignItems = 'center';
+        colorsRow.style.flexShrink = '0';
 
         const paletteColors = [
             { name: 'Negro', hex: '#0f172a' },
@@ -4428,40 +4331,42 @@ window.Activities = {
             const dot = document.createElement('button');
             dot.type = 'button';
             dot.title = c.name;
-            dot.style.width = '30px';
-            dot.style.height = '30px';
+            dot.style.width = '28px';
+            dot.style.height = '28px';
             dot.style.borderRadius = '50%';
             dot.style.background = c.hex;
-            dot.style.border = idx === 0 ? '3px solid #f59e0b' : '2.5px solid #ffffff';
-            dot.style.boxShadow = '0 2px 6px rgba(0,0,0,0.18)';
+            dot.style.border = idx === 0 ? '3px solid #f59e0b' : '2px solid #ffffff';
+            dot.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
             dot.style.cursor = 'pointer';
             dot.style.padding = '0';
             dot.style.transition = 'transform 0.15s';
+            dot.style.flexShrink = '0';
 
             dot.onclick = () => {
                 isEraser = false;
                 currentColor = c.hex;
-                colorsRow.querySelectorAll('button').forEach(b => b.style.border = '2.5px solid #ffffff');
+                colorsRow.querySelectorAll('button').forEach(b => b.style.border = '2px solid #ffffff');
+                btnEraser.style.background = '#f1f5f9';
+                btnEraser.style.color = '#475569';
                 dot.style.border = '3px solid #f59e0b';
-                dot.style.transform = 'scale(1.18)';
-                setTimeout(() => dot.style.transform = 'scale(1.1)', 150);
+                updateCursorStyle();
                 if (AppState.settings.soundEnabled) Activities.playSound('tick');
             };
             colorsRow.appendChild(dot);
         });
         bar.appendChild(colorsRow);
 
-        // Botones de trazo y borrador
+        // Selector de grosor, goma y limpiar
         const toolsRow = document.createElement('div');
         toolsRow.style.display = 'flex';
         toolsRow.style.alignItems = 'center';
-        toolsRow.style.gap = '0.6rem';
+        toolsRow.style.gap = '0.55rem';
+        toolsRow.style.flexShrink = '0';
 
-        // Selector de grosor
         const sizes = [
-            { label: 'Fino', sz: 3 },
-            { label: 'Medio', sz: 6 },
-            { label: 'Grueso', sz: 12 }
+            { label: 'Fino', sz: 4 },
+            { label: 'Medio', sz: 10 },
+            { label: 'Grueso', sz: 22 }
         ];
         sizes.forEach((s, idx) => {
             const btnSz = document.createElement('button');
@@ -4471,11 +4376,12 @@ window.Activities = {
             btnSz.style.color = idx === 1 ? '#ffffff' : '#334155';
             btnSz.style.border = '1.5px solid #cbd5e1';
             btnSz.style.borderRadius = '10px';
-            btnSz.style.padding = '0.3rem 0.65rem';
-            btnSz.style.fontSize = '0.85rem';
+            btnSz.style.padding = '0.35rem 0.7rem';
+            btnSz.style.fontSize = '0.88rem';
             btnSz.style.fontWeight = '800';
             btnSz.style.cursor = 'pointer';
             btnSz.onclick = () => {
+                isEraser = false;
                 currentSize = s.sz;
                 toolsRow.querySelectorAll('.sz-btn').forEach(b => {
                     b.style.background = '#f1f5f9';
@@ -4483,6 +4389,9 @@ window.Activities = {
                 });
                 btnSz.style.background = '#0284c7';
                 btnSz.style.color = '#ffffff';
+                btnEraser.style.background = '#f1f5f9';
+                btnEraser.style.color = '#475569';
+                updateCursorStyle();
                 if (AppState.settings.soundEnabled) Activities.playSound('tick');
             };
             btnSz.className = 'sz-btn';
@@ -4496,8 +4405,8 @@ window.Activities = {
         btnEraser.style.color = '#475569';
         btnEraser.style.border = '1.5px solid #cbd5e1';
         btnEraser.style.borderRadius = '10px';
-        btnEraser.style.padding = '0.3rem 0.75rem';
-        btnEraser.style.fontSize = '0.85rem';
+        btnEraser.style.padding = '0.35rem 0.75rem';
+        btnEraser.style.fontSize = '0.88rem';
         btnEraser.style.fontWeight = '800';
         btnEraser.style.cursor = 'pointer';
         btnEraser.style.display = 'inline-flex';
@@ -4511,6 +4420,7 @@ window.Activities = {
             isEraser = !isEraser;
             btnEraser.style.background = isEraser ? '#e11d48' : '#f1f5f9';
             btnEraser.style.color = isEraser ? '#ffffff' : '#475569';
+            updateCursorStyle();
             if (AppState.settings.soundEnabled) Activities.playSound('tick');
         };
         toolsRow.appendChild(btnEraser);
@@ -4522,8 +4432,8 @@ window.Activities = {
         btnClear.style.color = '#b91c1c';
         btnClear.style.border = '1.5px solid #fca5a5';
         btnClear.style.borderRadius = '10px';
-        btnClear.style.padding = '0.3rem 0.75rem';
-        btnClear.style.fontSize = '0.85rem';
+        btnClear.style.padding = '0.35rem 0.75rem';
+        btnClear.style.fontSize = '0.88rem';
         btnClear.style.fontWeight = '800';
         btnClear.style.cursor = 'pointer';
         btnClear.style.display = 'inline-flex';
@@ -4539,529 +4449,848 @@ window.Activities = {
             if (AppState.settings.soundEnabled) Activities.playSound('tick');
         };
         toolsRow.appendChild(btnClear);
-
         bar.appendChild(toolsRow);
-        wrap.appendChild(bar);
 
+        // Botón Terminar Antes (alineado a la derecha en la misma fila con la caja del lienzo)
+        if (options.onFinishEarly) {
+            const btnEarly = document.createElement('button');
+            btnEarly.type = 'button';
+            btnEarly.id = 'btn-acertado-early';
+            btnEarly.className = 'tactile-btn';
+            btnEarly.style.marginLeft = 'auto'; // Alineado a la derecha
+            btnEarly.style.background = '#10b981';
+            btnEarly.style.color = '#ffffff';
+            btnEarly.style.border = '2.5px solid #059669';
+            btnEarly.style.boxShadow = '0 4px 0 #047857';
+            btnEarly.style.borderRadius = '14px';
+            btnEarly.style.padding = '0.45rem 1.15rem';
+            btnEarly.style.fontSize = '0.98rem';
+            btnEarly.style.fontWeight = '900';
+            btnEarly.style.cursor = 'pointer';
+            btnEarly.style.display = 'inline-flex';
+            btnEarly.style.alignItems = 'center';
+            btnEarly.style.gap = '0.45rem';
+            btnEarly.style.flexShrink = '0';
+            btnEarly.innerHTML = `
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>¡Ya lo han acertado!</span>
+            `;
+            btnEarly.onclick = () => {
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                options.onFinishEarly();
+            };
+            bar.appendChild(btnEarly);
+        }
+
+        wrap.appendChild(bar);
         return { element: wrap, canvas, ctx };
     },
 
     // ==============================================================
-    // 1. RENDER PIZARRA MÁGICA: DIBUJA Y ADIVINA (ESTILO GARTIC PHONE)
+    // 1. RENDER PIZARRA MÁGICA: DIBUJAR TIPO GARTIC PHONE
     // ==============================================================
     renderDibujoPizarra(actividad, container, onComplete) {
         container.innerHTML = '';
         container.style.position = 'relative';
         container.style.width = '100%';
         container.style.height = '100%';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'space-between';
-        container.style.padding = '5.6rem 1.8rem 1.2rem 1.8rem';
-        container.style.boxSizing = 'border-box';
-        container.style.background = 'radial-gradient(ellipse at 50% 90%, #ffe4e6 0%, #fff1f2 40%, #ffffff 100%)';
         container.style.overflow = 'hidden';
 
-        // HUD flotante de Taller Creativo
-        const hud = document.createElement('div');
-        hud.style.position = 'absolute';
-        hud.style.top = '16px';
-        hud.style.left = '50%';
-        hud.style.transform = 'translateX(-50%)';
-        hud.style.zIndex = '50';
-        hud.style.background = 'linear-gradient(135deg, #9f1239 0%, #e11d48 100%)';
-        hud.style.padding = '0.65rem 2.4rem';
-        hud.style.borderRadius = '9999px';
-        hud.style.boxShadow = '0 10px 25px rgba(225, 29, 72, 0.35)';
-        hud.style.border = '2.5px solid #ffffff';
-        hud.style.display = 'flex';
-        hud.style.alignItems = 'center';
-        hud.style.gap = '1.6rem';
-        hud.style.pointerEvents = 'none';
-        hud.style.whiteSpace = 'nowrap';
-        hud.style.width = 'max-content';
-        hud.style.maxWidth = '92vw';
-        hud.style.boxSizing = 'border-box';
+        let timerInterval = null;
 
-        hud.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>Taller Creativo · Pizarra Mágica</span>
-            </div>
-            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Dibuja y Adivina
-            </div>
-        `;
-        container.appendChild(hud);
-
-        // Escenario Central
-        const stage = document.createElement('div');
-        stage.style.flex = '1';
-        stage.style.display = 'flex';
-        stage.style.flexDirection = 'column';
-        stage.style.alignItems = 'center';
-        stage.style.justifyContent = 'center';
-        stage.style.width = '100%';
-        stage.style.maxWidth = '960px';
-        stage.style.margin = 'auto';
-        stage.style.boxSizing = 'border-box';
-
-        // Tarjeta de Palabra Secreta y Herramientas del Reto
-        const headerCard = document.createElement('div');
-        headerCard.style.display = 'flex';
-        headerCard.style.alignItems = 'center';
-        headerCard.style.justifyContent = 'space-between';
-        headerCard.style.width = '100%';
-        headerCard.style.maxWidth = '720px';
-        headerCard.style.background = '#ffffff';
-        headerCard.style.border = '2.5px solid #fbcfe8';
-        headerCard.style.borderRadius = '18px';
-        headerCard.style.padding = '0.65rem 1.2rem';
-        headerCard.style.marginBottom = '0.7rem';
-        headerCard.style.boxShadow = '0 6px 18px rgba(225, 29, 72, 0.08)';
-        headerCard.style.boxSizing = 'border-box';
-
-        let currentPalabra = actividad.palabra;
-        let currentCategoria = actividad.categoria;
-        let isRevealed = false;
-
-        const infoLeft = document.createElement('div');
-        infoLeft.style.display = 'flex';
-        infoLeft.style.flexDirection = 'column';
-        infoLeft.style.gap = '0.2rem';
-
-        const catPill = document.createElement('span');
-        catPill.style.fontSize = '0.78rem';
-        catPill.style.fontWeight = '900';
-        catPill.style.color = '#be123c';
-        catPill.style.textTransform = 'uppercase';
-        catPill.style.letterSpacing = '0.5px';
-        catPill.textContent = `Categoría: ${currentCategoria}`;
-        infoLeft.appendChild(catPill);
-
-        const wordText = document.createElement('div');
-        wordText.style.fontSize = '1.3rem';
-        wordText.style.fontWeight = '900';
-        wordText.style.color = '#0f172a';
-        wordText.textContent = '••••••••••••••••';
-        infoLeft.appendChild(wordText);
-        headerCard.appendChild(infoLeft);
-
-        // Acciones: Revelar / Ocultar y Nueva Palabra
-        const actionsRight = document.createElement('div');
-        actionsRight.style.display = 'flex';
-        actionsRight.style.alignItems = 'center';
-        actionsRight.style.gap = '0.6rem';
-
-        const btnReveal = document.createElement('button');
-        btnReveal.type = 'button';
-        btnReveal.className = 'tactile-btn';
-        btnReveal.style.background = '#fef2f2';
-        btnReveal.style.color = '#9f1239';
-        btnReveal.style.border = '2px solid #f43f5e';
-        btnReveal.style.boxShadow = '0 3px 0 #e11d48';
-        btnReveal.style.borderRadius = '12px';
-        btnReveal.style.padding = '0.45rem 0.95rem';
-        btnReveal.style.fontSize = '0.95rem';
-        btnReveal.style.fontWeight = '900';
-        btnReveal.style.cursor = 'pointer';
-        btnReveal.style.display = 'inline-flex';
-        btnReveal.style.alignItems = 'center';
-        btnReveal.style.gap = '0.4rem';
-        btnReveal.innerHTML = `
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span>Ver Secreto</span>
-        `;
-        btnReveal.onclick = () => {
-            isRevealed = !isRevealed;
-            if (isRevealed) {
-                wordText.textContent = currentPalabra;
-                btnReveal.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-                    <span>Ocultar</span>
-                `;
-            } else {
-                wordText.textContent = '••••••••••••••••';
-                btnReveal.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                    <span>Ver Secreto</span>
-                `;
-            }
-            if (AppState.settings.soundEnabled) Activities.playSound('tick');
-        };
-        actionsRight.appendChild(btnReveal);
-
-        const btnNew = document.createElement('button');
-        btnNew.type = 'button';
-        btnNew.className = 'tactile-btn';
-        btnNew.style.background = '#ffffff';
-        btnNew.style.color = '#78350f';
-        btnNew.style.border = '2px solid #d97706';
-        btnNew.style.boxShadow = '0 3px 0 #b45309';
-        btnNew.style.borderRadius = '12px';
-        btnNew.style.padding = '0.45rem 0.95rem';
-        btnNew.style.fontSize = '0.95rem';
-        btnNew.style.fontWeight = '900';
-        btnNew.style.cursor = 'pointer';
-        btnNew.style.display = 'inline-flex';
-        btnNew.style.alignItems = 'center';
-        btnNew.style.gap = '0.4rem';
-        btnNew.innerHTML = `
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="4"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            <span>Otra idea</span>
-        `;
-        btnNew.onclick = () => {
-            if (window.TallerBank && window.TallerBank.BANCO_DIBUJO_PIZARRA) {
-                const b = window.TallerBank.BANCO_DIBUJO_PIZARRA;
-                const item = b[Math.floor(Math.random() * b.length)];
-                currentPalabra = item.palabra;
-                currentCategoria = item.categoria;
-                catPill.textContent = `Categoría: ${currentCategoria}`;
-                isRevealed = false;
-                wordText.textContent = '••••••••••••••••';
-                btnReveal.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                    <span>Ver Secreto</span>
-                `;
-                if (AppState.settings.soundEnabled) Activities.playSound('dice');
+        const cleanup = () => {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
         };
-        actionsRight.appendChild(btnNew);
-        headerCard.appendChild(actionsRight);
-        stage.appendChild(headerCard);
 
-        // Lienzo interactivo de dibujo
-        const canvasObj = this.createDrawingCanvas(720, 270);
-        stage.appendChild(canvasObj.element);
+        // --- PANTALLA 1: ESPERA Y PREPARACIÓN DEL PAPEL ---
+        const renderWaitingScreen = () => {
+            cleanup();
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '2rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #ffe4e6 0%, #fff1f2 40%, #ffffff 100%)';
 
-        // Barra de Valoración de la Profe (Oops, Bien, Genial)
-        const evalBar = this.createTeacherEvalBar(onComplete);
-        stage.appendChild(evalBar);
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #f43f5e';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.4rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(225, 29, 72, 0.16)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.maxWidth = '640px';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
 
-        container.appendChild(stage);
+            const badge = document.createElement('span');
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#9f1239';
+            badge.style.padding = '0.4rem 1.2rem';
+            badge.style.borderRadius = '9999px';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '0.9rem';
+            badge.style.textTransform = 'uppercase';
+            badge.style.letterSpacing = '0.6px';
+            badge.style.marginBottom = '1.2rem';
+            badge.textContent = 'Reto en la Pizarra Digital';
+            card.appendChild(badge);
+
+            const iconWrap = document.createElement('div');
+            iconWrap.style.width = '84px';
+            iconWrap.style.height = '84px';
+            iconWrap.style.borderRadius = '50%';
+            iconWrap.style.background = 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)';
+            iconWrap.style.display = 'flex';
+            iconWrap.style.alignItems = 'center';
+            iconWrap.style.justifyContent = 'center';
+            iconWrap.style.marginBottom = '1.3rem';
+            iconWrap.style.boxShadow = '0 10px 24px rgba(225, 29, 72, 0.35)';
+            iconWrap.innerHTML = `
+                <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            `;
+            card.appendChild(iconWrap);
+
+            const title = document.createElement('h2');
+            title.style.fontSize = '2.1rem';
+            title.style.fontWeight = '900';
+            title.style.color = '#881337';
+            title.style.margin = '0 0 0.8rem 0';
+            title.textContent = '¡Pizarra Mágica: Dibuja y Adivina!';
+            card.appendChild(title);
+
+            const desc = document.createElement('div');
+            desc.style.fontSize = '1.22rem';
+            desc.style.fontWeight = '600';
+            desc.style.color = '#334155';
+            desc.style.lineHeight = '1.6';
+            desc.style.marginBottom = '1.8rem';
+            desc.innerHTML = `
+                El alumno/a debe escoger su <strong>papelito secreto</strong>.<br>
+                Cuando esté listo/a en la pizarra con su papel, pulsa <strong>Empezar</strong>.<br>
+                Tendrá <strong>1 minuto</strong> para dibujarlo y que la clase lo adivine.
+            `;
+            card.appendChild(desc);
+
+            const btnStart = document.createElement('button');
+            btnStart.type = 'button';
+            btnStart.id = 'btn-iniciar-dibujo-pizarra';
+            btnStart.className = 'tactile-btn';
+            btnStart.style.background = '#e11d48';
+            btnStart.style.color = '#ffffff';
+            btnStart.style.border = '3px solid #be123c';
+            btnStart.style.boxShadow = '0 6px 0 #9f1239';
+            btnStart.style.borderRadius = '20px';
+            btnStart.style.padding = '0.9rem 2.6rem';
+            btnStart.style.fontSize = '1.35rem';
+            btnStart.style.fontWeight = '900';
+            btnStart.style.cursor = 'pointer';
+            btnStart.style.display = 'inline-flex';
+            btnStart.style.flexDirection = 'row';
+            btnStart.style.alignItems = 'center';
+            btnStart.style.justifyContent = 'center';
+            btnStart.style.gap = '0.75rem';
+            btnStart.innerHTML = `
+                <span>¡Empezar a dibujar!</span>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            `;
+            btnStart.onclick = () => {
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                renderDrawingScreen();
+            };
+            card.appendChild(btnStart);
+            container.appendChild(card);
+        };
+
+        // --- PANTALLA 2: LIENZO GIGANTE CON TEMPORIZADOR DE 1 MINUTO ---
+        const renderDrawingScreen = () => {
+            cleanup();
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'space-between';
+            container.style.padding = '5.2rem 1.6rem 0.8rem 1.6rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #ffe4e6 0%, #fff1f2 40%, #ffffff 100%)';
+
+            let timeLeft = 60;
+
+            const hud = document.createElement('div');
+            hud.style.position = 'absolute';
+            hud.style.top = '16px';
+            hud.style.left = '50%';
+            hud.style.transform = 'translateX(-50%)';
+            hud.style.zIndex = '50';
+            hud.style.background = 'linear-gradient(135deg, #9f1239 0%, #e11d48 100%)';
+            hud.style.padding = '0.65rem 2.4rem';
+            hud.style.borderRadius = '9999px';
+            hud.style.boxShadow = '0 10px 25px rgba(225, 29, 72, 0.35)';
+            hud.style.border = '2.5px solid #ffffff';
+            hud.style.display = 'flex';
+            hud.style.alignItems = 'center';
+            hud.style.gap = '1.6rem';
+            hud.style.pointerEvents = 'none';
+            hud.style.whiteSpace = 'nowrap';
+            hud.style.width = 'max-content';
+            hud.style.maxWidth = '92vw';
+            hud.style.boxSizing = 'border-box';
+
+            hud.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                    <span>Taller Creativo · Pizarra Mágica</span>
+                </div>
+                <div id="pizarra-timer-badge" style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 1.2rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 80px; text-align: center; display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.45rem;">
+                    <img src="assets/Reloj.png" alt="Tiempo" style="width: 22px; height: 22px; object-fit: contain; display: inline-block;">
+                    <span id="pizarra-timer-val">60s</span>
+                </div>
+            `;
+            container.appendChild(hud);
+
+            const timerBadge = hud.querySelector('#pizarra-timer-badge');
+
+            const stage = document.createElement('div');
+            stage.style.flex = '1';
+            stage.style.display = 'flex';
+            stage.style.flexDirection = 'column';
+            stage.style.alignItems = 'center';
+            stage.style.justifyContent = 'center';
+            stage.style.width = '100%';
+            stage.style.maxWidth = '960px';
+            stage.style.margin = 'auto';
+            stage.style.boxSizing = 'border-box';
+
+            const canvasObj = this.createDrawingCanvas(940, 440, {
+                onFinishEarly: () => {
+                    cleanup();
+                    renderFinishedScreen();
+                }
+            });
+            stage.appendChild(canvasObj.element);
+            container.appendChild(stage);
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timerBadge) {
+                    const valEl = timerBadge.querySelector('#pizarra-timer-val');
+                    if (valEl) {
+                        valEl.textContent = `${timeLeft}s`;
+                    } else {
+                        timerBadge.textContent = `${timeLeft}s`;
+                    }
+                    if (timeLeft <= 10 && timeLeft > 0) {
+                        if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                        timerBadge.style.background = 'rgba(239, 68, 68, 0.35)';
+                        timerBadge.style.borderColor = '#ef4444';
+                        timerBadge.style.color = '#fecaca';
+                    }
+                }
+                if (timeLeft <= 0) {
+                    cleanup();
+                    renderFinishedScreen();
+                }
+            }, 1000);
+        };
+
+        // --- PANTALLA 3: PANTALLA DE FINALIZACIÓN CON SÓLO 2 BOTONES (OOPS / GENIAL) ---
+        const renderFinishedScreen = () => {
+            cleanup();
+            if (AppState.settings.soundEnabled) Activities.playSound('bell');
+
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '2rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #ffe4e6 0%, #fff1f2 40%, #ffffff 100%)';
+
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #f43f5e';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.4rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(225, 29, 72, 0.16)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.maxWidth = '640px';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+
+            const badge = document.createElement('span');
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#9f1239';
+            badge.style.padding = '0.4rem 1.2rem';
+            badge.style.borderRadius = '9999px';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '0.9rem';
+            badge.style.textTransform = 'uppercase';
+            badge.style.letterSpacing = '0.6px';
+            badge.style.marginBottom = '1.2rem';
+            badge.textContent = '¡Ronda de Dibujo Finalizada!';
+            card.appendChild(badge);
+
+            const iconClock = document.createElement('div');
+            iconClock.style.width = '84px';
+            iconClock.style.height = '84px';
+            iconClock.style.borderRadius = '50%';
+            iconClock.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            iconClock.style.display = 'flex';
+            iconClock.style.alignItems = 'center';
+            iconClock.style.justifyContent = 'center';
+            iconClock.style.marginBottom = '1.3rem';
+            iconClock.style.boxShadow = '0 10px 24px rgba(217, 119, 6, 0.35)';
+            iconClock.innerHTML = `
+                <img src="assets/Reloj.png" alt="Tiempo" style="width: 50px; height: 50px; object-fit: contain; display: block;">
+            `;
+            card.appendChild(iconClock);
+
+            const title = document.createElement('h2');
+            title.style.fontSize = '2.2rem';
+            title.style.fontWeight = '900';
+            title.style.color = '#881337';
+            title.style.margin = '0 0 0.8rem 0';
+            title.textContent = '¡Tiempo terminado!';
+            card.appendChild(title);
+
+            const desc = document.createElement('p');
+            desc.style.fontSize = '1.25rem';
+            desc.style.fontWeight = '700';
+            desc.style.color = '#475569';
+            desc.style.lineHeight = '1.5';
+            desc.style.margin = '0 0 1.8rem 0';
+            desc.textContent = '¿Ha conseguido la clase adivinar el dibujo del papel secreto?';
+            card.appendChild(desc);
+
+            // Únicamente 2 botones: Oops y Genial (directos sin recuadro blanco)
+            const evalBar = this.createTeacherEvalBar((res) => {
+                cleanup();
+                onComplete(res);
+            }, { twoButtons: true });
+            card.appendChild(evalBar);
+
+            container.appendChild(card);
+        };
+
+        renderWaitingScreen();
     },
 
     // ==============================================================
-    // 2. RENDER EL DIBUJO VIAJERO (DINÁMICA EN 4 RONDAS DE 30s)
+    // 2. RENDER EL DIBUJO VIAJERO (PANTALLA DE ESPERA + 4 RONDAS DE 30s CON PAUSAS)
     // ==============================================================
     renderDibujoViajero(actividad, container, onComplete) {
         container.innerHTML = '';
         container.style.position = 'relative';
         container.style.width = '100%';
         container.style.height = '100%';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'space-between';
-        container.style.padding = '5.6rem 1.8rem 1.2rem 1.8rem';
-        container.style.boxSizing = 'border-box';
-        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
         container.style.overflow = 'hidden';
 
-        // HUD flotante de Taller Creativo
-        const hud = document.createElement('div');
-        hud.style.position = 'absolute';
-        hud.style.top = '16px';
-        hud.style.left = '50%';
-        hud.style.transform = 'translateX(-50%)';
-        hud.style.zIndex = '50';
-        hud.style.background = 'linear-gradient(135deg, #b45309 0%, #d97706 100%)';
-        hud.style.padding = '0.65rem 2.4rem';
-        hud.style.borderRadius = '9999px';
-        hud.style.boxShadow = '0 10px 25px rgba(217, 119, 6, 0.35)';
-        hud.style.border = '2.5px solid #ffffff';
-        hud.style.display = 'flex';
-        hud.style.alignItems = 'center';
-        hud.style.gap = '1.6rem';
-        hud.style.pointerEvents = 'none';
-        hud.style.whiteSpace = 'nowrap';
-        hud.style.width = 'max-content';
-        hud.style.maxWidth = '92vw';
-        hud.style.boxSizing = 'border-box';
-
-        hud.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>Taller Creativo · El Dibujo Viajero</span>
-            </div>
-            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Arte Colaborativo (30s)
-            </div>
-        `;
-        container.appendChild(hud);
-
-        // Escenario Central
-        const stage = document.createElement('div');
-        stage.style.flex = '1';
-        stage.style.display = 'flex';
-        stage.style.flexDirection = 'column';
-        stage.style.alignItems = 'center';
-        stage.style.justifyContent = 'center';
-        stage.style.width = '100%';
-        stage.style.maxWidth = '880px';
-        stage.style.margin = 'auto';
-        stage.style.boxSizing = 'border-box';
-
-        let rondaActual = 0; // 0, 1, 2, 3
-        const rondas = actividad.rondas || [
-            { num: 1, tiempo: 30, inst: "Dibuja una cabeza curiosa con tres ojos y antenas." },
-            { num: 2, tiempo: 30, inst: "¡Cambio de libreta! Dibuja el cuerpo y pelo o escamas." },
-            { num: 3, tiempo: 30, inst: "¡Cambio de libreta! Añade patas locas, alas o tentáculos." },
-            { num: 4, tiempo: 30, inst: "¡Último pase! Dibuja el lugar donde vive y ponle nombre." }
-        ];
-
-        // Título del tema colectivo
-        const titleRow = document.createElement('div');
-        titleRow.style.textAlign = 'center';
-        titleRow.style.marginBottom = '0.9rem';
-
-        const h3 = document.createElement('h3');
-        h3.style.fontSize = '1.65rem';
-        h3.style.fontWeight = '900';
-        h3.style.color = '#78350f';
-        h3.style.margin = '0 0 0.25rem 0';
-        h3.textContent = actividad.titulo;
-        titleRow.appendChild(h3);
-
-        const sub = document.createElement('p');
-        sub.style.fontSize = '1.1rem';
-        sub.style.color = '#475569';
-        sub.style.fontWeight = '700';
-        sub.style.margin = '0';
-        sub.textContent = actividad.subtitulo;
-        titleRow.appendChild(sub);
-        stage.appendChild(titleRow);
-
-        // Barra de pasos / rondas
-        const stepsBar = document.createElement('div');
-        stepsBar.style.display = 'flex';
-        stepsBar.style.gap = '0.8rem';
-        stepsBar.style.marginBottom = '1.1rem';
-        stepsBar.style.width = '100%';
-        stepsBar.style.maxWidth = '760px';
-        stepsBar.style.justifyContent = 'center';
-
-        const stepPills = [];
-        rondas.forEach((r, idx) => {
-            const pill = document.createElement('div');
-            pill.style.flex = '1';
-            pill.style.padding = '0.55rem 0.6rem';
-            pill.style.borderRadius = '14px';
-            pill.style.textAlign = 'center';
-            pill.style.fontWeight = '900';
-            pill.style.fontSize = '0.92rem';
-            pill.style.border = '2px solid #cbd5e1';
-            pill.style.background = idx === 0 ? '#d97706' : '#ffffff';
-            pill.style.color = idx === 0 ? '#ffffff' : '#64748b';
-            pill.style.boxShadow = '0 3px 8px rgba(0,0,0,0.05)';
-            pill.textContent = `Ronda ${r.num}`;
-            stepPills.push(pill);
-            stepsBar.appendChild(pill);
-        });
-        stage.appendChild(stepsBar);
-
-        // Tarjeta Central de la Ronda Actual
-        const roundCard = document.createElement('div');
-        roundCard.style.width = '100%';
-        roundCard.style.maxWidth = '760px';
-        roundCard.style.background = '#ffffff';
-        roundCard.style.border = '3px solid #f59e0b';
-        roundCard.style.borderRadius = '24px';
-        roundCard.style.padding = '1.4rem 1.8rem';
-        roundCard.style.boxShadow = '0 12px 28px rgba(217, 119, 6, 0.12)';
-        roundCard.style.display = 'flex';
-        roundCard.style.flexDirection = 'column';
-        roundCard.style.alignItems = 'center';
-        roundCard.style.textAlign = 'center';
-        roundCard.style.boxSizing = 'border-box';
-        roundCard.style.marginBottom = '0.9rem';
-
-        const instBadge = document.createElement('span');
-        instBadge.style.background = '#fef3c7';
-        instBadge.style.color = '#92400e';
-        instBadge.style.padding = '0.3rem 0.9rem';
-        instBadge.style.borderRadius = '9999px';
-        instBadge.style.fontWeight = '900';
-        instBadge.style.fontSize = '0.85rem';
-        instBadge.style.textTransform = 'uppercase';
-        instBadge.textContent = 'Misión en la libreta';
-        roundCard.appendChild(instBadge);
-
-        const instText = document.createElement('div');
-        instText.style.fontSize = '1.38rem';
-        instText.style.fontWeight = '800';
-        instText.style.color = '#1e293b';
-        instText.style.margin = '0.8rem 0 1.2rem 0';
-        instText.style.lineHeight = '1.4';
-        instText.textContent = rondas[0].inst;
-        roundCard.appendChild(instText);
-
-        // Temporizador Circular / Barra de 30 segundos
-        const timerRow = document.createElement('div');
-        timerRow.style.display = 'flex';
-        timerRow.style.alignItems = 'center';
-        timerRow.style.gap = '1.2rem';
-        timerRow.style.marginBottom = '0.8rem';
-
-        const timerCircle = document.createElement('div');
-        timerCircle.style.width = '70px';
-        timerCircle.style.height = '70px';
-        timerCircle.style.borderRadius = '50%';
-        timerCircle.style.background = '#fef3c7';
-        timerCircle.style.border = '4px solid #d97706';
-        timerCircle.style.display = 'flex';
-        timerCircle.style.alignItems = 'center';
-        timerCircle.style.justifyContent = 'center';
-        timerCircle.style.fontSize = '1.7rem';
-        timerCircle.style.fontWeight = '900';
-        timerCircle.style.color = '#92400e';
-        timerCircle.textContent = '30';
-        timerRow.appendChild(timerCircle);
-
-        const timerControls = document.createElement('div');
-        timerControls.style.display = 'flex';
-        timerControls.style.gap = '0.6rem';
-
+        let currentRound = 1;
         let timerSeconds = 30;
         let timerInterval = null;
-        let isRunning = false;
+        let isPaused = false;
 
-        const btnPlay = document.createElement('button');
-        btnPlay.type = 'button';
-        btnPlay.className = 'tactile-btn';
-        btnPlay.style.background = '#10b981';
-        btnPlay.style.color = '#ffffff';
-        btnPlay.style.border = '2px solid #059669';
-        btnPlay.style.boxShadow = '0 4px 0 #047857';
-        btnPlay.style.borderRadius = '14px';
-        btnPlay.style.padding = '0.55rem 1.2rem';
-        btnPlay.style.fontSize = '1.05rem';
-        btnPlay.style.fontWeight = '900';
-        btnPlay.style.cursor = 'pointer';
-        btnPlay.style.display = 'inline-flex';
-        btnPlay.style.alignItems = 'center';
-        btnPlay.style.gap = '0.45rem';
-        btnPlay.innerHTML = `
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            <span>Iniciar 30s</span>
-        `;
-
-        function stopTimer() {
+        const cleanup = () => {
             if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
-            isRunning = false;
-        }
-
-        btnPlay.onclick = () => {
-            if (isRunning) {
-                stopTimer();
-                btnPlay.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <span>Reanudar</span>
-                `;
-            } else {
-                isRunning = true;
-                btnPlay.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    <span>Pausar</span>
-                `;
-                timerInterval = setInterval(() => {
-                    timerSeconds--;
-                    timerCircle.textContent = timerSeconds;
-                    if (timerSeconds <= 5 && timerSeconds > 0) {
-                        if (AppState.settings.soundEnabled) Activities.playSound('tick');
-                        timerCircle.style.background = '#fee2e2';
-                        timerCircle.style.borderColor = '#ef4444';
-                        timerCircle.style.color = '#b91c1c';
-                    }
-                    if (timerSeconds <= 0) {
-                        stopTimer();
-                        timerCircle.textContent = '0';
-                        if (AppState.settings.soundEnabled) Activities.playSound('bell');
-                        instText.innerHTML = `<span style="color: #dc2626; font-size: 1.5rem;">¡TIEMPO! ¡PASA TU LIBRETA AL COMPAÑERO/A!</span>`;
-                        btnPlay.style.display = 'none';
-                    }
-                }, 1000);
-            }
         };
-        timerControls.appendChild(btnPlay);
 
-        const btnNextRound = document.createElement('button');
-        btnNextRound.type = 'button';
-        btnNextRound.className = 'tactile-btn';
-        btnNextRound.style.background = '#ffffff';
-        btnNextRound.style.color = '#78350f';
-        btnNextRound.style.border = '2px solid #d97706';
-        btnNextRound.style.boxShadow = '0 4px 0 #b45309';
-        btnNextRound.style.borderRadius = '14px';
-        btnNextRound.style.padding = '0.55rem 1.2rem';
-        btnNextRound.style.fontSize = '1.05rem';
-        btnNextRound.style.fontWeight = '900';
-        btnNextRound.style.cursor = 'pointer';
-        btnNextRound.style.display = 'inline-flex';
-        btnNextRound.style.alignItems = 'center';
-        btnNextRound.style.gap = '0.45rem';
-        btnNextRound.innerHTML = `
-            <span>Siguiente Ronda</span>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        `;
+        // --- PANTALLA 1: ESPERA HASTA QUE SAQUEN LOS PAPELES ---
+        const renderWaitingScreen = () => {
+            cleanup();
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '2rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
 
-        btnNextRound.onclick = () => {
-            stopTimer();
-            rondaActual++;
-            if (rondaActual < rondas.length) {
-                // Actualizar píldoras
-                stepPills.forEach((p, idx) => {
-                    p.style.background = idx === rondaActual ? '#d97706' : (idx < rondaActual ? '#fef3c7' : '#ffffff');
-                    p.style.color = idx === rondaActual ? '#ffffff' : (idx < rondaActual ? '#92400e' : '#64748b');
-                });
-                instText.textContent = rondas[rondaActual].inst;
-                timerSeconds = 30;
-                timerCircle.textContent = '30';
-                timerCircle.style.background = '#fef3c7';
-                timerCircle.style.borderColor = '#d97706';
-                timerCircle.style.color = '#92400e';
-                btnPlay.style.display = 'inline-flex';
-                btnPlay.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <span>Iniciar 30s</span>
-                `;
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #f59e0b';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.4rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(217, 119, 6, 0.16)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.maxWidth = '640px';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+
+            const badge = document.createElement('span');
+            badge.style.background = '#fef3c7';
+            badge.style.color = '#92400e';
+            badge.style.padding = '0.4rem 1.2rem';
+            badge.style.borderRadius = '9999px';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '0.9rem';
+            badge.style.textTransform = 'uppercase';
+            badge.style.letterSpacing = '0.6px';
+            badge.style.marginBottom = '1.2rem';
+            badge.textContent = 'Actividad en el Aula';
+            card.appendChild(badge);
+
+            const iconWrap = document.createElement('div');
+            iconWrap.style.width = '84px';
+            iconWrap.style.height = '84px';
+            iconWrap.style.borderRadius = '50%';
+            iconWrap.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            iconWrap.style.display = 'flex';
+            iconWrap.style.alignItems = 'center';
+            iconWrap.style.justifyContent = 'center';
+            iconWrap.style.marginBottom = '1.3rem';
+            iconWrap.style.boxShadow = '0 10px 24px rgba(217, 119, 6, 0.35)';
+            iconWrap.innerHTML = `
+                <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            `;
+            card.appendChild(iconWrap);
+
+            const title = document.createElement('h2');
+            title.style.fontSize = '2.2rem';
+            title.style.fontWeight = '900';
+            title.style.color = '#78350f';
+            title.style.margin = '0 0 0.8rem 0';
+            title.textContent = '¡El Dibujo Viajero!';
+            card.appendChild(title);
+
+            const desc = document.createElement('div');
+            desc.style.fontSize = '1.25rem';
+            desc.style.fontWeight = '600';
+            desc.style.color = '#334155';
+            desc.style.lineHeight = '1.6';
+            desc.style.marginBottom = '1.8rem';
+            desc.innerHTML = `
+                Sacad vuestro diario y los lápices.<br>
+                Cada alumno/a empezará dibujando en su diario.<br>
+                Cuando toda la clase esté lista, pulsad <strong>Continuar</strong>.
+            `;
+            card.appendChild(desc);
+
+            const btnContinue = document.createElement('button');
+            btnContinue.type = 'button';
+            btnContinue.id = 'btn-iniciar-dibujo-viajero';
+            btnContinue.className = 'tactile-btn';
+            btnContinue.style.background = '#d97706';
+            btnContinue.style.color = '#ffffff';
+            btnContinue.style.border = '3px solid #b45309';
+            btnContinue.style.boxShadow = '0 6px 0 #92400e';
+            btnContinue.style.borderRadius = '20px';
+            btnContinue.style.padding = '0.9rem 2.8rem';
+            btnContinue.style.fontSize = '1.35rem';
+            btnContinue.style.fontWeight = '900';
+            btnContinue.style.cursor = 'pointer';
+            btnContinue.style.display = 'inline-flex';
+            btnContinue.style.flexDirection = 'row';
+            btnContinue.style.alignItems = 'center';
+            btnContinue.style.justifyContent = 'center';
+            btnContinue.style.gap = '0.75rem';
+            btnContinue.innerHTML = `
+                <span>Continuar</span>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            `;
+            btnContinue.onclick = () => {
                 if (AppState.settings.soundEnabled) Activities.playSound('tick');
-            } else {
-                // Exposición de Arte Final
-                stepPills.forEach(p => {
-                    p.style.background = '#10b981';
-                    p.style.color = '#ffffff';
-                });
-                instBadge.textContent = '¡Exposición de Arte!';
-                instBadge.style.background = '#dcfce7';
-                instBadge.style.color = '#15803d';
-                instText.innerHTML = `
-                    <div style="font-size: 1.55rem; color: #15803d; font-weight: 900; margin-bottom: 0.5rem;">¡Obras Colectivas Terminadas!</div>
-                    <div style="font-size: 1.15rem; color: #334155;">Enseñad los dibujos que han viajado por la clase y observad las creaciones únicas que habéis hecho juntos.</div>
-                `;
-                timerRow.style.display = 'none';
-                if (AppState.settings.soundEnabled) Activities.playSound('victory');
-            }
+                currentRound = 1;
+                startRound(1);
+            };
+            card.appendChild(btnContinue);
+
+            container.appendChild(card);
         };
-        timerControls.appendChild(btnNextRound);
-        timerRow.appendChild(timerControls);
-        roundCard.appendChild(timerRow);
-        stage.appendChild(roundCard);
 
-        // Barra de Valoración de la Profe (Oops, Bien, Genial)
-        const evalBar = this.createTeacherEvalBar((res) => {
-            stopTimer();
-            onComplete(res);
-        });
-        stage.appendChild(evalBar);
+        // --- PANTALLA 2: RONDA DE 30 SEGUNDOS ---
+        const startRound = (roundNum) => {
+            cleanup();
+            currentRound = roundNum;
+            timerSeconds = 30;
+            isPaused = false;
 
-        container.appendChild(stage);
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'space-between';
+            container.style.padding = '5.4rem 1.8rem 1.8rem 1.8rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
+
+            // HUD Flotante
+            const hud = document.createElement('div');
+            hud.style.position = 'absolute';
+            hud.style.top = '16px';
+            hud.style.left = '50%';
+            hud.style.transform = 'translateX(-50%)';
+            hud.style.zIndex = '50';
+            hud.style.background = 'linear-gradient(135deg, #b45309 0%, #d97706 100%)';
+            hud.style.padding = '0.65rem 2.4rem';
+            hud.style.borderRadius = '9999px';
+            hud.style.boxShadow = '0 10px 25px rgba(217, 119, 6, 0.35)';
+            hud.style.border = '2.5px solid #ffffff';
+            hud.style.display = 'flex';
+            hud.style.alignItems = 'center';
+            hud.style.gap = '1.6rem';
+            hud.style.pointerEvents = 'none';
+            hud.style.whiteSpace = 'nowrap';
+            hud.style.width = 'max-content';
+            hud.style.maxWidth = '92vw';
+            hud.style.boxSizing = 'border-box';
+
+            hud.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                    <span>Taller Creativo · El Dibujo Viajero</span>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                    Ronda ${roundNum} de 4
+                </div>
+            `;
+            container.appendChild(hud);
+
+            // Escenario central con temporizador gigante
+            const stage = document.createElement('div');
+            stage.style.flex = '1';
+            stage.style.display = 'flex';
+            stage.style.flexDirection = 'column';
+            stage.style.alignItems = 'center';
+            stage.style.justifyContent = 'center';
+            stage.style.width = '100%';
+            stage.style.maxWidth = '760px';
+            stage.style.margin = 'auto';
+            stage.style.boxSizing = 'border-box';
+
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #f59e0b';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.2rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(217, 119, 6, 0.14)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+
+            const roundBadge = document.createElement('span');
+            roundBadge.style.background = '#fef3c7';
+            roundBadge.style.color = '#92400e';
+            roundBadge.style.padding = '0.4rem 1.4rem';
+            roundBadge.style.borderRadius = '9999px';
+            roundBadge.style.fontWeight = '900';
+            roundBadge.style.fontSize = '1.05rem';
+            roundBadge.style.textTransform = 'uppercase';
+            roundBadge.style.marginBottom = '1rem';
+            roundBadge.textContent = roundNum === 4 ? 'Ronda 4 de 4 (¡Última Ronda!)' : `Ronda ${roundNum} de 4`;
+            card.appendChild(roundBadge);
+
+            const roundTitle = document.createElement('h3');
+            roundTitle.style.fontSize = '2.2rem';
+            roundTitle.style.fontWeight = '900';
+            roundTitle.style.color = '#78350f';
+            roundTitle.style.margin = '0 0 1.2rem 0';
+            roundTitle.textContent = '¡Dibujando en el diario!';
+            card.appendChild(roundTitle);
+
+            // Círculo grande de cuenta atrás
+            const timerCircle = document.createElement('div');
+            timerCircle.id = 'viajero-timer-circle';
+            timerCircle.style.width = '140px';
+            timerCircle.style.height = '140px';
+            timerCircle.style.borderRadius = '50%';
+            timerCircle.style.background = '#fffbeb';
+            timerCircle.style.border = '6px solid #d97706';
+            timerCircle.style.display = 'flex';
+            timerCircle.style.alignItems = 'center';
+            timerCircle.style.justifyContent = 'center';
+            timerCircle.style.fontSize = '3.8rem';
+            timerCircle.style.fontWeight = '900';
+            timerCircle.style.color = '#92400e';
+            timerCircle.style.boxShadow = '0 8px 24px rgba(217, 119, 6, 0.2)';
+            timerCircle.style.margin = '0.5rem 0 1.5rem 0';
+            timerCircle.textContent = '30';
+            card.appendChild(timerCircle);
+
+            // Botón Pausar / Reanudar opcional por si la profesora necesita parar el tiempo
+            const btnPause = document.createElement('button');
+            btnPause.type = 'button';
+            btnPause.className = 'tactile-btn';
+            btnPause.style.background = '#f8fafc';
+            btnPause.style.color = '#475569';
+            btnPause.style.border = '2px solid #cbd5e1';
+            btnPause.style.boxShadow = '0 3px 0 #94a3b8';
+            btnPause.style.borderRadius = '14px';
+            btnPause.style.padding = '0.5rem 1.4rem';
+            btnPause.style.fontSize = '1.05rem';
+            btnPause.style.fontWeight = '900';
+            btnPause.style.cursor = 'pointer';
+            btnPause.style.display = 'inline-flex';
+            btnPause.style.alignItems = 'center';
+            btnPause.style.gap = '0.5rem';
+            btnPause.innerHTML = `
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <span>Pausar</span>
+            `;
+            btnPause.onclick = () => {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    btnPause.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        <span>Reanudar</span>
+                    `;
+                    btnPause.style.background = '#dcfce7';
+                    btnPause.style.color = '#15803d';
+                    btnPause.style.borderColor = '#22c55e';
+                } else {
+                    btnPause.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <span>Pausar</span>
+                    `;
+                    btnPause.style.background = '#f8fafc';
+                    btnPause.style.color = '#475569';
+                    btnPause.style.borderColor = '#cbd5e1';
+                }
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            };
+            card.appendChild(btnPause);
+
+            stage.appendChild(card);
+            container.appendChild(stage);
+
+            // Intervalo de 30 segundos
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timerSeconds--;
+                timerCircle.textContent = timerSeconds;
+
+                if (timerSeconds <= 5 && timerSeconds > 0) {
+                    if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                    timerCircle.style.background = '#fee2e2';
+                    timerCircle.style.borderColor = '#ef4444';
+                    timerCircle.style.color = '#b91c1c';
+                }
+
+                if (timerSeconds <= 0) {
+                    cleanup();
+                    if (AppState.settings.soundEnabled) Activities.playSound('bell');
+
+                    if (roundNum < 4) {
+                        renderPauseScreen(roundNum);
+                    } else {
+                        renderFinalDecideScreen();
+                    }
+                }
+            }, 1000);
+        };
+
+        // --- PANTALLA 3: PAUSA ENTRE RONDAS (CAMBIO DE HOJA) ---
+        const renderPauseScreen = (finishedRoundNum) => {
+            cleanup();
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '2rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
+
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #d97706';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.4rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(217, 119, 6, 0.16)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.maxWidth = '640px';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+
+            const badge = document.createElement('span');
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#991b1b';
+            badge.style.padding = '0.4rem 1.2rem';
+            badge.style.borderRadius = '9999px';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '0.9rem';
+            badge.style.textTransform = 'uppercase';
+            badge.style.letterSpacing = '0.6px';
+            badge.style.marginBottom = '1.2rem';
+            badge.textContent = '¡Pausa!';
+            card.appendChild(badge);
+
+            const iconBell = document.createElement('div');
+            iconBell.style.width = '84px';
+            iconBell.style.height = '84px';
+            iconBell.style.borderRadius = '50%';
+            iconBell.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+            iconBell.style.display = 'flex';
+            iconBell.style.alignItems = 'center';
+            iconBell.style.justifyContent = 'center';
+            iconBell.style.marginBottom = '1.3rem';
+            iconBell.style.boxShadow = '0 10px 24px rgba(220, 38, 38, 0.35)';
+            iconBell.innerHTML = `
+                <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            `;
+            card.appendChild(iconBell);
+
+            const title = document.createElement('h2');
+            title.style.fontSize = '2.2rem';
+            title.style.fontWeight = '900';
+            title.style.color = '#991b1b';
+            title.style.margin = '0 0 0.8rem 0';
+            title.textContent = '¡Pasad el diario al compañero/a!';
+            card.appendChild(title);
+
+            const nextRoundNum = finishedRoundNum + 1;
+            const desc = document.createElement('div');
+            desc.style.fontSize = '1.22rem';
+            desc.style.fontWeight = '600';
+            desc.style.color = '#334155';
+            desc.style.lineHeight = '1.6';
+            desc.style.marginBottom = '1.8rem';
+            desc.innerHTML = `
+                Cambiad el diario con vuestro compañero/a de al lado para continuar su dibujo.<br>
+                Cuando estéis preparados para los siguientes 30 segundos, pulsad <strong>Continuar</strong>.
+            `;
+            card.appendChild(desc);
+
+            const btnNext = document.createElement('button');
+            btnNext.type = 'button';
+            btnNext.id = 'btn-continuar-ronda-' + nextRoundNum;
+            btnNext.className = 'tactile-btn';
+            btnNext.style.background = '#d97706';
+            btnNext.style.color = '#ffffff';
+            btnNext.style.border = '3px solid #b45309';
+            btnNext.style.boxShadow = '0 6px 0 #92400e';
+            btnNext.style.borderRadius = '20px';
+            btnNext.style.padding = '0.9rem 2.8rem';
+            btnNext.style.fontSize = '1.35rem';
+            btnNext.style.fontWeight = '900';
+            btnNext.style.cursor = 'pointer';
+            btnNext.style.display = 'inline-flex';
+            btnNext.style.flexDirection = 'row';
+            btnNext.style.alignItems = 'center';
+            btnNext.style.justifyContent = 'center';
+            btnNext.style.gap = '0.75rem';
+            btnNext.innerHTML = `
+                <span>Continuar (Ronda ${nextRoundNum})</span>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            `;
+            btnNext.onclick = () => {
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                startRound(nextRoundNum);
+            };
+            card.appendChild(btnNext);
+
+            container.appendChild(card);
+        };
+
+        // --- PANTALLA 4: PANTALLA DE DECISIÓN TRAS LOS ÚLTIMOS 30 SEGUNDOS (OOPS / BIEN / GENIAL) ---
+        const renderFinalDecideScreen = () => {
+            cleanup();
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '2rem';
+            container.style.boxSizing = 'border-box';
+            container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
+
+            const card = document.createElement('div');
+            card.style.background = '#ffffff';
+            card.style.border = '3.5px solid #10b981';
+            card.style.borderRadius = '28px';
+            card.style.padding = '2.4rem 2.8rem';
+            card.style.boxShadow = '0 16px 40px rgba(16, 185, 129, 0.16)';
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.alignItems = 'center';
+            card.style.textAlign = 'center';
+            card.style.maxWidth = '680px';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+
+            const badge = document.createElement('span');
+            badge.style.background = '#dcfce7';
+            badge.style.color = '#15803d';
+            badge.style.padding = '0.4rem 1.2rem';
+            badge.style.borderRadius = '9999px';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '0.9rem';
+            badge.style.textTransform = 'uppercase';
+            badge.style.letterSpacing = '0.6px';
+            badge.style.marginBottom = '1.2rem';
+            badge.textContent = '¡Obras Colectivas Terminadas!';
+            card.appendChild(badge);
+
+            const iconArt = document.createElement('div');
+            iconArt.style.width = '84px';
+            iconArt.style.height = '84px';
+            iconArt.style.borderRadius = '50%';
+            iconArt.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            iconArt.style.display = 'flex';
+            iconArt.style.alignItems = 'center';
+            iconArt.style.justifyContent = 'center';
+            iconArt.style.marginBottom = '1.3rem';
+            iconArt.style.boxShadow = '0 10px 24px rgba(16, 185, 129, 0.35)';
+            iconArt.innerHTML = `
+                <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            `;
+            card.appendChild(iconArt);
+
+            const title = document.createElement('h2');
+            title.style.fontSize = '2.2rem';
+            title.style.fontWeight = '900';
+            title.style.color = '#065f46';
+            title.style.margin = '0 0 0.8rem 0';
+            title.textContent = '¡Dibujo Viajero Completado!';
+            card.appendChild(title);
+
+            const desc = document.createElement('p');
+            desc.style.fontSize = '1.25rem';
+            desc.style.fontWeight = '700';
+            desc.style.color = '#334155';
+            desc.lineHeight = '1.5';
+            desc.style.margin = '0 0 1.8rem 0';
+            desc.textContent = 'Enseñad los diarios y valorad el resultado final de la clase:';
+            card.appendChild(desc);
+
+            // Decidir si Oops, Bien o Genial (los 3 botones directos sin recuadro blanco)
+            const evalBar = this.createTeacherEvalBar((res) => {
+                cleanup();
+                onComplete(res);
+            });
+            card.appendChild(evalBar);
+
+            container.appendChild(card);
+        };
+
+        container.__testViajero = { startRound, renderPauseScreen, renderFinalDecideScreen };
+        renderWaitingScreen();
     },
 
     // ==============================================================
-    // 3. RENDER DIBUJO PASO A PASO (GUÍA EN PAREJAS O CLASE)
+    // 3. RENDER DIBUJO PASO A PASO (SIN TIEMPO, PASOS DADOS POR EL COMPAÑERO)
     // ==============================================================
     renderPasoAPaso(actividad, container, onComplete) {
         container.innerHTML = '';
@@ -5103,12 +5332,12 @@ window.Activities = {
                 <span>Taller Creativo · Dibujo Paso a Paso</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Trabajo en Parejas
+                En Parejas
             </div>
         `;
         container.appendChild(hud);
 
-        // Escenario Central en Dos Columnas
+        // Escenario Central
         const stage = document.createElement('div');
         stage.style.flex = '1';
         stage.style.display = 'flex';
@@ -5116,760 +5345,41 @@ window.Activities = {
         stage.style.alignItems = 'center';
         stage.style.justifyContent = 'center';
         stage.style.width = '100%';
-        stage.style.maxWidth = '1080px';
+        stage.style.maxWidth = '960px';
         stage.style.margin = 'auto';
         stage.style.boxSizing = 'border-box';
 
-        const mainCols = document.createElement('div');
-        mainCols.style.display = 'grid';
-        mainCols.style.gridTemplateColumns = '380px 1fr';
-        mainCols.style.gap = '1.3rem';
-        mainCols.style.width = '100%';
-        mainCols.style.marginBottom = '0.6rem';
-        mainCols.style.alignItems = 'stretch';
+        // Mensaje superior simple indicando que el compañero da los pasos
+        const headerCard = document.createElement('div');
+        headerCard.style.width = '100%';
+        headerCard.style.background = '#ffffff';
+        headerCard.style.border = '2px solid #bfdbfe';
+        headerCard.style.borderRadius = '16px';
+        headerCard.style.padding = '0.65rem 1.4rem';
+        headerCard.style.marginBottom = '0.7rem';
+        headerCard.style.boxShadow = '0 4px 14px rgba(2, 132, 199, 0.08)';
+        headerCard.style.display = 'flex';
+        headerCard.style.alignItems = 'center';
+        headerCard.style.justifyContent = 'center';
+        headerCard.style.gap = '0.75rem';
+        headerCard.style.color = '#1e3a8a';
+        headerCard.style.fontSize = '1.18rem';
+        headerCard.style.fontWeight = '800';
+        headerCard.innerHTML = `
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0284c7" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>¡Tu compañero/a te irá indicando los pasos a dibujar!</span>
+        `;
+        stage.appendChild(headerCard);
 
-        // Columna Izquierda: Instrucciones para el Guía
-        const leftCol = document.createElement('div');
-        leftCol.style.background = '#ffffff';
-        leftCol.style.border = '2.5px solid #bfdbfe';
-        leftCol.style.borderRadius = '22px';
-        leftCol.style.padding = '1.2rem 1.3rem';
-        leftCol.style.boxShadow = '0 8px 24px rgba(2, 132, 199, 0.08)';
-        leftCol.style.display = 'flex';
-        leftCol.style.flexDirection = 'column';
-        leftCol.style.justifyContent = 'space-between';
-        leftCol.style.boxSizing = 'border-box';
+        // Gran Lienzo de Dibujo Digital (sin pasos predefinidos, sin tiempo)
+        const canvasObj = this.createDrawingCanvas(940, 420);
+        stage.appendChild(canvasObj.element);
 
-        const pasos = actividad.pasos || [
-            { num: 1, inst: "Dibuja un círculo grande para la cabeza." },
-            { num: 2, inst: "Añade dos orejas triangulares arriba." },
-            { num: 3, inst: "Dibuja dos ojos, nariz y bigotes." },
-            { num: 4, inst: "Dibuja el cuerpo redondeado abajo." },
-            { num: 5, inst: "¡Ponle cola y decora con colores!" }
-        ];
-
-        let pasoIndex = 0;
-
-        const leftHeader = document.createElement('div');
-        const roleBadge = document.createElement('span');
-        roleBadge.style.background = '#eff6ff';
-        roleBadge.style.color = '#1d4ed8';
-        roleBadge.style.padding = '0.25rem 0.8rem';
-        roleBadge.style.borderRadius = '9999px';
-        roleBadge.style.fontWeight = '900';
-        roleBadge.style.fontSize = '0.8rem';
-        roleBadge.style.textTransform = 'uppercase';
-        roleBadge.textContent = 'Misión: Alumno Guía';
-        leftHeader.appendChild(roleBadge);
-
-        const guideTitle = document.createElement('h3');
-        guideTitle.style.fontSize = '1.25rem';
-        guideTitle.style.fontWeight = '900';
-        guideTitle.style.color = '#1e3a8a';
-        guideTitle.style.margin = '0.5rem 0 0.2rem 0';
-        guideTitle.textContent = actividad.titulo;
-        leftHeader.appendChild(guideTitle);
-
-        const guideSub = document.createElement('p');
-        guideSub.style.fontSize = '0.88rem';
-        guideSub.style.color = '#64748b';
-        guideSub.style.margin = '0 0 0.8rem 0';
-        guideSub.textContent = 'Lee las instrucciones paso a paso a tu compañero/a:';
-        leftHeader.appendChild(guideSub);
-        leftCol.appendChild(leftHeader);
-
-        // Tarjeta de Paso Activo
-        const stepCard = document.createElement('div');
-        stepCard.style.background = '#f8fafc';
-        stepCard.style.border = '2px solid #e2e8f0';
-        stepCard.style.borderRadius = '16px';
-        stepCard.style.padding = '0.9rem 1rem';
-        stepCard.style.flex = '1';
-        stepCard.style.display = 'flex';
-        stepCard.style.flexDirection = 'column';
-        stepCard.style.justifyContent = 'center';
-
-        const stepBadge = document.createElement('div');
-        stepBadge.style.fontSize = '0.88rem';
-        stepBadge.style.fontWeight = '900';
-        stepBadge.style.color = '#0284c7';
-        stepBadge.style.marginBottom = '0.4rem';
-        stepBadge.textContent = `Paso 1 de ${pasos.length}`;
-        stepCard.appendChild(stepBadge);
-
-        const stepText = document.createElement('div');
-        stepText.style.fontSize = '1.18rem';
-        stepText.style.fontWeight = '800';
-        stepText.style.color = '#0f172a';
-        stepText.style.lineHeight = '1.4';
-        stepText.textContent = pasos[0].inst;
-        stepCard.appendChild(stepText);
-        leftCol.appendChild(stepCard);
-
-        // Botones de navegación de pasos
-        const stepNav = document.createElement('div');
-        stepNav.style.display = 'flex';
-        stepNav.style.gap = '0.6rem';
-        stepNav.style.marginTop = '0.8rem';
-
-        const btnPrev = document.createElement('button');
-        btnPrev.type = 'button';
-        btnPrev.className = 'tactile-btn';
-        btnPrev.style.flex = '1';
-        btnPrev.style.background = '#f1f5f9';
-        btnPrev.style.color = '#475569';
-        btnPrev.style.border = '1.5px solid #cbd5e1';
-        btnPrev.style.borderRadius = '12px';
-        btnPrev.style.padding = '0.5rem';
-        btnPrev.style.fontWeight = '800';
-        btnPrev.style.fontSize = '0.92rem';
-        btnPrev.style.cursor = 'pointer';
-        btnPrev.textContent = 'Anterior';
-        btnPrev.onclick = () => {
-            if (pasoIndex > 0) {
-                pasoIndex--;
-                stepBadge.textContent = `Paso ${pasoIndex + 1} de ${pasos.length}`;
-                stepText.textContent = pasos[pasoIndex].inst;
-                if (AppState.settings.soundEnabled) Activities.playSound('tick');
-            }
-        };
-        stepNav.appendChild(btnPrev);
-
-        const btnNext = document.createElement('button');
-        btnNext.type = 'button';
-        btnNext.className = 'tactile-btn';
-        btnNext.style.flex = '1';
-        btnNext.style.background = '#0284c7';
-        btnNext.style.color = '#ffffff';
-        btnNext.style.border = '1.5px solid #0369a1';
-        btnNext.style.borderRadius = '12px';
-        btnNext.style.padding = '0.5rem';
-        btnNext.style.fontWeight = '800';
-        btnNext.style.fontSize = '0.92rem';
-        btnNext.style.cursor = 'pointer';
-        btnNext.textContent = 'Siguiente';
-        btnNext.onclick = () => {
-            if (pasoIndex < pasos.length - 1) {
-                pasoIndex++;
-                stepBadge.textContent = `Paso ${pasoIndex + 1} de ${pasos.length}`;
-                stepText.textContent = pasos[pasoIndex].inst;
-                if (AppState.settings.soundEnabled) Activities.playSound('tick');
-            } else {
-                stepBadge.textContent = '¡Completado!';
-                stepText.textContent = '¡Habéis terminado todos los pasos! Comprobad el resultado final.';
-                if (AppState.settings.soundEnabled) Activities.playSound('success');
-            }
-        };
-        stepNav.appendChild(btnNext);
-        leftCol.appendChild(stepNav);
-        mainCols.appendChild(leftCol);
-
-        // Columna Derecha: Lienzo de Dibujo Digital
-        const rightCol = document.createElement('div');
-        rightCol.style.display = 'flex';
-        rightCol.style.flexDirection = 'column';
-        rightCol.style.alignItems = 'center';
-        rightCol.style.width = '100%';
-
-        const canvasObj = this.createDrawingCanvas(520, 270);
-        rightCol.appendChild(canvasObj.element);
-        mainCols.appendChild(rightCol);
-
-        stage.appendChild(mainCols);
-
-        // Barra de Valoración de la Profe (Oops, Bien, Genial)
-        const evalBar = this.createTeacherEvalBar(onComplete);
+        // Barra de Valoración de la Profe (3 Botones directos sin recuadro blanco: Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar(onComplete, { marginTop: '0.8rem' });
         stage.appendChild(evalBar);
 
         container.appendChild(stage);
-    },
-
-    // ==============================================================
-    // 4. RENDER SEGUIR RITMOS (PATRONES RÍTMICOS MUSICALES)
-    // ==============================================================
-    renderSeguirRitmos(actividad, container, onComplete) {
-        container.innerHTML = '';
-        container.style.position = 'relative';
-        container.style.width = '100%';
-        container.style.height = '100%';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'space-between';
-        container.style.padding = '5.6rem 1.8rem 1.4rem 1.8rem';
-        container.style.boxSizing = 'border-box';
-        container.style.background = 'radial-gradient(ellipse at 50% 90%, #ede9fe 0%, #f5f3ff 40%, #ffffff 100%)';
-        container.style.overflow = 'hidden';
-
-        // HUD flotante
-        const hud = document.createElement('div');
-        hud.style.position = 'absolute';
-        hud.style.top = '16px';
-        hud.style.left = '50%';
-        hud.style.transform = 'translateX(-50%)';
-        hud.style.zIndex = '50';
-        hud.style.background = 'linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)';
-        hud.style.padding = '0.65rem 2.4rem';
-        hud.style.borderRadius = '9999px';
-        hud.style.boxShadow = '0 10px 25px rgba(124, 58, 237, 0.35)';
-        hud.style.border = '2.5px solid #ffffff';
-        hud.style.display = 'flex';
-        hud.style.alignItems = 'center';
-        hud.style.gap = '1.6rem';
-        hud.style.pointerEvents = 'none';
-        hud.style.whiteSpace = 'nowrap';
-        hud.style.width = 'max-content';
-        hud.style.maxWidth = '92vw';
-        hud.style.boxSizing = 'border-box';
-
-        hud.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>Taller Creativo · Seguir el Ritmo</span>
-            </div>
-            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Oído y Coordinación
-            </div>
-        `;
-        container.appendChild(hud);
-
-        // Escenario Central
-        const stage = document.createElement('div');
-        stage.style.flex = '1';
-        stage.style.display = 'flex';
-        stage.style.flexDirection = 'column';
-        stage.style.alignItems = 'center';
-        stage.style.justifyContent = 'center';
-        stage.style.width = '100%';
-        stage.style.maxWidth = '880px';
-        stage.style.margin = 'auto';
-        stage.style.boxSizing = 'border-box';
-
-        const secuencia = actividad.secuencia || ['tambor', 'tambor', 'palmas'];
-        let currentIndex = 0;
-        let isPlayingSequence = false;
-
-        // Cabecera del ritmo
-        const titleRow = document.createElement('div');
-        titleRow.style.textAlign = 'center';
-        titleRow.style.marginBottom = '0.9rem';
-
-        const h3 = document.createElement('h3');
-        h3.style.fontSize = '1.75rem';
-        h3.style.fontWeight = '900';
-        h3.style.color = '#5b21b6';
-        h3.style.margin = '0 0 0.25rem 0';
-        h3.textContent = actividad.titulo;
-        titleRow.appendChild(h3);
-
-        const sub = document.createElement('p');
-        sub.style.fontSize = '1.15rem';
-        sub.style.color = '#334155';
-        sub.style.fontWeight = '700';
-        sub.style.margin = '0';
-        sub.textContent = actividad.desc || '¡Escucha la secuencia rítmica y repítela con tu clase!';
-        titleRow.appendChild(sub);
-        stage.appendChild(titleRow);
-
-        // Barra de línea de tiempo con círculos de compás
-        const timelineBox = document.createElement('div');
-        timelineBox.style.display = 'flex';
-        timelineBox.style.alignItems = 'center';
-        timelineBox.style.justifyContent = 'center';
-        timelineBox.style.gap = '0.9rem';
-        timelineBox.style.marginBottom = '1.3rem';
-
-        const beatDots = [];
-        secuencia.forEach((inst, idx) => {
-            const dot = document.createElement('div');
-            dot.style.width = '38px';
-            dot.style.height = '38px';
-            dot.style.borderRadius = '50%';
-            dot.style.border = '3px solid #cbd5e1';
-            dot.style.background = '#ffffff';
-            dot.style.display = 'flex';
-            dot.style.alignItems = 'center';
-            dot.style.justifyContent = 'center';
-            dot.style.fontWeight = '900';
-            dot.style.fontSize = '1.1rem';
-            dot.style.color = '#64748b';
-            dot.style.boxShadow = '0 4px 10px rgba(0,0,0,0.06)';
-            dot.textContent = `${idx + 1}`;
-            beatDots.push(dot);
-            timelineBox.appendChild(dot);
-        });
-        stage.appendChild(timelineBox);
-
-        // Botón principal de escuchar el ritmo
-        const btnListen = document.createElement('button');
-        btnListen.type = 'button';
-        btnListen.className = 'tactile-btn';
-        btnListen.style.background = '#7c3aed';
-        btnListen.style.color = '#ffffff';
-        btnListen.style.border = '2.5px solid #6d28d9';
-        btnListen.style.boxShadow = '0 5px 0 #5b21b6';
-        btnListen.style.borderRadius = '20px';
-        btnListen.style.padding = '0.65rem 1.8rem';
-        btnListen.style.fontSize = '1.25rem';
-        btnListen.style.fontWeight = '900';
-        btnListen.style.cursor = 'pointer';
-        btnListen.style.display = 'inline-flex';
-        btnListen.style.alignItems = 'center';
-        btnListen.style.gap = '0.65rem';
-        btnListen.style.marginBottom = '1.4rem';
-        btnListen.innerHTML = `
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-            <span>¡Escuchar Ritmo!</span>
-        `;
-        stage.appendChild(btnListen);
-
-        // 4 Pads táctiles de Instrumentos
-        const padsGrid = document.createElement('div');
-        padsGrid.style.display = 'grid';
-        padsGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        padsGrid.style.gap = '1.1rem';
-        padsGrid.style.width = '100%';
-        padsGrid.style.maxWidth = '780px';
-        padsGrid.style.marginBottom = '1.3rem';
-
-        const instruments = [
-            {
-                id: 'tambor',
-                nombre: 'Tambor',
-                color: '#1e3a8a',
-                bg: '#eff6ff',
-                border: '#3b82f6',
-                shadow: '#2563eb',
-                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="8"/><path d="M4 7v10c0 2.2 3.6 4 8 4s8-1.8 8-4V7"/><path d="m4 11 8 4 8-4"/></svg>`
-            },
-            {
-                id: 'palmas',
-                nombre: 'Palmas',
-                color: '#b45309',
-                bg: '#fffbeb',
-                border: '#f59e0b',
-                shadow: '#d97706',
-                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>`
-            },
-            {
-                id: 'triangulo',
-                nombre: 'Triángulo',
-                color: '#047857',
-                bg: '#f0fdf4',
-                border: '#10b981',
-                shadow: '#059669',
-                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="2" x2="12" y2="4"/></svg>`
-            },
-            {
-                id: 'maraca',
-                nombre: 'Maraca',
-                color: '#be123c',
-                bg: '#fff1f2',
-                border: '#f43f5e',
-                shadow: '#e11d48',
-                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/><circle cx="10" cy="7" r=".8" fill="currentColor"/><circle cx="14" cy="7" r=".8" fill="currentColor"/><circle cx="12" cy="10" r=".8" fill="currentColor"/></svg>`
-            }
-        ];
-
-        const padButtons = {};
-
-        instruments.forEach(inst => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'tactile-btn';
-            btn.id = 'pad-' + inst.id;
-            btn.style.height = '120px';
-            btn.style.background = '#ffffff';
-            btn.style.border = `3px solid ${inst.border}`;
-            btn.style.borderRadius = '22px';
-            btn.style.color = inst.color;
-            btn.style.boxShadow = `0 6px 0 ${inst.shadow}`;
-            btn.style.display = 'flex';
-            btn.style.flexDirection = 'column';
-            btn.style.alignItems = 'center';
-            btn.style.justifyContent = 'center';
-            btn.style.gap = '0.5rem';
-            btn.style.cursor = 'pointer';
-            btn.style.transition = 'transform 0.15s, background 0.15s, box-shadow 0.15s';
-            btn.style.boxSizing = 'border-box';
-
-            btn.innerHTML = `
-                ${inst.svg}
-                <span style="font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px;">${inst.nombre}</span>
-            `;
-
-            function triggerPadVisual() {
-                btn.style.transform = 'scale(0.94)';
-                btn.style.background = inst.bg;
-                btn.style.boxShadow = `0 2px 0 ${inst.shadow}`;
-                setTimeout(() => {
-                    btn.style.transform = 'scale(1)';
-                    btn.style.background = '#ffffff';
-                    btn.style.boxShadow = `0 6px 0 ${inst.shadow}`;
-                }, 160);
-            }
-
-            btn.onclick = () => {
-                if (isPlayingSequence) return;
-                triggerPadVisual();
-                if (AppState.settings.soundEnabled) Activities.playSound(inst.id);
-
-                // Comprobar si coincide con el tiempo esperado
-                if (secuencia[currentIndex] === inst.id) {
-                    // Acierto en este tiempo
-                    beatDots[currentIndex].style.background = '#10b981';
-                    beatDots[currentIndex].style.borderColor = '#059669';
-                    beatDots[currentIndex].style.color = '#ffffff';
-                    beatDots[currentIndex].textContent = '✓';
-                    currentIndex++;
-
-                    if (currentIndex === secuencia.length) {
-                        // ¡Secuencia completada con éxito!
-                        padsGrid.style.pointerEvents = 'none';
-                        setTimeout(() => {
-                            if (AppState.settings.soundEnabled) Activities.playSound('victory');
-                            onComplete(true);
-                        }, 500);
-                    }
-                } else {
-                    // Fallo: reiniciar intento
-                    if (AppState.settings.soundEnabled) Activities.playSound('error');
-                    timelineBox.style.animation = 'shake 0.4s';
-                    setTimeout(() => {
-                        timelineBox.style.animation = '';
-                        currentIndex = 0;
-                        beatDots.forEach((d, idx) => {
-                            d.style.background = '#ffffff';
-                            d.style.borderColor = '#cbd5e1';
-                            d.style.color = '#64748b';
-                            d.textContent = `${idx + 1}`;
-                        });
-                    }, 450);
-                }
-            };
-
-            padButtons[inst.id] = { btn, triggerPadVisual };
-            padsGrid.appendChild(btn);
-        });
-        stage.appendChild(padsGrid);
-
-        // Lógica de reproducción de secuencia automática
-        btnListen.onclick = () => {
-            if (isPlayingSequence) return;
-            isPlayingSequence = true;
-            btnListen.style.opacity = '0.6';
-            btnListen.style.pointerEvents = 'none';
-            padsGrid.style.pointerEvents = 'none';
-            currentIndex = 0;
-
-            beatDots.forEach((d, idx) => {
-                d.style.background = '#ffffff';
-                d.style.borderColor = '#cbd5e1';
-                d.style.color = '#64748b';
-                d.textContent = `${idx + 1}`;
-            });
-
-            secuencia.forEach((instId, i) => {
-                setTimeout(() => {
-                    const pad = padButtons[instId];
-                    if (pad) {
-                        pad.triggerPadVisual();
-                        if (AppState.settings.soundEnabled) Activities.playSound(instId);
-                    }
-                    beatDots[i].style.background = '#fef08a';
-                    beatDots[i].style.borderColor = '#eab308';
-                    beatDots[i].style.color = '#854d0e';
-
-                    if (i === secuencia.length - 1) {
-                        setTimeout(() => {
-                            isPlayingSequence = false;
-                            btnListen.style.opacity = '1';
-                            btnListen.style.pointerEvents = 'auto';
-                            padsGrid.style.pointerEvents = 'auto';
-                            beatDots.forEach((d, idx) => {
-                                d.style.background = '#ffffff';
-                                d.style.borderColor = '#cbd5e1';
-                                d.style.color = '#64748b';
-                                d.textContent = `${idx + 1}`;
-                            });
-                        }, 500);
-                    }
-                }, i * (actividad.tempo || 480));
-            });
-        };
-
-        // Botón rápido para el profesor (si la clase lo hizo con palmas en el aula)
-        const classSuccessRow = document.createElement('div');
-        classSuccessRow.style.display = 'flex';
-        classSuccessRow.style.justifyContent = 'center';
-        classSuccessRow.style.width = '100%';
-
-        const btnClassWin = document.createElement('button');
-        btnClassWin.type = 'button';
-        btnClassWin.className = 'tactile-btn';
-        btnClassWin.style.background = '#dcfce7';
-        btnClassWin.style.color = '#15803d';
-        btnClassWin.style.border = '2px solid #16a34a';
-        btnClassWin.style.boxShadow = '0 4px 0 #15803d';
-        btnClassWin.style.borderRadius = '16px';
-        btnClassWin.style.padding = '0.55rem 1.4rem';
-        btnClassWin.style.fontSize = '1.05rem';
-        btnClassWin.style.fontWeight = '900';
-        btnClassWin.style.cursor = 'pointer';
-        btnClassWin.style.display = 'inline-flex';
-        btnClassWin.style.alignItems = 'center';
-        btnClassWin.style.gap = '0.5rem';
-        btnClassWin.innerHTML = `
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>¡La clase lo ha conseguido en voz alta / con palmas!</span>
-        `;
-        btnClassWin.onclick = () => {
-            if (AppState.settings.soundEnabled) Activities.playSound('victory');
-            onComplete(true);
-        };
-        classSuccessRow.appendChild(btnClassWin);
-        stage.appendChild(classSuccessRow);
-
-        container.appendChild(stage);
-    },
-
-    // ==============================================================
-    // 5. RENDER MEZCLA DE COLORES (LABORATORIO DE COLOR Y PINTURA)
-    // ==============================================================
-    renderMezclaColores(actividad, container, onComplete) {
-        container.innerHTML = '';
-        container.style.position = 'relative';
-        container.style.width = '100%';
-        container.style.height = '100%';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'space-between';
-        container.style.padding = '5.6rem 2rem 1.6rem 2rem';
-        container.style.boxSizing = 'border-box';
-        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #f0fdf4 40%, #ffffff 100%)';
-        container.style.overflow = 'hidden';
-
-        // HUD flotante
-        const hud = document.createElement('div');
-        hud.style.position = 'absolute';
-        hud.style.top = '16px';
-        hud.style.left = '50%';
-        hud.style.transform = 'translateX(-50%)';
-        hud.style.zIndex = '50';
-        hud.style.background = 'linear-gradient(135deg, #0f766e 0%, #0d9488 100%)';
-        hud.style.padding = '0.65rem 2.4rem';
-        hud.style.borderRadius = '9999px';
-        hud.style.boxShadow = '0 10px 25px rgba(13, 148, 136, 0.35)';
-        hud.style.border = '2.5px solid #ffffff';
-        hud.style.display = 'flex';
-        hud.style.alignItems = 'center';
-        hud.style.gap = '1.6rem';
-        hud.style.pointerEvents = 'none';
-        hud.style.whiteSpace = 'nowrap';
-        hud.style.width = 'max-content';
-        hud.style.maxWidth = '92vw';
-        hud.style.boxSizing = 'border-box';
-
-        hud.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                <span>Taller Creativo · El Laboratorio del Color</span>
-            </div>
-            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Teoría del Color
-            </div>
-        `;
-        container.appendChild(hud);
-
-        // Escenario Central
-        const centerStage = document.createElement('div');
-        centerStage.style.flex = '1';
-        centerStage.style.display = 'flex';
-        centerStage.style.flexDirection = 'column';
-        centerStage.style.alignItems = 'center';
-        centerStage.style.justifyContent = 'center';
-        centerStage.style.width = '100%';
-        centerStage.style.maxWidth = '880px';
-        centerStage.style.textAlign = 'center';
-        centerStage.style.boxSizing = 'border-box';
-
-        // Fórmula visual si es de mezclar colores
-        if (actividad.c1 && actividad.c2) {
-            const formulaRow = document.createElement('div');
-            formulaRow.style.display = 'flex';
-            formulaRow.style.alignItems = 'center';
-            formulaRow.style.justifyContent = 'center';
-            formulaRow.style.gap = '1.2rem';
-            formulaRow.style.marginBottom = '1.2rem';
-
-            // Gotita Color 1
-            const drop1 = document.createElement('div');
-            drop1.style.display = 'flex';
-            drop1.style.flexDirection = 'column';
-            drop1.style.alignItems = 'center';
-            drop1.style.gap = '0.35rem';
-            drop1.innerHTML = `
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: ${actividad.c1.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
-                <span style="font-weight: 900; font-size: 0.95rem; color: #1e293b;">${actividad.c1.nombre}</span>
-            `;
-            formulaRow.appendChild(drop1);
-
-            const plusSym = document.createElement('span');
-            plusSym.style.fontSize = '2.2rem';
-            plusSym.style.fontWeight = '900';
-            plusSym.style.color = '#64748b';
-            plusSym.textContent = '+';
-            formulaRow.appendChild(plusSym);
-
-            // Gotita Color 2
-            const drop2 = document.createElement('div');
-            drop2.style.display = 'flex';
-            drop2.style.flexDirection = 'column';
-            drop2.style.alignItems = 'center';
-            drop2.style.gap = '0.35rem';
-            drop2.innerHTML = `
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: ${actividad.c2.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
-                <span style="font-weight: 900; font-size: 0.95rem; color: #1e293b;">${actividad.c2.nombre}</span>
-            `;
-            formulaRow.appendChild(drop2);
-
-            const arrowSym = document.createElement('span');
-            arrowSym.style.fontSize = '2.2rem';
-            arrowSym.style.fontWeight = '900';
-            arrowSym.style.color = '#0284c7';
-            arrowSym.textContent = '➔';
-            formulaRow.appendChild(arrowSym);
-
-            // Gota incógnita con interrogación
-            const mysteryDrop = document.createElement('div');
-            mysteryDrop.style.display = 'flex';
-            mysteryDrop.style.flexDirection = 'column';
-            mysteryDrop.style.alignItems = 'center';
-            mysteryDrop.style.gap = '0.35rem';
-            mysteryDrop.innerHTML = `
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: #ffffff; border: 3.5px dashed #0284c7; box-shadow: 0 6px 16px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: #0284c7;">?</div>
-                <span style="font-weight: 900; font-size: 0.95rem; color: #0284c7;">¿Qué color?</span>
-            `;
-            formulaRow.appendChild(mysteryDrop);
-            centerStage.appendChild(formulaRow);
-        } else if (actividad.c1 && !actividad.c2) {
-            // Inversa: Mostrar color resultante y preguntar por los componentes
-            const formulaRow = document.createElement('div');
-            formulaRow.style.display = 'flex';
-            formulaRow.style.alignItems = 'center';
-            formulaRow.style.justifyContent = 'center';
-            formulaRow.style.gap = '1.2rem';
-            formulaRow.style.marginBottom = '1.2rem';
-
-            const targetDrop = document.createElement('div');
-            targetDrop.style.display = 'flex';
-            targetDrop.style.flexDirection = 'column';
-            targetDrop.style.alignItems = 'center';
-            targetDrop.style.gap = '0.35rem';
-            targetDrop.innerHTML = `
-                <div style="width: 64px; height: 64px; border-radius: 50%; background: ${actividad.c1.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
-                <span style="font-weight: 900; font-size: 1rem; color: #1e293b;">${actividad.c1.nombre}</span>
-            `;
-            formulaRow.appendChild(targetDrop);
-
-            const eqSym = document.createElement('span');
-            eqSym.style.fontSize = '2.2rem';
-            eqSym.style.fontWeight = '900';
-            eqSym.style.color = '#0284c7';
-            eqSym.textContent = '=';
-            formulaRow.appendChild(eqSym);
-
-            const mysteryBox = document.createElement('div');
-            mysteryBox.style.background = '#e0f2fe';
-            mysteryBox.style.border = '2.5px dashed #0284c7';
-            mysteryBox.style.padding = '0.6rem 1.4rem';
-            mysteryBox.style.borderRadius = '16px';
-            mysteryBox.style.fontWeight = '900';
-            mysteryBox.style.color = '#0369a1';
-            mysteryBox.style.fontSize = '1.15rem';
-            mysteryBox.textContent = '¿? + ¿?';
-            formulaRow.appendChild(mysteryBox);
-            centerStage.appendChild(formulaRow);
-        }
-
-        // Título de la pregunta
-        const qTitle = document.createElement('h2');
-        qTitle.style.fontSize = '1.75rem';
-        qTitle.style.marginBottom = '1.2rem';
-        qTitle.style.color = '#0f172a';
-        qTitle.style.lineHeight = '1.35';
-        qTitle.textContent = actividad.pregunta;
-        centerStage.appendChild(qTitle);
-        container.appendChild(centerStage);
-
-        // 4 Opciones Táctiles con muestras de color
-        const workArea = document.createElement('div');
-        workArea.style.display = 'grid';
-        workArea.style.gridTemplateColumns = 'repeat(2, 1fr)';
-        workArea.style.gap = '1.1rem';
-        workArea.style.width = '100%';
-        workArea.style.maxWidth = '880px';
-        workArea.style.flexShrink = '0';
-
-        const letters = ['A', 'B', 'C', 'D'];
-        actividad.opciones.forEach((opc, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'tactile-btn tactile-btn-white';
-            btn.style.padding = '0.9rem 1.4rem';
-            btn.style.height = '72px';
-            btn.style.borderRadius = '20px';
-            btn.style.display = 'flex';
-            btn.style.flexDirection = 'row';
-            btn.style.alignItems = 'center';
-            btn.style.justifyContent = 'flex-start';
-            btn.style.gap = '1.1rem';
-            btn.style.boxSizing = 'border-box';
-            btn.style.cursor = 'pointer';
-
-            const badge = document.createElement('span');
-            badge.style.width = '38px';
-            badge.style.height = '38px';
-            badge.style.borderRadius = '12px';
-            badge.style.background = '#e2e8f0';
-            badge.style.color = '#334155';
-            badge.style.display = 'flex';
-            badge.style.alignItems = 'center';
-            badge.style.justifyContent = 'center';
-            badge.style.fontWeight = '900';
-            badge.style.fontSize = '1.1rem';
-            badge.textContent = letters[index] || '•';
-            btn.appendChild(badge);
-
-            // Muestra de color (swatch)
-            if (opc.hex) {
-                const swatch = document.createElement('span');
-                swatch.style.width = '34px';
-                swatch.style.height = '34px';
-                swatch.style.borderRadius = '50%';
-                swatch.style.background = opc.hex;
-                swatch.style.border = '2px solid rgba(0,0,0,0.12)';
-                swatch.style.boxShadow = '0 2px 6px rgba(0,0,0,0.12)';
-                swatch.style.flexShrink = '0';
-                btn.appendChild(swatch);
-            }
-
-            const textSpan = document.createElement('span');
-            textSpan.style.flex = '1';
-            textSpan.style.fontSize = '1.25rem';
-            textSpan.style.fontWeight = '800';
-            textSpan.style.color = '#0f172a';
-            textSpan.style.textAlign = 'left';
-            textSpan.textContent = opc.nombre;
-            btn.appendChild(textSpan);
-
-            btn.onclick = () => {
-                const esCorrecto = index === actividad.respuesta;
-                this.feedback(esCorrecto, btn, badge, onComplete);
-            };
-
-            workArea.appendChild(btn);
-        });
-
-        container.appendChild(workArea);
     },
 
     renderStandard(actividad, container, onComplete) {
