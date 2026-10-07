@@ -2545,22 +2545,6 @@ window.Activities = {
 
         centerStage.appendChild(wasteCard);
 
-        // Banner de Explicación Educativa (inicialmente oculto)
-        const expBanner = document.createElement('div');
-        expBanner.style.display = 'none';
-        expBanner.style.background = '#ffffff';
-        expBanner.style.padding = '0.8rem 1.8rem';
-        expBanner.style.borderRadius = '20px';
-        expBanner.style.border = '3px solid #10b981';
-        expBanner.style.boxShadow = '0 10px 25px rgba(16, 185, 129, 0.25)';
-        expBanner.style.fontSize = '1.15rem';
-        expBanner.style.fontWeight = '800';
-        expBanner.style.color = '#065f46';
-        expBanner.style.textAlign = 'center';
-        expBanner.style.maxWidth = '680px';
-        expBanner.style.marginTop = '0.6rem';
-        centerStage.appendChild(expBanner);
-
         container.appendChild(centerStage);
 
         // Fila Inferior con los 4 Contenedores (Papeleras limpias sin marcos ni textos extras)
@@ -2590,7 +2574,7 @@ window.Activities = {
                 if (AppState.settings.soundEnabled) Activities.playSound('success');
 
                 // Animación de absorción del residuo
-                wasteCard.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                wasteCard.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
                 wasteCard.style.transform = 'scale(0) translateY(120px)';
                 wasteCard.style.opacity = '0';
 
@@ -2604,12 +2588,8 @@ window.Activities = {
                     }
                 }
 
-                // Mostrar explicación didáctica
-                expBanner.textContent = '✓ ' + actividad.residuo.explicacion;
-                expBanner.style.display = 'block';
-                expBanner.style.animation = 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-
-                setTimeout(() => onComplete(true), 1300);
+                // Pasar directamente a la victoria con un pelín más de pausa celebratoria
+                setTimeout(() => onComplete(true), 850);
             } else {
                 if (AppState.settings.soundEnabled) Activities.playSound('error');
                 if (triggerElement) {
@@ -2867,22 +2847,6 @@ window.Activities = {
 
         centerStage.appendChild(animalCard);
 
-        // Banner Explicativo (inicialmente oculto)
-        const expBanner = document.createElement('div');
-        expBanner.style.display = 'none';
-        expBanner.style.background = '#ffffff';
-        expBanner.style.padding = '0.85rem 1.8rem';
-        expBanner.style.borderRadius = '20px';
-        expBanner.style.border = '3px solid #0284c7';
-        expBanner.style.boxShadow = '0 10px 25px rgba(2, 132, 199, 0.25)';
-        expBanner.style.fontSize = '1.15rem';
-        expBanner.style.fontWeight = '800';
-        expBanner.style.color = '#0369a1';
-        expBanner.style.textAlign = 'center';
-        expBanner.style.maxWidth = '720px';
-        expBanner.style.marginTop = '0.6rem';
-        centerStage.appendChild(expBanner);
-
         container.appendChild(centerStage);
 
         // Fila de Hábitats (3 o 4 tarjetas)
@@ -2907,24 +2871,20 @@ window.Activities = {
                 if (AppState.settings.soundEnabled) Activities.playSound('success');
 
                 // Absorber animal al hábitat
-                animalCard.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                animalCard.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
                 animalCard.style.transform = 'scale(0) translateY(120px)';
                 animalCard.style.opacity = '0';
 
                 // Iluminar hábitat ganador
                 const targetHab = habitatElements[habitatId];
                 if (targetHab) {
-                    targetHab.style.transform = 'scale(1.1) translateY(-10px)';
-                    targetHab.style.boxShadow = '0 20px 40px rgba(0,0,0,0.35)';
+                    targetHab.style.transform = 'scale(1.08) translateY(-10px)';
+                    targetHab.style.boxShadow = '0 22px 45px rgba(0,0,0,0.35), 0 0 25px rgba(254, 240, 138, 0.7)';
                     targetHab.style.borderColor = '#fef08a';
                 }
 
-                // Mostrar explicación
-                expBanner.textContent = '✓ ' + actividad.animal.explicacion;
-                expBanner.style.display = 'block';
-                expBanner.style.animation = 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-
-                setTimeout(() => onComplete(true), 1400);
+                // Pasar directamente a la victoria con un pelín más de pausa celebratoria
+                setTimeout(() => onComplete(true), 850);
             } else {
                 if (AppState.settings.soundEnabled) Activities.playSound('error');
                 if (triggerElement) {
@@ -3192,22 +3152,6 @@ window.Activities = {
 
         centerStage.appendChild(situationCard);
 
-        // Banner Explicativo de Seguridad Vial (inicialmente oculto)
-        const expBanner = document.createElement('div');
-        expBanner.style.display = 'none';
-        expBanner.style.background = '#ffffff';
-        expBanner.style.padding = '0.85rem 1.8rem';
-        expBanner.style.borderRadius = '20px';
-        expBanner.style.border = '3px solid #10b981';
-        expBanner.style.boxShadow = '0 10px 25px rgba(16, 185, 129, 0.25)';
-        expBanner.style.fontSize = '1.15rem';
-        expBanner.style.fontWeight = '800';
-        expBanner.style.color = '#065f46';
-        expBanner.style.textAlign = 'center';
-        expBanner.style.maxWidth = '740px';
-        expBanner.style.marginTop = '0.6rem';
-        centerStage.appendChild(expBanner);
-
         container.appendChild(centerStage);
 
         // Fila Inferior con las Dos Ceras de Colores (Verde y Roja)
@@ -3245,13 +3189,8 @@ window.Activities = {
                         : 'drop-shadow(0 0 25px rgba(239, 68, 68, 0.95)) drop-shadow(0 14px 25px rgba(0,0,0,0.3))';
                 }
 
-                expBanner.textContent = (actividad.esSeguro ? '✓ ¡Conducta Segura! ' : '✕ ¡Conducta Peligrosa! ') + actividad.explicacion;
-                expBanner.style.borderColor = actividad.esSeguro ? '#10b981' : '#ef4444';
-                expBanner.style.color = actividad.esSeguro ? '#065f46' : '#991b1b';
-                expBanner.style.display = 'block';
-                expBanner.style.animation = 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-
-                setTimeout(() => onComplete(true), 1350);
+                // Pasar directamente a la victoria con un pelín más de pausa celebratoria
+                setTimeout(() => onComplete(true), 850);
             } else {
                 if (AppState.settings.soundEnabled) Activities.playSound('error');
                 triggerCrayon.style.animation = 'shake 0.45s';
@@ -3259,7 +3198,7 @@ window.Activities = {
             }
         };
 
-        // 1. CERA VERDE (¡ES SEGURO!) - Botón con forma real de cera escolar
+        // 1. CERA VERDE (¡ES SEGURO!) - Botón con forma real de cera escolar sin borde blanco
         const greenCrayon = document.createElement('button');
         greenCrayon.className = 'cera-vial-btn cera-verde';
         greenCrayon.style.background = 'transparent';
@@ -3289,41 +3228,38 @@ window.Activities = {
                         <stop offset="100%" stop-color="#047857"/>
                     </linearGradient>
                     <linearGradient id="wrapGradVerde" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#059669"/>
-                        <stop offset="20%" stop-color="#10b981"/>
-                        <stop offset="80%" stop-color="#047857"/>
+                        <stop offset="0%" stop-color="#047857"/>
+                        <stop offset="20%" stop-color="#059669"/>
+                        <stop offset="75%" stop-color="#047857"/>
                         <stop offset="100%" stop-color="#064e3b"/>
                     </linearGradient>
                 </defs>
 
                 <!-- Cuerpo cilíndrico de cera base -->
-                <rect x="46" y="14" width="264" height="56" rx="10" fill="url(#bodyGradVerde)"/>
+                <rect x="46" y="14" width="264" height="56" rx="8" fill="url(#bodyGradVerde)"/>
 
                 <!-- Punta afilada cónica de cera -->
-                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradVerde)" stroke="#047857" stroke-width="1.2"/>
-                <path d="M 46 17 C 36 24, 22 35, 12 41 C 24 38, 38 29, 46 23 Z" fill="rgba(255,255,255,0.45)"/>
+                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradVerde)" stroke="#047857" stroke-width="1"/>
 
-                <!-- Faja / Etiqueta de papel de la cera -->
-                <rect x="62" y="11" width="232" height="62" rx="6" fill="url(#wrapGradVerde)" stroke="#ffffff" stroke-width="2.5"/>
+                <!-- Faja / Etiqueta de papel de la cera (sin borde blanco) -->
+                <rect x="60" y="12" width="236" height="60" rx="4" fill="url(#wrapGradVerde)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
                 
-                <!-- Franjas decorativas clásicas de cera escolar -->
-                <line x1="74" y1="12" x2="74" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
-                <line x1="82" y1="12" x2="82" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-                <line x1="88" y1="12" x2="88" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+                <!-- Franjas decorativas oscuras clásicas de cera escolar -->
+                <line x1="72" y1="12" x2="72" y2="72" stroke="rgba(0,0,0,0.35)" stroke-width="5"/>
+                <line x1="84" y1="12" x2="84" y2="72" stroke="rgba(0,0,0,0.22)" stroke-width="3"/>
 
-                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
-                <line x1="278" y1="12" x2="278" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-                <line x1="286" y1="12" x2="286" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.22)" stroke-width="3"/>
+                <line x1="284" y1="12" x2="284" y2="72" stroke="rgba(0,0,0,0.35)" stroke-width="5"/>
 
-                <!-- Brillo cilíndrico superior -->
-                <rect x="63" y="17" width="230" height="6" fill="rgba(255,255,255,0.28)" rx="3"/>
+                <!-- Brillo cilíndrico sutil superior -->
+                <rect x="60" y="16" width="236" height="5" fill="rgba(255,255,255,0.18)" rx="2"/>
 
-                <!-- Círculo blanco con tick de verificación -->
-                <circle cx="114" cy="42" r="16" fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
-                <path d="M 106 42 L 111 47 L 122 36" fill="none" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Círculo con tick de verificación -->
+                <circle cx="112" cy="42" r="16" fill="rgba(255, 255, 255, 0.95)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.25))"/>
+                <path d="M 104 42 L 109 47 L 120 36" fill="none" stroke="#047857" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 
                 <!-- Texto de la cera -->
-                <text x="138" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.45);">¡ES SEGURO!</text>
+                <text x="136" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">¡ES SEGURO!</text>
             </svg>
         `;
 
@@ -3337,7 +3273,7 @@ window.Activities = {
         greenCrayon.onclick = () => checkAnswer(true, greenCrayon);
         crayonsRow.appendChild(greenCrayon);
 
-        // 2. CERA ROJA (¡ES PELIGROSO!) - Botón con forma real de cera escolar
+        // 2. CERA ROJA (¡ES PELIGROSO!) - Botón con forma real de cera escolar sin borde blanco
         const redCrayon = document.createElement('button');
         redCrayon.className = 'cera-vial-btn cera-roja';
         redCrayon.style.background = 'transparent';
@@ -3355,7 +3291,7 @@ window.Activities = {
             <svg viewBox="0 0 320 84" width="310" height="82" style="display: block; overflow: visible; filter: drop-shadow(0 10px 18px rgba(220, 38, 38, 0.35)); transition: transform 0.2s ease, filter 0.2s ease;">
                 <defs>
                     <linearGradient id="tipGradRoja" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#fca5a5"/>
+                        <stop offset="0%" stop-color="#f87171"/>
                         <stop offset="35%" stop-color="#ef4444"/>
                         <stop offset="80%" stop-color="#dc2626"/>
                         <stop offset="100%" stop-color="#b91c1c"/>
@@ -3367,41 +3303,38 @@ window.Activities = {
                         <stop offset="100%" stop-color="#991b1b"/>
                     </linearGradient>
                     <linearGradient id="wrapGradRoja" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#dc2626"/>
-                        <stop offset="20%" stop-color="#ef4444"/>
-                        <stop offset="80%" stop-color="#b91c1c"/>
+                        <stop offset="0%" stop-color="#b91c1c"/>
+                        <stop offset="20%" stop-color="#dc2626"/>
+                        <stop offset="75%" stop-color="#b91c1c"/>
                         <stop offset="100%" stop-color="#7f1d1d"/>
                     </linearGradient>
                 </defs>
 
                 <!-- Cuerpo cilíndrico de cera base -->
-                <rect x="46" y="14" width="264" height="56" rx="10" fill="url(#bodyGradRoja)"/>
+                <rect x="46" y="14" width="264" height="56" rx="8" fill="url(#bodyGradRoja)"/>
 
                 <!-- Punta afilada cónica de cera -->
-                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradRoja)" stroke="#991b1b" stroke-width="1.2"/>
-                <path d="M 46 17 C 36 24, 22 35, 12 41 C 24 38, 38 29, 46 23 Z" fill="rgba(255,255,255,0.45)"/>
+                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradRoja)" stroke="#991b1b" stroke-width="1"/>
 
-                <!-- Faja / Etiqueta de papel de la cera -->
-                <rect x="62" y="11" width="232" height="62" rx="6" fill="url(#wrapGradRoja)" stroke="#ffffff" stroke-width="2.5"/>
+                <!-- Faja / Etiqueta de papel de la cera (sin borde blanco) -->
+                <rect x="60" y="12" width="236" height="60" rx="4" fill="url(#wrapGradRoja)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
                 
-                <!-- Franjas decorativas clásicas de cera escolar -->
-                <line x1="74" y1="12" x2="74" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
-                <line x1="82" y1="12" x2="82" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-                <line x1="88" y1="12" x2="88" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+                <!-- Franjas decorativas oscuras clásicas de cera escolar -->
+                <line x1="72" y1="12" x2="72" y2="72" stroke="rgba(0,0,0,0.35)" stroke-width="5"/>
+                <line x1="84" y1="12" x2="84" y2="72" stroke="rgba(0,0,0,0.22)" stroke-width="3"/>
 
-                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
-                <line x1="278" y1="12" x2="278" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-                <line x1="286" y1="12" x2="286" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.22)" stroke-width="3"/>
+                <line x1="284" y1="12" x2="284" y2="72" stroke="rgba(0,0,0,0.35)" stroke-width="5"/>
 
-                <!-- Brillo cilíndrico superior -->
-                <rect x="63" y="17" width="230" height="6" fill="rgba(255,255,255,0.28)" rx="3"/>
+                <!-- Brillo cilíndrico sutil superior -->
+                <rect x="60" y="16" width="236" height="5" fill="rgba(255,255,255,0.18)" rx="2"/>
 
-                <!-- Círculo blanco con aspa roja -->
-                <circle cx="106" cy="42" r="16" fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
-                <path d="M 99 35 L 113 49 M 113 35 L 99 49" fill="none" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Círculo con aspa roja -->
+                <circle cx="106" cy="42" r="16" fill="rgba(255, 255, 255, 0.95)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.25))"/>
+                <path d="M 99 35 L 113 49 M 113 35 L 99 49" fill="none" stroke="#b91c1c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 
                 <!-- Texto de la cera -->
-                <text x="130" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="19" fill="#ffffff" letter-spacing="0.5" style="text-shadow: 0 2px 4px rgba(0,0,0,0.45);">¡ES PELIGROSO!</text>
+                <text x="130" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="19" fill="#ffffff" letter-spacing="0.5" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);">¡ES PELIGROSO!</text>
             </svg>
         `;
 
