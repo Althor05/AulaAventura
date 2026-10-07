@@ -8,7 +8,7 @@ window.seleccionarCurso = function(cursoId) {
 };
 
 Router.addRoute('/mapa', () => `
-    <div class="view" id="view-mapa" style="min-height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%;">
+    <div class="view" id="view-mapa" style="height: 100vh; max-height: 100vh; padding: 0 !important; display: flex; flex-direction: column; width: 100%; overflow: hidden;">
         
         <!-- Barra Superior Full-Width Coherente con Inicio y Cursos -->
         <header class="home-top-bar">
@@ -99,7 +99,7 @@ Router.addRoute('/mapa', () => `
                     <div class="zone-info-card">
                         <span class="zone-mini-dot dot-castillo"></span>
                         <span class="zone-title">Castillo del Saber</span>
-                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-reward-badge">${window.AppIcons ? window.AppIcons.chuchelete(18, 12) : ''} +10</span>
                         <span class="zone-hover-cta">¡Jugar!</span>
                     </div>
                 </div>
@@ -119,7 +119,7 @@ Router.addRoute('/mapa', () => `
                     <div class="zone-info-card">
                         <span class="zone-mini-dot dot-bosque"></span>
                         <span class="zone-title">Bosque de Palabras</span>
-                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-reward-badge">${window.AppIcons ? window.AppIcons.chuchelete(18, 12) : ''} +10</span>
                         <span class="zone-hover-cta">¡Jugar!</span>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ Router.addRoute('/mapa', () => `
                     <div class="zone-info-card">
                         <span class="zone-mini-dot dot-laboratorio"></span>
                         <span class="zone-title">Laboratorio</span>
-                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-reward-badge">${window.AppIcons ? window.AppIcons.chuchelete(18, 12) : ''} +10</span>
                         <span class="zone-hover-cta">¡Jugar!</span>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ Router.addRoute('/mapa', () => `
                     <div class="zone-info-card">
                         <span class="zone-mini-dot dot-biblioteca"></span>
                         <span class="zone-title">Biblioteca Quijote</span>
-                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-reward-badge">${window.AppIcons ? window.AppIcons.chuchelete(18, 12) : ''} +10</span>
                         <span class="zone-hover-cta">¡Jugar!</span>
                     </div>
                 </div>
@@ -175,7 +175,7 @@ Router.addRoute('/mapa', () => `
                     <div class="zone-info-card">
                         <span class="zone-mini-dot dot-taller"></span>
                         <span class="zone-title">Taller Creativo</span>
-                        <span class="zone-reward-badge">+10 🍬</span>
+                        <span class="zone-reward-badge">${window.AppIcons ? window.AppIcons.chuchelete(18, 12) : ''} +10</span>
                         <span class="zone-hover-cta">¡Jugar!</span>
                     </div>
                 </div>
@@ -323,12 +323,29 @@ window.GameCore = {
 
     handleActivityComplete(acierto) {
         const nivel = AppState.currentLevel || 'primaria1';
-        if (acierto) {
+        let chuchesGanados = 10;
+        let esCorrecto = false;
+
+        if (typeof acierto === 'object' && acierto !== null) {
+            chuchesGanados = acierto.chuches !== undefined ? acierto.chuches : (acierto.success ? 10 : 0);
+            esCorrecto = acierto.success !== undefined ? acierto.success : (chuchesGanados > 0);
+        } else if (typeof acierto === 'number') {
+            chuchesGanados = acierto;
+            esCorrecto = chuchesGanados > 0;
+        } else {
+            esCorrecto = !!acierto;
+            chuchesGanados = esCorrecto ? 10 : 0;
+        }
+
+        if (esCorrecto) {
             this.sessionStats.correctas++;
-            this.sessionChuches += 10;
-            Avatar.addCourseChucheletes(nivel, 10);
         } else {
             this.sessionStats.errores++;
+        }
+
+        if (chuchesGanados > 0) {
+            this.sessionChuches += chuchesGanados;
+            Avatar.addCourseChucheletes(nivel, chuchesGanados);
         }
 
         this.currentIndex++;
@@ -352,16 +369,16 @@ window.GameCore = {
             'primaria6': '6.º de Primaria'
         };
         const zoneInfo = {
-            'castillo': { title: 'Castillo del Saber', icon: '🏰' },
-            'bosque': { title: 'Bosque de Palabras', icon: '🌳' },
-            'laboratorio': { title: 'Laboratorio', icon: '🧪' },
-            'biblioteca': { title: 'Biblioteca de Don Quijote', icon: '📚' },
-            'taller': { title: 'Taller Creativo', icon: '🎨' }
+            'castillo': { title: 'Castillo del Saber' },
+            'bosque': { title: 'Bosque de Palabras' },
+            'laboratorio': { title: 'Laboratorio' },
+            'biblioteca': { title: 'Biblioteca de Don Quijote' },
+            'taller': { title: 'Taller Creativo' }
         };
-        const currentZ = zoneInfo[this.currentZone] || { title: 'Reto de Aula Aventura', icon: '✨' };
+        const currentZ = zoneInfo[this.currentZone] || { title: 'Reto de Aula Aventura' };
         
         const titleEl = document.getElementById('act-titulo');
-        if (titleEl) titleEl.textContent = `${currentZ.icon} ${currentZ.title}`;
+        if (titleEl) titleEl.textContent = currentZ.title;
         
         const subEl = document.getElementById('act-subtitulo');
         if (subEl) subEl.textContent = `${nombresCursos[nivel] || 'Primaria'} · CEIP Don Quijote`;
@@ -383,28 +400,29 @@ window.GameCore = {
     showResults() {
         const nivel = AppState.currentLevel || 'primaria1';
         const avatarData = Avatar.getCourseAvatar(nivel);
+        const esVictoriaCompleta = this.sessionChuches > 0;
         
         const container = document.getElementById('actividad-container');
         container.innerHTML = `
-            <div style="opacity: 1; width: 100%; max-width: 520px; background: #ffffff; border-radius: 32px; padding: 2.2rem 2.6rem; box-shadow: 0 20px 45px rgba(0,0,0,0.1), 0 0 0 3px rgba(255,255,255,0.9); text-align: center; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto;">
+            <div style="opacity: 1; width: 100%; max-width: 520px; background: #ffffff; border-radius: 32px; padding: 2.2rem 2.6rem; box-shadow: 0 20px 45px rgba(0,0,0,0.1), 0 0 0 3px rgba(255,255,255,0.9); text-align: center; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto; transform: translateY(-32px);">
                 
-                <!-- Trofeo Animado -->
+                <!-- Trofeo / Medalla Animada -->
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.2rem;">
-                    <div style="font-size: 4.5rem; line-height: 1; filter: drop-shadow(0 6px 14px rgba(245, 158, 11, 0.45)); animation: trophyBounce 1s ease-in-out infinite alternate;">🏆</div>
+                    <div style="font-size: 4.5rem; line-height: 1; filter: drop-shadow(0 6px 14px rgba(245, 158, 11, 0.45)); animation: trophyBounce 1s ease-in-out infinite alternate;">${esVictoriaCompleta ? '🏆' : '⭐'}</div>
                 </div>
 
                 <!-- Título Celebratorio -->
-                <h1 style="color: #1e3a8a; font-size: 2.5rem; margin: 0.4rem 0 0.2rem 0; font-weight: 900; letter-spacing: -0.5px;">¡Reto Superado!</h1>
-                <p style="font-size: 1.2rem; color: #475569; font-weight: 800; margin: 0 0 1.4rem 0;">¡Enhorabuena, <b style="color: #2563eb;">${avatarData.name || 'Aventurero'}</b>! ¡Lo has hecho genial!</p>
+                <h1 style="color: #1e3a8a; font-size: 2.5rem; margin: 0.4rem 0 0.2rem 0; font-weight: 900; letter-spacing: -0.5px;">${esVictoriaCompleta ? '¡Reto Superado!' : '¡Práctica Terminada!'}</h1>
+                <p style="font-size: 1.2rem; color: #475569; font-weight: 800; margin: 0 0 1.4rem 0;">${esVictoriaCompleta ? `¡Enhorabuena, <b style="color: #2563eb;">${avatarData.name || 'Aventurero'}</b>! ¡Lo has hecho genial!` : `¡Buen intento, <b style="color: #2563eb;">${avatarData.name || 'Aventurero'}</b>! ¡A por el siguiente reto!`}</p>
                 
                 <!-- Tarjeta de Chucheletes Ganados (con el billete oficial de Chuchelete) -->
-                <div style="width: 100%; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2.5px solid #22c55e; border-radius: 22px; padding: 1.1rem 1.6rem; display: flex; align-items: center; justify-content: center; gap: 1.2rem; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.16); margin-bottom: 1.8rem; box-sizing: border-box;">
+                <div style="width: 100%; background: ${esVictoriaCompleta ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'}; border: 2.5px solid ${esVictoriaCompleta ? '#22c55e' : '#cbd5e1'}; border-radius: 22px; padding: 1.1rem 1.6rem; display: flex; align-items: center; justify-content: center; gap: 1.2rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); margin-bottom: 1.8rem; box-sizing: border-box;">
                     <div style="display: flex; align-items: center; justify-content: center;">
                         ${window.AppIcons ? window.AppIcons.chuchelete(58, 38) : ''}
                     </div>
                     <div style="text-align: left;">
-                        <div style="color: #15803d; font-size: 1.8rem; font-weight: 900; line-height: 1.1;">+${this.sessionChuches} Chucheletes</div>
-                        <div style="color: #16a34a; font-size: 0.95rem; font-weight: 800;">¡Guardados en tu personaje!</div>
+                        <div style="color: ${esVictoriaCompleta ? '#15803d' : '#64748b'}; font-size: 1.8rem; font-weight: 900; line-height: 1.1;">+${this.sessionChuches} Chucheletes</div>
+                        <div style="color: ${esVictoriaCompleta ? '#16a34a' : '#94a3b8'}; font-size: 0.95rem; font-weight: 800;">${esVictoriaCompleta ? '¡Guardados en tu personaje!' : '¡Sigue practicando para ganar más!'}</div>
                     </div>
                 </div>
 
@@ -420,7 +438,9 @@ window.GameCore = {
             </div>
         `;
         
-        if (AppState.settings.soundEnabled) Activities.playSound('success');
+        if (AppState.settings.soundEnabled) {
+            Activities.playSound(esVictoriaCompleta ? 'victory' : 'click');
+        }
     },
 
     endSession() {

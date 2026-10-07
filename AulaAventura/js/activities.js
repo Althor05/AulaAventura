@@ -31,6 +31,22 @@ window.Activities = {
             this.renderHabitats(actividad, container, onComplete);
         } else if (actividad.tipo === 'seguridad_vial') {
             this.renderSeguridadVial(actividad, container, onComplete);
+        } else if (actividad.tipo === 'comprension_lectora') {
+            this.renderComprensionLectora(actividad, container, onComplete);
+        } else if (actividad.tipo === 'continua_historia') {
+            this.renderContinuaHistoria(actividad, container, onComplete);
+        } else if (actividad.tipo === 'crea_historia') {
+            this.renderCreaHistoria(actividad, container, onComplete);
+        } else if (actividad.tipo === 'dibujo_pizarra') {
+            this.renderDibujoPizarra(actividad, container, onComplete);
+        } else if (actividad.tipo === 'dibujo_viajero') {
+            this.renderDibujoViajero(actividad, container, onComplete);
+        } else if (actividad.tipo === 'paso_a_paso') {
+            this.renderPasoAPaso(actividad, container, onComplete);
+        } else if (actividad.tipo === 'seguir_ritmos') {
+            this.renderSeguirRitmos(actividad, container, onComplete);
+        } else if (actividad.tipo === 'mezcla_colores') {
+            this.renderMezclaColores(actividad, container, onComplete);
         } else {
             this.renderStandard(actividad, container, onComplete);
         }
@@ -51,6 +67,7 @@ window.Activities = {
         let roundPopped = 0;
         let totalPopped = 0;
         let isTransitioning = false;
+        const acertadasList = [];
 
         // HUD flotante con color vivo y contraste de alta visibilidad
         const hud = document.createElement('div');
@@ -236,6 +253,7 @@ window.Activities = {
                     
                     roundPopped++;
                     totalPopped++;
+                    if (!acertadasList.includes(palabra)) acertadasList.push(palabra);
                     if (counterEl) counterEl.textContent = totalPopped;
                     if (AppState.settings.soundEnabled) this.playSound('success');
 
@@ -382,16 +400,25 @@ window.Activities = {
                     };
                 }
             } else {
-                if (AppState.settings.soundEnabled) this.playSound('success');
+                if (AppState.settings.soundEnabled) this.playSound('victory');
                 roundOverlay.innerHTML = `
                     <div style="background: rgba(255, 255, 255, 0.12); padding: 1.2rem; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;">
-                        <svg viewBox="0 0 24 24" width="72" height="72" fill="#facc15" stroke="#ca8a04" stroke-width="1.5">
-                            <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"/>
-                            <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/>
-                            <path d="M4 22h16"/>
-                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                        <svg viewBox="0 0 64 64" width="76" height="76" fill="none">
+                            <!-- Asas doradas completas -->
+                            <path d="M14 16 C 6 16, 6 32, 18 34" stroke="#ca8a04" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                            <path d="M14 16 C 8 16, 8 30, 18 32" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                            <path d="M50 16 C 58 16, 58 32, 46 34" stroke="#ca8a04" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                            <path d="M50 16 C 56 16, 56 30, 46 32" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                            <!-- Copa dorada completa y rellena -->
+                            <path d="M16 10 L48 10 L48 24 C48 34 40 40 32 40 C24 40 16 34 16 24 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2.5"/>
+                            <!-- Brillo curvo en la copa -->
+                            <path d="M22 14 L22 24 C22 28 25 32 28 34" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                            <!-- Tallo/cuello relleno -->
+                            <path d="M28 40 L36 40 L36 47 L28 47 Z" fill="#eab308" stroke="#ca8a04" stroke-width="2"/>
+                            <!-- Peana y base sólida rellena -->
+                            <rect x="22" y="47" width="20" height="5" rx="2" fill="#d97706" stroke="#b45309" stroke-width="1.5"/>
+                            <rect x="16" y="52" width="32" height="8" rx="3" fill="#b45309" stroke="#92400e" stroke-width="2"/>
+                            <rect x="18" y="53.5" width="28" height="4.5" rx="1.5" fill="#f59e0b"/>
                         </svg>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
@@ -402,12 +429,32 @@ window.Activities = {
                             ¡Has superado las 3 rondas y atrapado ${totalPopped} palabras!
                         </p>
                     </div>
-                    <button id="btn-finish-mission" class="tactile-btn tactile-btn-blue" style="margin-top: 0.6rem; padding: 0.85rem 2.6rem; font-size: 1.3rem; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; cursor: pointer; border-radius: 20px; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);">
-                        <span>Ver Resultados</span>
-                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </button>
+                    <div style="display: flex; flex-direction: row; gap: 1.2rem; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 0.6rem;">
+                        <button id="btn-show-words" class="tactile-btn" style="height: 56px; padding: 0 1.8rem; font-size: 1.15rem; font-weight: 900; display: inline-flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 0.65rem; cursor: pointer; border-radius: 20px; background: #0284c7; color: #ffffff; border: 2.5px solid #0369a1; box-shadow: 0 6px 0 #075985; box-sizing: border-box;">
+                            <span>Ver palabras</span>
+                            <svg id="words-arrow-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); transform: rotate(0deg); display: inline-block; flex-shrink: 0;">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <button id="btn-finish-mission" class="tactile-btn tactile-btn-blue" style="height: 56px; padding: 0 2.2rem; font-size: 1.15rem; font-weight: 900; display: inline-flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 0.75rem; cursor: pointer; border-radius: 20px; box-shadow: 0 6px 0 #075985, 0 8px 24px rgba(2, 132, 199, 0.45); box-sizing: border-box;">
+                            <span>Ver Resultados</span>
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; flex-shrink: 0;">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Desplegable de palabras acertadas -->
+                    <div id="words-dropdown" style="display: none; width: 100%; max-width: 580px; max-height: 180px; overflow-y: auto; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 18px; padding: 1rem 1.2rem; margin-top: 0.4rem; box-sizing: border-box;">
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #fef08a; margin-bottom: 0.6rem; text-align: left;">
+                            Palabras acertadas (${acertadasList.length}):
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-start;">
+                            ${acertadasList.length > 0 
+                                ? acertadasList.map(w => `<span style="background: rgba(34, 197, 94, 0.25); color: #86efac; border: 1.5px solid #22c55e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem;">${w}</span>`).join('') 
+                                : `<span style="color: #94a3b8; font-size: 0.95rem; font-weight: 700;">No atrapaste ninguna palabra en esta partida.</span>`
+                            }
+                        </div>
+                    </div>
                 `;
                 roundOverlay.style.display = 'flex';
 
@@ -417,11 +464,64 @@ window.Activities = {
                         onComplete(true);
                     };
                 }
+
+                const showWordsBtn = roundOverlay.querySelector('#btn-show-words');
+                const wordsDropdown = roundOverlay.querySelector('#words-dropdown');
+                const wordsArrowIcon = roundOverlay.querySelector('#words-arrow-icon');
+                if (showWordsBtn && wordsDropdown) {
+                    showWordsBtn.onclick = () => {
+                        const isHidden = (wordsDropdown.style.display === 'none');
+                        wordsDropdown.style.display = isHidden ? 'block' : 'none';
+                        if (wordsArrowIcon) {
+                            wordsArrowIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+                        }
+                        if (isHidden) {
+                            wordsDropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    };
+                }
             }
         };
 
-        // Iniciar Primera Ronda
-        startRound(1);
+        const showReadyScreen = () => {
+            isTransitioning = true;
+            roundOverlay.innerHTML = `
+                <div style="background: rgba(255, 255, 255, 0.12); padding: 1.2rem; border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="68" height="68" fill="#38bdf8" stroke="#0284c7" stroke-width="1.8">
+                        <circle cx="12" cy="12" r="9"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+                    <h2 style="font-size: 2.4rem; font-weight: 900; margin: 0; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.45);">
+                        ¡Prepárate!
+                    </h2>
+                    <p style="font-size: 1.35rem; font-weight: 800; color: #fef08a; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.3);">
+                        ¡Va a comenzar la Lluvia de Palabras!
+                    </p>
+                    <p style="font-size: 1.1rem; font-weight: 700; color: #bae6fd; margin: 0.2rem 0 0 0; max-width: 520px; line-height: 1.4;">
+                        Explota las burbujas que estén <strong>bien escritas</strong> y deja pasar las que tengan faltas. Tienes 20 segundos por ronda.
+                    </p>
+                </div>
+                <button id="btn-start-game" class="tactile-btn tactile-btn-blue" style="margin-top: 0.6rem; padding: 0.85rem 2.8rem; font-size: 1.35rem; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; cursor: pointer; border-radius: 20px; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);">
+                    <span>¡Empezar!</span>
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                </button>
+            `;
+            roundOverlay.style.display = 'flex';
+            const startBtn = roundOverlay.querySelector('#btn-start-game');
+            if (startBtn) {
+                startBtn.onclick = () => {
+                    roundOverlay.style.display = 'none';
+                    startRound(1);
+                };
+            }
+        };
+
+        // Mostrar pantalla de preparación antes de la primera ronda
+        showReadyScreen();
     },
 
     renderLetraPerdida(actividad, container, onComplete) {
@@ -905,7 +1005,7 @@ window.Activities = {
         container.style.justifyContent = 'space-between';
         container.style.padding = '6.2rem 2rem 1.6rem 2rem';
         container.style.boxSizing = 'border-box';
-        container.style.background = 'radial-gradient(ellipse at 50% 90%, #e0f2fe 0%, #f0fdf4 40%, #ffffff 100%)';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fefce8 40%, #ffffff 100%)';
         container.style.overflow = 'hidden';
 
         let rawItems = actividad.parejas || ['🐴', '🛡️', '⚔️', '📖', '👴', '🏰'];
@@ -914,23 +1014,31 @@ window.Activities = {
             const base = rawItems.slice(0, 6);
             cardList = [...base, ...base].map((emoji, idx) => ({ id: idx, valor: emoji, display: emoji }));
         } else {
-            cardList = rawItems.map((it, idx) => ({ id: idx, valor: it.valor || it.display, display: it.display || it.valor }));
+            cardList = rawItems.map((it, idx) => ({ 
+                id: idx, 
+                valor: it.valor || it.display, 
+                display: it.display || it.valor,
+                desc: it.desc || '',
+                rol: it.rol || '',
+                color: it.color || '#1e3a8a',
+                badgeColor: it.badgeColor || '#3b82f6'
+            }));
         }
         const totalPairs = cardList.length / 2;
         let matchesFound = 0;
 
-        // HUD flotante estilo Burbujas
+        // HUD flotante estilo Don Quijote
         const hud = document.createElement('div');
         hud.style.position = 'absolute';
         hud.style.top = '18px';
         hud.style.left = '50%';
         hud.style.transform = 'translateX(-50%)';
         hud.style.zIndex = '50';
-        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)';
+        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #92400e 100%)';
         hud.style.padding = '0.65rem 2.4rem';
         hud.style.borderRadius = '9999px';
-        hud.style.boxShadow = '0 10px 25px rgba(2, 132, 199, 0.35)';
-        hud.style.border = '2.5px solid #ffffff';
+        hud.style.boxShadow = '0 10px 25px rgba(146, 64, 14, 0.35)';
+        hud.style.border = '2.5px solid #fef08a';
         hud.style.display = 'flex';
         hud.style.alignItems = 'center';
         hud.style.gap = '1.6rem';
@@ -953,13 +1061,13 @@ window.Activities = {
         // Escenario Cuadrícula de Cartas Panorámica
         const grid = document.createElement('div');
         grid.style.display = 'grid';
-        grid.style.gridTemplateColumns = 'repeat(4, minmax(110px, 140px))';
+        grid.style.gridTemplateColumns = (cardList.length > 8) ? 'repeat(4, minmax(110px, 145px))' : 'repeat(4, minmax(130px, 160px))';
         grid.style.gap = '1.2rem';
         grid.style.alignContent = 'center';
         grid.style.justifyContent = 'center';
         grid.style.margin = 'auto';
         grid.style.width = '100%';
-        grid.style.maxWidth = '850px';
+        grid.style.maxWidth = (cardList.length > 8) ? '880px' : '760px';
 
         let hasFlippedCard = false;
         let lockBoard = false;
@@ -983,14 +1091,27 @@ window.Activities = {
             frontFace.style.backfaceVisibility = 'hidden';
             frontFace.style.borderRadius = '24px';
             frontFace.style.display = 'flex';
+            frontFace.style.flexDirection = 'column';
             frontFace.style.alignItems = 'center';
             frontFace.style.justifyContent = 'center';
-            frontFace.style.fontSize = '3.8rem';
-            frontFace.style.background = 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)';
-            frontFace.style.border = '3.5px solid #22c55e';
-            frontFace.style.boxShadow = '0 10px 22px rgba(34, 197, 94, 0.25)';
+            frontFace.style.textAlign = 'center';
+            frontFace.style.background = 'linear-gradient(135deg, #ffffff 0%, #fffbeb 100%)';
+            frontFace.style.border = '3.5px solid #d97706';
+            frontFace.style.boxShadow = '0 10px 22px rgba(217, 119, 6, 0.25)';
             frontFace.style.transform = 'rotateY(180deg)';
-            frontFace.textContent = item.display;
+            frontFace.style.padding = '0.6rem 0.5rem';
+            frontFace.style.boxSizing = 'border-box';
+
+            if (item.rol || item.desc) {
+                frontFace.innerHTML = `
+                    <div style="background: ${item.badgeColor || '#2563eb'}; color: #ffffff; font-size: 0.68rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 9999px; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px;">${item.rol || 'Personaje'}</div>
+                    <div style="font-size: 1.12rem; font-weight: 900; color: #1e3a8a; line-height: 1.15; margin-bottom: 0.25rem;">${item.display}</div>
+                    <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; line-height: 1.1;">${item.desc || ''}</div>
+                `;
+            } else {
+                frontFace.style.fontSize = '3rem';
+                frontFace.textContent = item.display;
+            }
 
             const backFace = document.createElement('div');
             backFace.style.position = 'absolute';
@@ -999,15 +1120,23 @@ window.Activities = {
             backFace.style.backfaceVisibility = 'hidden';
             backFace.style.borderRadius = '24px';
             backFace.style.display = 'flex';
+            backFace.style.flexDirection = 'column';
             backFace.style.alignItems = 'center';
             backFace.style.justifyContent = 'center';
-            backFace.style.fontSize = '3rem';
-            backFace.style.fontWeight = '900';
-            backFace.style.color = '#f43f5e';
-            backFace.style.background = 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)';
-            backFace.style.border = '3.5px solid #0284c7';
-            backFace.style.boxShadow = '0 10px 22px rgba(2, 132, 199, 0.25), inset 0 2px 4px rgba(255,255,255,0.8)';
-            backFace.textContent = '?';
+            backFace.style.gap = '0.3rem';
+            backFace.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #7c2d12 100%)';
+            backFace.style.border = '3.5px solid #d97706';
+            backFace.style.boxShadow = '0 10px 22px rgba(30, 58, 138, 0.25), inset 0 2px 4px rgba(255,255,255,0.4)';
+
+            backFace.innerHTML = `
+                <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#fef08a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    <line x1="8" y1="7" x2="16" y2="7"/>
+                    <line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+                <span style="font-size: 0.68rem; font-weight: 900; color: #fef08a; letter-spacing: 0.5px; text-transform: uppercase;">Quijote</span>
+            `;
 
             card.appendChild(frontFace);
             card.appendChild(backFace);
@@ -1036,7 +1165,7 @@ window.Activities = {
                     secondCard.style.pointerEvents = 'none';
                     resetBoard();
                     if (matchesFound === totalPairs) {
-                        setTimeout(() => onComplete(true), 1000);
+                        setTimeout(() => onComplete(true), 850);
                     }
                 } else {
                     if (AppState.settings.soundEnabled) this.playSound('error');
@@ -1044,7 +1173,7 @@ window.Activities = {
                         firstCard.style.transform = 'rotateY(0deg)';
                         secondCard.style.transform = 'rotateY(0deg)';
                         resetBoard();
-                    }, 900);
+                    }, 850);
                 }
             };
 
@@ -1128,15 +1257,15 @@ window.Activities = {
         tableStage.style.position = 'relative';
         tableStage.style.boxSizing = 'border-box';
 
-        // Mantel de cuadros en el centro de la mesa
+        // Mantel azul en el centro de la mesa para resaltar perfectamente las frutas
         const cloth = document.createElement('div');
         cloth.style.position = 'absolute';
         cloth.style.inset = '16px';
-        cloth.style.background = 'radial-gradient(circle, #fef9c3 15%, transparent 16%) 0 0, radial-gradient(circle, #fef9c3 15%, #fef08a 16%) 18px 18px';
+        cloth.style.background = 'radial-gradient(circle, #e0f2fe 18%, transparent 19%) 0 0, radial-gradient(circle, #e0f2fe 18%, #bae6fd 19%) 18px 18px';
         cloth.style.backgroundSize = '36px 36px';
         cloth.style.borderRadius = '24px';
-        cloth.style.border = '3.5px dashed #ca8a04';
-        cloth.style.boxShadow = 'inset 0 3px 10px rgba(0,0,0,0.06)';
+        cloth.style.border = '3.5px dashed #0284c7';
+        cloth.style.boxShadow = 'inset 0 3px 12px rgba(2, 132, 199, 0.15)';
         cloth.style.display = 'flex';
         cloth.style.alignItems = 'center';
         cloth.style.justifyContent = 'center';
@@ -3351,6 +3480,2398 @@ window.Activities = {
         container.appendChild(crayonsRow);
     },
 
+    renderComprensionLectora(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.8rem 2rem 1.4rem 2rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fefce8 40%, #f8fafc 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante estilo Biblioteca
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '18px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #92400e 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(146, 64, 14, 0.35)';
+        hud.style.border = '2.5px solid #fef08a';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>La Biblioteca Mágica · Comprensión Lectora</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Premio: Chucheletes
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario dividido: Lectura en pergamino a la izquierda, Pregunta y opciones a la derecha
+        const splitStage = document.createElement('div');
+        splitStage.style.flex = '1';
+        splitStage.style.display = 'flex';
+        splitStage.style.gap = '1.6rem';
+        splitStage.style.alignItems = 'stretch';
+        splitStage.style.justifyContent = 'center';
+        splitStage.style.width = '100%';
+        splitStage.style.maxWidth = '1120px';
+        splitStage.style.margin = 'auto';
+        splitStage.style.boxSizing = 'border-box';
+
+        // 1. Tarjeta de Lectura (Pergamino)
+        const readingCard = document.createElement('div');
+        readingCard.style.flex = '1.15';
+        readingCard.style.background = '#fffdfa';
+        readingCard.style.border = '3px solid #d4af37';
+        readingCard.style.borderRadius = '24px';
+        readingCard.style.padding = '1.4rem 1.8rem';
+        readingCard.style.boxShadow = '0 12px 28px rgba(180, 83, 9, 0.12), inset 0 0 25px rgba(254, 243, 199, 0.35)';
+        readingCard.style.display = 'flex';
+        readingCard.style.flexDirection = 'column';
+        readingCard.style.justifyContent = 'space-between';
+        readingCard.style.boxSizing = 'border-box';
+
+        const readingTop = document.createElement('div');
+        const badgeSpan = document.createElement('span');
+        badgeSpan.style.background = '#fef3c7';
+        badgeSpan.style.color = '#92400e';
+        badgeSpan.style.fontSize = '0.82rem';
+        badgeSpan.style.fontWeight = '900';
+        badgeSpan.style.padding = '0.25rem 0.8rem';
+        badgeSpan.style.borderRadius = '9999px';
+        badgeSpan.style.border = '1.5px solid #fcd34d';
+        badgeSpan.style.display = 'inline-block';
+        badgeSpan.textContent = 'Historia y Cultura';
+        readingTop.appendChild(badgeSpan);
+
+        const rTitle = document.createElement('h3');
+        rTitle.style.fontSize = '1.5rem';
+        rTitle.style.fontWeight = '900';
+        rTitle.style.color = '#78350f';
+        rTitle.style.margin = '0.6rem 0 0.8rem 0';
+        rTitle.style.lineHeight = '1.25';
+        rTitle.textContent = actividad.titulo;
+        readingTop.appendChild(rTitle);
+
+        const rBody = document.createElement('div');
+        rBody.style.fontSize = '1.18rem';
+        rBody.style.lineHeight = '1.65';
+        rBody.style.color = '#1e293b';
+        rBody.style.fontWeight = '600';
+        rBody.style.overflowY = 'auto';
+        rBody.style.maxHeight = '230px';
+        rBody.style.paddingRight = '0.5rem';
+        rBody.textContent = actividad.texto;
+        readingTop.appendChild(rBody);
+        readingCard.appendChild(readingTop);
+
+        // Barra inferior del pergamino con botón de locución para pizarra digital
+        const readingFooter = document.createElement('div');
+        readingFooter.style.display = 'flex';
+        readingFooter.style.justifyContent = 'flex-start';
+        readingFooter.style.marginTop = '0.8rem';
+
+        const btnAudio = document.createElement('button');
+        btnAudio.type = 'button';
+        btnAudio.className = 'tactile-btn';
+        btnAudio.style.padding = '0.45rem 1.1rem';
+        btnAudio.style.fontSize = '0.95rem';
+        btnAudio.style.fontWeight = '800';
+        btnAudio.style.borderRadius = '14px';
+        btnAudio.style.background = '#fef3c7';
+        btnAudio.style.color = '#92400e';
+        btnAudio.style.border = '2px solid #f59e0b';
+        btnAudio.style.cursor = 'pointer';
+        btnAudio.style.display = 'flex';
+        btnAudio.style.alignItems = 'center';
+        btnAudio.style.gap = '0.5rem';
+        btnAudio.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <span>Escuchar lectura</span>
+        `;
+        let isSpeaking = false;
+        btnAudio.onclick = () => {
+            if (!('speechSynthesis' in window)) return;
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                btnAudio.style.background = '#fef3c7';
+                btnAudio.style.color = '#92400e';
+            } else {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(actividad.texto);
+                utter.lang = 'es-ES';
+                utter.rate = 0.95;
+                utter.onend = () => {
+                    isSpeaking = false;
+                    btnAudio.style.background = '#fef3c7';
+                    btnAudio.style.color = '#92400e';
+                };
+                utter.onerror = () => {
+                    isSpeaking = false;
+                    btnAudio.style.background = '#fef3c7';
+                    btnAudio.style.color = '#92400e';
+                };
+                window.speechSynthesis.speak(utter);
+                isSpeaking = true;
+                btnAudio.style.background = '#dcfce7';
+                btnAudio.style.color = '#15803d';
+            }
+        };
+        readingFooter.appendChild(btnAudio);
+        readingCard.appendChild(readingFooter);
+        splitStage.appendChild(readingCard);
+
+        // 2. Tarjeta de Pregunta y Opciones
+        const questionCard = document.createElement('div');
+        questionCard.style.flex = '1';
+        questionCard.style.background = '#ffffff';
+        questionCard.style.border = '3px solid #93c5fd';
+        questionCard.style.borderRadius = '24px';
+        questionCard.style.padding = '1.4rem 1.6rem';
+        questionCard.style.boxShadow = '0 12px 28px rgba(30, 58, 138, 0.1)';
+        questionCard.style.display = 'flex';
+        questionCard.style.flexDirection = 'column';
+        questionCard.style.justifyContent = 'space-between';
+        questionCard.style.boxSizing = 'border-box';
+
+        const qTitle = document.createElement('h4');
+        qTitle.style.fontSize = '1.25rem';
+        qTitle.style.fontWeight = '900';
+        qTitle.style.color = '#0f172a';
+        qTitle.style.lineHeight = '1.35';
+        qTitle.style.margin = '0 0 1rem 0';
+        qTitle.textContent = actividad.pregunta;
+        questionCard.appendChild(qTitle);
+
+        const optionsCol = document.createElement('div');
+        optionsCol.style.display = 'flex';
+        optionsCol.style.flexDirection = 'column';
+        optionsCol.style.gap = '0.75rem';
+        optionsCol.style.flex = '1';
+        optionsCol.style.justifyContent = 'center';
+
+        const letters = ['A', 'B', 'C', 'D'];
+        let answered = false;
+
+        actividad.opciones.forEach((opcion, index) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tactile-btn';
+            btn.style.width = '100%';
+            btn.style.padding = '0.85rem 1.1rem';
+            btn.style.fontSize = '1.05rem';
+            btn.style.fontWeight = '800';
+            btn.style.borderRadius = '18px';
+            btn.style.background = '#f8fafc';
+            btn.style.border = '2.5px solid #cbd5e1';
+            btn.style.color = '#1e293b';
+            btn.style.display = 'flex';
+            btn.style.alignItems = 'center';
+            btn.style.gap = '0.9rem';
+            btn.style.textAlign = 'left';
+            btn.style.cursor = 'pointer';
+            btn.style.transition = 'all 0.2s ease';
+
+            const badge = document.createElement('span');
+            badge.style.width = '36px';
+            badge.style.height = '36px';
+            badge.style.borderRadius = '12px';
+            badge.style.background = '#e2e8f0';
+            badge.style.color = '#1e3a8a';
+            badge.style.display = 'flex';
+            badge.style.alignItems = 'center';
+            badge.style.justifyContent = 'center';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '1.05rem';
+            badge.style.flexShrink = '0';
+            badge.textContent = letters[index] || '•';
+
+            const textSpan = document.createElement('span');
+            textSpan.style.flex = '1';
+            textSpan.style.lineHeight = '1.25';
+            textSpan.textContent = opcion;
+
+            btn.appendChild(badge);
+            btn.appendChild(textSpan);
+
+            btn.onmouseenter = () => {
+                if (!answered) {
+                    btn.style.background = '#eff6ff';
+                    btn.style.borderColor = '#3b82f6';
+                    btn.style.transform = 'translateY(-2px)';
+                }
+            };
+            btn.onmouseleave = () => {
+                if (!answered) {
+                    btn.style.background = '#f8fafc';
+                    btn.style.borderColor = '#cbd5e1';
+                    btn.style.transform = 'translateY(0)';
+                }
+            };
+
+            btn.onclick = () => {
+                if (answered) return;
+                const esCorrecto = (index === actividad.respuesta);
+
+                if (esCorrecto) {
+                    answered = true;
+                    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                    btn.style.backgroundColor = '#10b981';
+                    btn.style.borderColor = '#059669';
+                    btn.style.color = '#ffffff';
+                    btn.style.transform = 'scale(1.03)';
+                    badge.style.background = '#047857';
+                    badge.style.color = '#ffffff';
+                    badge.textContent = '✓';
+                    if (AppState.settings.soundEnabled) this.playSound('success');
+
+                    // Transición directa a pantalla de superado con delay de 850 ms sin texto intermedio
+                    setTimeout(() => onComplete(true), 850);
+                } else {
+                    btn.style.backgroundColor = '#ef4444';
+                    btn.style.borderColor = '#dc2626';
+                    btn.style.color = '#ffffff';
+                    badge.style.background = '#b91c1c';
+                    badge.style.color = '#ffffff';
+                    badge.textContent = '✕';
+                    btn.style.animation = 'shake 0.45s';
+                    if (AppState.settings.soundEnabled) this.playSound('error');
+
+                    setTimeout(() => {
+                        btn.style.backgroundColor = '#f8fafc';
+                        btn.style.borderColor = '#cbd5e1';
+                        btn.style.color = '#1e293b';
+                        btn.style.animation = '';
+                        badge.style.background = '#e2e8f0';
+                        badge.style.color = '#1e3a8a';
+                        badge.textContent = letters[index] || '•';
+                    }, 800);
+                }
+            };
+
+            optionsCol.appendChild(btn);
+        });
+
+        questionCard.appendChild(optionsCol);
+        splitStage.appendChild(questionCard);
+        container.appendChild(splitStage);
+    },
+
+    renderContinuaHistoria(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.8rem 2rem 1.6rem 2rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fefce8 40%, #f8fafc 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante estilo Biblioteca
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '18px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #92400e 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(146, 64, 14, 0.35)';
+        hud.style.border = '2.5px solid #fef08a';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>La Biblioteca Mágica · Continúa la Historia</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Creatividad Narrativa
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '980px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        // Pergamino de la Historia (Solo el texto con espacios/huecos para continuar)
+        const parchment = document.createElement('div');
+        parchment.style.width = '100%';
+        parchment.style.background = '#fffdfa';
+        parchment.style.border = '3px solid #d4af37';
+        parchment.style.borderRadius = '26px';
+        parchment.style.padding = '1.8rem 2.4rem';
+        parchment.style.boxShadow = '0 14px 32px rgba(180, 83, 9, 0.14), inset 0 0 25px rgba(254, 243, 199, 0.35)';
+        parchment.style.boxSizing = 'border-box';
+        parchment.style.marginBottom = '1.4rem';
+
+        const pTitle = document.createElement('h3');
+        pTitle.style.fontSize = '1.65rem';
+        pTitle.style.fontWeight = '900';
+        pTitle.style.color = '#78350f';
+        pTitle.style.margin = '0 0 1rem 0';
+        pTitle.textContent = actividad.titulo || 'Continúa el Relato';
+        parchment.appendChild(pTitle);
+
+        const rawText = actividad.texto || `${actividad.textoInicial || ''} ${actividad.textoHueco || ''}`;
+        // Formatear los guiones bajos / espacios en blanco como un slot estilizado
+        const formattedHtml = rawText.replace(/_{3,}/g, '<span style="display: inline-block; min-width: 100px; border-bottom: 3.5px dashed #d97706; background: rgba(254, 243, 199, 0.65); padding: 0 8px; margin: 0 4px; border-radius: 4px; vertical-align: baseline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+
+        const pBody = document.createElement('div');
+        pBody.style.fontSize = '1.35rem';
+        pBody.style.lineHeight = '1.75';
+        pBody.style.color = '#1e293b';
+        pBody.style.fontWeight = '600';
+        pBody.innerHTML = formattedHtml;
+        parchment.appendChild(pBody);
+
+        // Indicador didáctico para la clase
+        const tipBadge = document.createElement('div');
+        tipBadge.style.marginTop = '1.4rem';
+        tipBadge.style.display = 'inline-flex';
+        tipBadge.style.alignItems = 'center';
+        tipBadge.style.gap = '0.6rem';
+        tipBadge.style.background = '#fef3c7';
+        tipBadge.style.color = '#92400e';
+        tipBadge.style.padding = '0.45rem 1.1rem';
+        tipBadge.style.borderRadius = '14px';
+        tipBadge.style.fontSize = '0.98rem';
+        tipBadge.style.fontWeight = '800';
+        tipBadge.style.border = '1.5px solid #fcd34d';
+        tipBadge.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>¡Continúa el relato en voz alta o en tu cuaderno con la clase!</span>
+        `;
+        parchment.appendChild(tipBadge);
+
+        stage.appendChild(parchment);
+
+        // Panel de Valoración de la Profe (3 Botones: Oops, Bien, Genial - Sin puntos visibles)
+        const evalCard = document.createElement('div');
+        evalCard.style.width = '100%';
+        evalCard.style.maxWidth = '680px';
+        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
+        evalCard.style.border = '2.5px solid #e2e8f0';
+        evalCard.style.borderRadius = '22px';
+        evalCard.style.padding = '0.9rem 1.8rem';
+        evalCard.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.06)';
+        evalCard.style.display = 'flex';
+        evalCard.style.flexDirection = 'column';
+        evalCard.style.alignItems = 'center';
+        evalCard.style.gap = '0.7rem';
+        evalCard.style.boxSizing = 'border-box';
+
+        const evalLabel = document.createElement('div');
+        evalLabel.style.fontSize = '0.92rem';
+        evalLabel.style.fontWeight = '900';
+        evalLabel.style.color = '#64748b';
+        evalLabel.style.textTransform = 'uppercase';
+        evalLabel.style.letterSpacing = '0.5px';
+        evalLabel.textContent = 'Valoración de la profe';
+        evalCard.appendChild(evalLabel);
+
+        const evalButtonsRow = document.createElement('div');
+        evalButtonsRow.style.display = 'flex';
+        evalButtonsRow.style.gap = '1.2rem';
+        evalButtonsRow.style.width = '100%';
+        evalButtonsRow.style.justifyContent = 'center';
+
+        const evalActions = [
+            { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
+            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
+            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
+        ];
+
+        evalActions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = 'btn-eval-' + act.id;
+            btn.className = 'tactile-btn';
+            btn.style.flex = '1';
+            btn.style.height = '54px';
+            btn.style.fontSize = '1.25rem';
+            btn.style.fontWeight = '900';
+            btn.style.borderRadius = '18px';
+            btn.style.background = act.bg;
+            btn.style.color = act.color;
+            btn.style.border = `2.5px solid ${act.border}`;
+            btn.style.boxShadow = `0 5px 0 ${act.shadow}`;
+            btn.style.cursor = 'pointer';
+            btn.style.display = 'inline-flex';
+            btn.style.flexDirection = 'row';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.boxSizing = 'border-box';
+            btn.textContent = act.label;
+
+            btn.onclick = () => {
+                evalButtonsRow.style.pointerEvents = 'none';
+                btn.style.transform = 'translateY(3px)';
+                btn.style.boxShadow = `0 2px 0 ${act.shadow}`;
+                if (AppState.settings.soundEnabled) Activities.playSound(act.sound);
+                setTimeout(() => {
+                    onComplete({ success: act.success, chuches: act.chuches });
+                }, 650);
+            };
+
+            evalButtonsRow.appendChild(btn);
+        });
+
+        evalCard.appendChild(evalButtonsRow);
+        stage.appendChild(evalCard);
+        container.appendChild(stage);
+    },
+
+    renderCreaHistoria(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.8rem 2rem 1.6rem 2rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fefce8 40%, #f8fafc 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante estilo Telar de Historias
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '18px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #92400e 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(146, 64, 14, 0.35)';
+        hud.style.border = '2.5px solid #fef08a';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>La Biblioteca Mágica · Crear una Historia con Palabras</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Imaginación y Expresión
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '1020px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        // Cabecera con instrucción
+        const headerCard = document.createElement('div');
+        headerCard.style.textAlign = 'center';
+        headerCard.style.marginBottom = '1rem';
+
+        const subTitle = document.createElement('h3');
+        subTitle.style.fontSize = '1.65rem';
+        subTitle.style.fontWeight = '900';
+        subTitle.style.color = '#78350f';
+        subTitle.style.margin = '0 0 0.35rem 0';
+        subTitle.textContent = '¡El Telar de Palabras: Crea tu Historia!';
+
+        const descP = document.createElement('p');
+        descP.style.fontSize = '1.2rem';
+        descP.style.color = '#334155';
+        descP.style.fontWeight = '700';
+        descP.style.margin = '0';
+        descP.textContent = 'Inventad un cuento emocionante con vuestra clase usando estas palabras al azar:';
+
+        headerCard.appendChild(subTitle);
+        headerCard.appendChild(descP);
+        stage.appendChild(headerCard);
+
+        // Cuadrícula de 4 Cartas con Palabras
+        const cardsGrid = document.createElement('div');
+        cardsGrid.style.display = 'grid';
+        cardsGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        cardsGrid.style.gap = '1.1rem';
+        cardsGrid.style.width = '100%';
+        cardsGrid.style.marginBottom = '1.2rem';
+
+        let currentData = {
+            personaje: actividad.personaje || 'Un caballero andante valiente',
+            lugar: actividad.lugar || 'En las almenas de un castillo de piedra',
+            objeto: actividad.objeto || 'Una brújula dorada que busca secretos',
+            mision: actividad.mision || 'Tienen que descifrar un enigma antes de cenar'
+        };
+
+        const renderCards = () => {
+            cardsGrid.innerHTML = '';
+            const items = [
+                { categoria: 'Personaje', val: currentData.personaje, color: '#2563eb', bg: '#eff6ff', border: '#3b82f6' },
+                { categoria: 'Lugar', val: currentData.lugar, color: '#16a34a', bg: '#f0fdf4', border: '#22c55e' },
+                { categoria: 'Objeto', val: currentData.objeto, color: '#d97706', bg: '#fffbeb', border: '#f59e0b' },
+                { categoria: 'Misión', val: currentData.mision, color: '#7c3aed', bg: '#f5f3ff', border: '#8b5cf6' }
+            ];
+
+            items.forEach(it => {
+                const c = document.createElement('div');
+                c.style.background = '#ffffff';
+                c.style.border = `3px solid ${it.border}`;
+                c.style.borderRadius = '22px';
+                c.style.padding = '1.3rem 1.1rem';
+                c.style.display = 'flex';
+                c.style.flexDirection = 'column';
+                c.style.alignItems = 'center';
+                c.style.justifyContent = 'space-between';
+                c.style.textAlign = 'center';
+                c.style.minHeight = '155px';
+                c.style.boxShadow = `0 8px 20px ${it.border}22`;
+                c.style.boxSizing = 'border-box';
+                c.style.transition = 'transform 0.25s ease';
+
+                const pill = document.createElement('span');
+                pill.style.background = it.color;
+                pill.style.color = '#ffffff';
+                pill.style.fontSize = '0.8rem';
+                pill.style.fontWeight = '900';
+                pill.style.padding = '0.22rem 0.8rem';
+                pill.style.borderRadius = '9999px';
+                pill.style.textTransform = 'uppercase';
+                pill.style.letterSpacing = '0.5px';
+                pill.textContent = it.categoria;
+                c.appendChild(pill);
+
+                const txt = document.createElement('div');
+                txt.style.fontSize = '1.18rem';
+                txt.style.fontWeight = '800';
+                txt.style.color = '#0f172a';
+                txt.style.lineHeight = '1.35';
+                txt.style.margin = 'auto 0';
+                txt.textContent = it.val;
+                c.appendChild(txt);
+
+                cardsGrid.appendChild(c);
+            });
+        };
+
+        renderCards();
+        stage.appendChild(cardsGrid);
+
+        // Barra de Herramienta: Botón para cambiar palabras al azar
+        const toolRow = document.createElement('div');
+        toolRow.style.display = 'flex';
+        toolRow.style.justifyContent = 'center';
+        toolRow.style.width = '100%';
+        toolRow.style.marginBottom = '1.3rem';
+
+        const btnRoll = document.createElement('button');
+        btnRoll.type = 'button';
+        btnRoll.className = 'tactile-btn';
+        btnRoll.style.height = '48px';
+        btnRoll.style.padding = '0 1.8rem';
+        btnRoll.style.fontSize = '1.12rem';
+        btnRoll.style.fontWeight = '900';
+        btnRoll.style.borderRadius = '18px';
+        btnRoll.style.background = '#ffffff';
+        btnRoll.style.color = '#78350f';
+        btnRoll.style.border = '2.5px solid #d97706';
+        btnRoll.style.boxShadow = '0 4px 0 #b45309';
+        btnRoll.style.cursor = 'pointer';
+        btnRoll.style.display = 'inline-flex';
+        btnRoll.style.flexDirection = 'row';
+        btnRoll.style.alignItems = 'center';
+        btnRoll.style.gap = '0.65rem';
+        btnRoll.innerHTML = `
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="4"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            <span>Nuevas palabras</span>
+        `;
+
+        btnRoll.onclick = () => {
+            if (window.HistoryBank && window.HistoryBank.BANCO_CREA_HISTORIA) {
+                const b = window.HistoryBank.BANCO_CREA_HISTORIA;
+                currentData.personaje = b.personajes[Math.floor(Math.random() * b.personajes.length)].nombre;
+                currentData.lugar = b.lugares[Math.floor(Math.random() * b.lugares.length)].nombre;
+                currentData.objeto = b.objetos[Math.floor(Math.random() * b.objetos.length)].nombre;
+                currentData.mision = b.misiones[Math.floor(Math.random() * b.misiones.length)].nombre;
+                renderCards();
+                if (AppState.settings.soundEnabled) Activities.playSound('dice');
+            }
+        };
+        toolRow.appendChild(btnRoll);
+        stage.appendChild(toolRow);
+
+        // Panel de Valoración de la Profe (3 Botones: Oops, Bien, Genial - Sin puntos visibles)
+        const evalCard = document.createElement('div');
+        evalCard.style.width = '100%';
+        evalCard.style.maxWidth = '680px';
+        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
+        evalCard.style.border = '2.5px solid #e2e8f0';
+        evalCard.style.borderRadius = '22px';
+        evalCard.style.padding = '0.9rem 1.8rem';
+        evalCard.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.06)';
+        evalCard.style.display = 'flex';
+        evalCard.style.flexDirection = 'column';
+        evalCard.style.alignItems = 'center';
+        evalCard.style.gap = '0.7rem';
+        evalCard.style.boxSizing = 'border-box';
+
+        const evalLabel = document.createElement('div');
+        evalLabel.style.fontSize = '0.92rem';
+        evalLabel.style.fontWeight = '900';
+        evalLabel.style.color = '#64748b';
+        evalLabel.style.textTransform = 'uppercase';
+        evalLabel.style.letterSpacing = '0.5px';
+        evalLabel.textContent = 'Valoración de la profe';
+        evalCard.appendChild(evalLabel);
+
+        const evalButtonsRow = document.createElement('div');
+        evalButtonsRow.style.display = 'flex';
+        evalButtonsRow.style.gap = '1.2rem';
+        evalButtonsRow.style.width = '100%';
+        evalButtonsRow.style.justifyContent = 'center';
+
+        const evalActions = [
+            { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
+            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
+            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
+        ];
+
+        evalActions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = 'btn-eval-' + act.id;
+            btn.className = 'tactile-btn';
+            btn.style.flex = '1';
+            btn.style.height = '54px';
+            btn.style.fontSize = '1.25rem';
+            btn.style.fontWeight = '900';
+            btn.style.borderRadius = '18px';
+            btn.style.background = act.bg;
+            btn.style.color = act.color;
+            btn.style.border = `2.5px solid ${act.border}`;
+            btn.style.boxShadow = `0 5px 0 ${act.shadow}`;
+            btn.style.cursor = 'pointer';
+            btn.style.display = 'inline-flex';
+            btn.style.flexDirection = 'row';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.boxSizing = 'border-box';
+            btn.textContent = act.label;
+
+            btn.onclick = () => {
+                evalButtonsRow.style.pointerEvents = 'none';
+                btn.style.transform = 'translateY(3px)';
+                btn.style.boxShadow = `0 2px 0 ${act.shadow}`;
+                if (AppState.settings.soundEnabled) Activities.playSound(act.sound);
+                setTimeout(() => {
+                    onComplete({ success: act.success, chuches: act.chuches });
+                }, 650);
+            };
+
+            evalButtonsRow.appendChild(btn);
+        });
+
+        evalCard.appendChild(evalButtonsRow);
+        stage.appendChild(evalCard);
+        container.appendChild(stage);
+    },
+
+    // ==============================================================
+    // HELPERS Y COMPONENTES REUTILIZABLES PARA TALLER CREATIVO
+    // ==============================================================
+    createTeacherEvalBar(onComplete) {
+        const evalCard = document.createElement('div');
+        evalCard.style.width = '100%';
+        evalCard.style.maxWidth = '680px';
+        evalCard.style.background = 'rgba(255, 255, 255, 0.95)';
+        evalCard.style.border = '2.5px solid #e2e8f0';
+        evalCard.style.borderRadius = '22px';
+        evalCard.style.padding = '0.7rem 1.8rem';
+        evalCard.style.boxShadow = '0 8px 22px rgba(0, 0, 0, 0.06)';
+        evalCard.style.display = 'flex';
+        evalCard.style.flexDirection = 'column';
+        evalCard.style.alignItems = 'center';
+        evalCard.style.gap = '0.55rem';
+        evalCard.style.boxSizing = 'border-box';
+        evalCard.style.flexShrink = '0';
+        evalCard.style.marginTop = '0.4rem';
+
+        const evalLabel = document.createElement('div');
+        evalLabel.style.fontSize = '0.9rem';
+        evalLabel.style.fontWeight = '900';
+        evalLabel.style.color = '#64748b';
+        evalLabel.style.textTransform = 'uppercase';
+        evalLabel.style.letterSpacing = '0.5px';
+        evalLabel.textContent = 'Valoración de la profe';
+        evalCard.appendChild(evalLabel);
+
+        const evalButtonsRow = document.createElement('div');
+        evalButtonsRow.style.display = 'flex';
+        evalButtonsRow.style.gap = '1.2rem';
+        evalButtonsRow.style.width = '100%';
+        evalButtonsRow.style.justifyContent = 'center';
+
+        const evalActions = [
+            { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
+            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
+            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
+        ];
+
+        evalActions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = 'btn-eval-' + act.id;
+            btn.className = 'tactile-btn';
+            btn.style.flex = '1';
+            btn.style.height = '50px';
+            btn.style.fontSize = '1.22rem';
+            btn.style.fontWeight = '900';
+            btn.style.borderRadius = '18px';
+            btn.style.background = act.bg;
+            btn.style.color = act.color;
+            btn.style.border = `2.5px solid ${act.border}`;
+            btn.style.boxShadow = `0 5px 0 ${act.shadow}`;
+            btn.style.cursor = 'pointer';
+            btn.style.display = 'inline-flex';
+            btn.style.flexDirection = 'row';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.boxSizing = 'border-box';
+            btn.textContent = act.label;
+
+            btn.onclick = () => {
+                evalButtonsRow.style.pointerEvents = 'none';
+                btn.style.transform = 'translateY(3px)';
+                btn.style.boxShadow = `0 2px 0 ${act.shadow}`;
+                if (AppState.settings.soundEnabled) Activities.playSound(act.sound);
+                setTimeout(() => {
+                    onComplete({ success: act.success, chuches: act.chuches });
+                }, 650);
+            };
+
+            evalButtonsRow.appendChild(btn);
+        });
+
+        evalCard.appendChild(evalButtonsRow);
+        return evalCard;
+    },
+
+    createDrawingCanvas(width = 720, height = 310) {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+        wrap.style.alignItems = 'center';
+        wrap.style.width = '100%';
+        wrap.style.maxWidth = `${width}px`;
+        wrap.style.margin = '0 auto';
+        wrap.style.boxSizing = 'border-box';
+
+        const canvasBox = document.createElement('div');
+        canvasBox.style.width = '100%';
+        canvasBox.style.height = `${height}px`;
+        canvasBox.style.background = '#ffffff';
+        canvasBox.style.borderRadius = '20px';
+        canvasBox.style.border = '3px solid #cbd5e1';
+        canvasBox.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)';
+        canvasBox.style.position = 'relative';
+        canvasBox.style.overflow = 'hidden';
+        canvasBox.style.touchAction = 'none';
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width * 2;
+        canvas.height = height * 2;
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.display = 'block';
+        canvas.style.cursor = 'crosshair';
+        canvasBox.appendChild(canvas);
+        wrap.appendChild(canvasBox);
+
+        const ctx = canvas.getContext('2d');
+        ctx.scale(2, 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        let currentColor = '#0f172a';
+        let currentSize = 5;
+        let isEraser = false;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function getCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (width / rect.width),
+                y: (clientY - rect.top) * (height / rect.height)
+            };
+        }
+
+        function start(e) {
+            isDrawing = true;
+            const p = getCoords(e);
+            lastX = p.x;
+            lastY = p.y;
+        }
+
+        function move(e) {
+            if (!isDrawing) return;
+            if (e.cancelable) e.preventDefault();
+            const p = getCoords(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(p.x, p.y);
+            ctx.strokeStyle = isEraser ? '#ffffff' : currentColor;
+            ctx.lineWidth = isEraser ? currentSize * 3.5 : currentSize;
+            ctx.stroke();
+            lastX = p.x;
+            lastY = p.y;
+        }
+
+        function stop() {
+            isDrawing = false;
+        }
+
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', stop);
+        canvas.addEventListener('touchstart', start, { passive: false });
+        canvas.addEventListener('touchmove', move, { passive: false });
+        window.addEventListener('touchend', stop);
+
+        // Barra de herramientas de dibujo
+        const bar = document.createElement('div');
+        bar.style.display = 'flex';
+        bar.style.alignItems = 'center';
+        bar.style.justifyContent = 'space-between';
+        bar.style.width = '100%';
+        bar.style.padding = '0.55rem 0.8rem';
+        bar.style.gap = '0.8rem';
+        bar.style.boxSizing = 'border-box';
+        bar.style.flexWrap = 'wrap';
+
+        // Swatches de colores
+        const colorsRow = document.createElement('div');
+        colorsRow.style.display = 'flex';
+        colorsRow.style.gap = '0.5rem';
+        colorsRow.style.alignItems = 'center';
+
+        const paletteColors = [
+            { name: 'Negro', hex: '#0f172a' },
+            { name: 'Rojo', hex: '#dc2626' },
+            { name: 'Azul', hex: '#2563eb' },
+            { name: 'Verde', hex: '#16a34a' },
+            { name: 'Amarillo', hex: '#eab308' },
+            { name: 'Naranja', hex: '#ea580c' },
+            { name: 'Morado', hex: '#7c3aed' },
+            { name: 'Marrón', hex: '#78350f' }
+        ];
+
+        paletteColors.forEach((c, idx) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.title = c.name;
+            dot.style.width = '30px';
+            dot.style.height = '30px';
+            dot.style.borderRadius = '50%';
+            dot.style.background = c.hex;
+            dot.style.border = idx === 0 ? '3px solid #f59e0b' : '2.5px solid #ffffff';
+            dot.style.boxShadow = '0 2px 6px rgba(0,0,0,0.18)';
+            dot.style.cursor = 'pointer';
+            dot.style.padding = '0';
+            dot.style.transition = 'transform 0.15s';
+
+            dot.onclick = () => {
+                isEraser = false;
+                currentColor = c.hex;
+                colorsRow.querySelectorAll('button').forEach(b => b.style.border = '2.5px solid #ffffff');
+                dot.style.border = '3px solid #f59e0b';
+                dot.style.transform = 'scale(1.18)';
+                setTimeout(() => dot.style.transform = 'scale(1.1)', 150);
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            };
+            colorsRow.appendChild(dot);
+        });
+        bar.appendChild(colorsRow);
+
+        // Botones de trazo y borrador
+        const toolsRow = document.createElement('div');
+        toolsRow.style.display = 'flex';
+        toolsRow.style.alignItems = 'center';
+        toolsRow.style.gap = '0.6rem';
+
+        // Selector de grosor
+        const sizes = [
+            { label: 'Fino', sz: 3 },
+            { label: 'Medio', sz: 6 },
+            { label: 'Grueso', sz: 12 }
+        ];
+        sizes.forEach((s, idx) => {
+            const btnSz = document.createElement('button');
+            btnSz.type = 'button';
+            btnSz.textContent = s.label;
+            btnSz.style.background = idx === 1 ? '#0284c7' : '#f1f5f9';
+            btnSz.style.color = idx === 1 ? '#ffffff' : '#334155';
+            btnSz.style.border = '1.5px solid #cbd5e1';
+            btnSz.style.borderRadius = '10px';
+            btnSz.style.padding = '0.3rem 0.65rem';
+            btnSz.style.fontSize = '0.85rem';
+            btnSz.style.fontWeight = '800';
+            btnSz.style.cursor = 'pointer';
+            btnSz.onclick = () => {
+                currentSize = s.sz;
+                toolsRow.querySelectorAll('.sz-btn').forEach(b => {
+                    b.style.background = '#f1f5f9';
+                    b.style.color = '#334155';
+                });
+                btnSz.style.background = '#0284c7';
+                btnSz.style.color = '#ffffff';
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            };
+            btnSz.className = 'sz-btn';
+            toolsRow.appendChild(btnSz);
+        });
+
+        // Botón Goma de borrar
+        const btnEraser = document.createElement('button');
+        btnEraser.type = 'button';
+        btnEraser.style.background = '#f1f5f9';
+        btnEraser.style.color = '#475569';
+        btnEraser.style.border = '1.5px solid #cbd5e1';
+        btnEraser.style.borderRadius = '10px';
+        btnEraser.style.padding = '0.3rem 0.75rem';
+        btnEraser.style.fontSize = '0.85rem';
+        btnEraser.style.fontWeight = '800';
+        btnEraser.style.cursor = 'pointer';
+        btnEraser.style.display = 'inline-flex';
+        btnEraser.style.alignItems = 'center';
+        btnEraser.style.gap = '0.35rem';
+        btnEraser.innerHTML = `
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+            <span>Goma</span>
+        `;
+        btnEraser.onclick = () => {
+            isEraser = !isEraser;
+            btnEraser.style.background = isEraser ? '#e11d48' : '#f1f5f9';
+            btnEraser.style.color = isEraser ? '#ffffff' : '#475569';
+            if (AppState.settings.soundEnabled) Activities.playSound('tick');
+        };
+        toolsRow.appendChild(btnEraser);
+
+        // Botón Limpiar Lienzo
+        const btnClear = document.createElement('button');
+        btnClear.type = 'button';
+        btnClear.style.background = '#fef2f2';
+        btnClear.style.color = '#b91c1c';
+        btnClear.style.border = '1.5px solid #fca5a5';
+        btnClear.style.borderRadius = '10px';
+        btnClear.style.padding = '0.3rem 0.75rem';
+        btnClear.style.fontSize = '0.85rem';
+        btnClear.style.fontWeight = '800';
+        btnClear.style.cursor = 'pointer';
+        btnClear.style.display = 'inline-flex';
+        btnClear.style.alignItems = 'center';
+        btnClear.style.gap = '0.35rem';
+        btnClear.innerHTML = `
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            <span>Limpiar</span>
+        `;
+        btnClear.onclick = () => {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            if (AppState.settings.soundEnabled) Activities.playSound('tick');
+        };
+        toolsRow.appendChild(btnClear);
+
+        bar.appendChild(toolsRow);
+        wrap.appendChild(bar);
+
+        return { element: wrap, canvas, ctx };
+    },
+
+    // ==============================================================
+    // 1. RENDER PIZARRA MÁGICA: DIBUJA Y ADIVINA (ESTILO GARTIC PHONE)
+    // ==============================================================
+    renderDibujoPizarra(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.6rem 1.8rem 1.2rem 1.8rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #ffe4e6 0%, #fff1f2 40%, #ffffff 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante de Taller Creativo
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '16px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #9f1239 0%, #e11d48 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(225, 29, 72, 0.35)';
+        hud.style.border = '2.5px solid #ffffff';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>Taller Creativo · Pizarra Mágica</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Dibuja y Adivina
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '960px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        // Tarjeta de Palabra Secreta y Herramientas del Reto
+        const headerCard = document.createElement('div');
+        headerCard.style.display = 'flex';
+        headerCard.style.alignItems = 'center';
+        headerCard.style.justifyContent = 'space-between';
+        headerCard.style.width = '100%';
+        headerCard.style.maxWidth = '720px';
+        headerCard.style.background = '#ffffff';
+        headerCard.style.border = '2.5px solid #fbcfe8';
+        headerCard.style.borderRadius = '18px';
+        headerCard.style.padding = '0.65rem 1.2rem';
+        headerCard.style.marginBottom = '0.7rem';
+        headerCard.style.boxShadow = '0 6px 18px rgba(225, 29, 72, 0.08)';
+        headerCard.style.boxSizing = 'border-box';
+
+        let currentPalabra = actividad.palabra;
+        let currentCategoria = actividad.categoria;
+        let isRevealed = false;
+
+        const infoLeft = document.createElement('div');
+        infoLeft.style.display = 'flex';
+        infoLeft.style.flexDirection = 'column';
+        infoLeft.style.gap = '0.2rem';
+
+        const catPill = document.createElement('span');
+        catPill.style.fontSize = '0.78rem';
+        catPill.style.fontWeight = '900';
+        catPill.style.color = '#be123c';
+        catPill.style.textTransform = 'uppercase';
+        catPill.style.letterSpacing = '0.5px';
+        catPill.textContent = `Categoría: ${currentCategoria}`;
+        infoLeft.appendChild(catPill);
+
+        const wordText = document.createElement('div');
+        wordText.style.fontSize = '1.3rem';
+        wordText.style.fontWeight = '900';
+        wordText.style.color = '#0f172a';
+        wordText.textContent = '••••••••••••••••';
+        infoLeft.appendChild(wordText);
+        headerCard.appendChild(infoLeft);
+
+        // Acciones: Revelar / Ocultar y Nueva Palabra
+        const actionsRight = document.createElement('div');
+        actionsRight.style.display = 'flex';
+        actionsRight.style.alignItems = 'center';
+        actionsRight.style.gap = '0.6rem';
+
+        const btnReveal = document.createElement('button');
+        btnReveal.type = 'button';
+        btnReveal.className = 'tactile-btn';
+        btnReveal.style.background = '#fef2f2';
+        btnReveal.style.color = '#9f1239';
+        btnReveal.style.border = '2px solid #f43f5e';
+        btnReveal.style.boxShadow = '0 3px 0 #e11d48';
+        btnReveal.style.borderRadius = '12px';
+        btnReveal.style.padding = '0.45rem 0.95rem';
+        btnReveal.style.fontSize = '0.95rem';
+        btnReveal.style.fontWeight = '900';
+        btnReveal.style.cursor = 'pointer';
+        btnReveal.style.display = 'inline-flex';
+        btnReveal.style.alignItems = 'center';
+        btnReveal.style.gap = '0.4rem';
+        btnReveal.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Ver Secreto</span>
+        `;
+        btnReveal.onclick = () => {
+            isRevealed = !isRevealed;
+            if (isRevealed) {
+                wordText.textContent = currentPalabra;
+                btnReveal.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                    <span>Ocultar</span>
+                `;
+            } else {
+                wordText.textContent = '••••••••••••••••';
+                btnReveal.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Ver Secreto</span>
+                `;
+            }
+            if (AppState.settings.soundEnabled) Activities.playSound('tick');
+        };
+        actionsRight.appendChild(btnReveal);
+
+        const btnNew = document.createElement('button');
+        btnNew.type = 'button';
+        btnNew.className = 'tactile-btn';
+        btnNew.style.background = '#ffffff';
+        btnNew.style.color = '#78350f';
+        btnNew.style.border = '2px solid #d97706';
+        btnNew.style.boxShadow = '0 3px 0 #b45309';
+        btnNew.style.borderRadius = '12px';
+        btnNew.style.padding = '0.45rem 0.95rem';
+        btnNew.style.fontSize = '0.95rem';
+        btnNew.style.fontWeight = '900';
+        btnNew.style.cursor = 'pointer';
+        btnNew.style.display = 'inline-flex';
+        btnNew.style.alignItems = 'center';
+        btnNew.style.gap = '0.4rem';
+        btnNew.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="4"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            <span>Otra idea</span>
+        `;
+        btnNew.onclick = () => {
+            if (window.TallerBank && window.TallerBank.BANCO_DIBUJO_PIZARRA) {
+                const b = window.TallerBank.BANCO_DIBUJO_PIZARRA;
+                const item = b[Math.floor(Math.random() * b.length)];
+                currentPalabra = item.palabra;
+                currentCategoria = item.categoria;
+                catPill.textContent = `Categoría: ${currentCategoria}`;
+                isRevealed = false;
+                wordText.textContent = '••••••••••••••••';
+                btnReveal.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Ver Secreto</span>
+                `;
+                if (AppState.settings.soundEnabled) Activities.playSound('dice');
+            }
+        };
+        actionsRight.appendChild(btnNew);
+        headerCard.appendChild(actionsRight);
+        stage.appendChild(headerCard);
+
+        // Lienzo interactivo de dibujo
+        const canvasObj = this.createDrawingCanvas(720, 270);
+        stage.appendChild(canvasObj.element);
+
+        // Barra de Valoración de la Profe (Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar(onComplete);
+        stage.appendChild(evalBar);
+
+        container.appendChild(stage);
+    },
+
+    // ==============================================================
+    // 2. RENDER EL DIBUJO VIAJERO (DINÁMICA EN 4 RONDAS DE 30s)
+    // ==============================================================
+    renderDibujoViajero(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.6rem 1.8rem 1.2rem 1.8rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fffbeb 40%, #ffffff 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante de Taller Creativo
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '16px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #b45309 0%, #d97706 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(217, 119, 6, 0.35)';
+        hud.style.border = '2.5px solid #ffffff';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>Taller Creativo · El Dibujo Viajero</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Arte Colaborativo (30s)
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '880px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        let rondaActual = 0; // 0, 1, 2, 3
+        const rondas = actividad.rondas || [
+            { num: 1, tiempo: 30, inst: "Dibuja una cabeza curiosa con tres ojos y antenas." },
+            { num: 2, tiempo: 30, inst: "¡Cambio de libreta! Dibuja el cuerpo y pelo o escamas." },
+            { num: 3, tiempo: 30, inst: "¡Cambio de libreta! Añade patas locas, alas o tentáculos." },
+            { num: 4, tiempo: 30, inst: "¡Último pase! Dibuja el lugar donde vive y ponle nombre." }
+        ];
+
+        // Título del tema colectivo
+        const titleRow = document.createElement('div');
+        titleRow.style.textAlign = 'center';
+        titleRow.style.marginBottom = '0.9rem';
+
+        const h3 = document.createElement('h3');
+        h3.style.fontSize = '1.65rem';
+        h3.style.fontWeight = '900';
+        h3.style.color = '#78350f';
+        h3.style.margin = '0 0 0.25rem 0';
+        h3.textContent = actividad.titulo;
+        titleRow.appendChild(h3);
+
+        const sub = document.createElement('p');
+        sub.style.fontSize = '1.1rem';
+        sub.style.color = '#475569';
+        sub.style.fontWeight = '700';
+        sub.style.margin = '0';
+        sub.textContent = actividad.subtitulo;
+        titleRow.appendChild(sub);
+        stage.appendChild(titleRow);
+
+        // Barra de pasos / rondas
+        const stepsBar = document.createElement('div');
+        stepsBar.style.display = 'flex';
+        stepsBar.style.gap = '0.8rem';
+        stepsBar.style.marginBottom = '1.1rem';
+        stepsBar.style.width = '100%';
+        stepsBar.style.maxWidth = '760px';
+        stepsBar.style.justifyContent = 'center';
+
+        const stepPills = [];
+        rondas.forEach((r, idx) => {
+            const pill = document.createElement('div');
+            pill.style.flex = '1';
+            pill.style.padding = '0.55rem 0.6rem';
+            pill.style.borderRadius = '14px';
+            pill.style.textAlign = 'center';
+            pill.style.fontWeight = '900';
+            pill.style.fontSize = '0.92rem';
+            pill.style.border = '2px solid #cbd5e1';
+            pill.style.background = idx === 0 ? '#d97706' : '#ffffff';
+            pill.style.color = idx === 0 ? '#ffffff' : '#64748b';
+            pill.style.boxShadow = '0 3px 8px rgba(0,0,0,0.05)';
+            pill.textContent = `Ronda ${r.num}`;
+            stepPills.push(pill);
+            stepsBar.appendChild(pill);
+        });
+        stage.appendChild(stepsBar);
+
+        // Tarjeta Central de la Ronda Actual
+        const roundCard = document.createElement('div');
+        roundCard.style.width = '100%';
+        roundCard.style.maxWidth = '760px';
+        roundCard.style.background = '#ffffff';
+        roundCard.style.border = '3px solid #f59e0b';
+        roundCard.style.borderRadius = '24px';
+        roundCard.style.padding = '1.4rem 1.8rem';
+        roundCard.style.boxShadow = '0 12px 28px rgba(217, 119, 6, 0.12)';
+        roundCard.style.display = 'flex';
+        roundCard.style.flexDirection = 'column';
+        roundCard.style.alignItems = 'center';
+        roundCard.style.textAlign = 'center';
+        roundCard.style.boxSizing = 'border-box';
+        roundCard.style.marginBottom = '0.9rem';
+
+        const instBadge = document.createElement('span');
+        instBadge.style.background = '#fef3c7';
+        instBadge.style.color = '#92400e';
+        instBadge.style.padding = '0.3rem 0.9rem';
+        instBadge.style.borderRadius = '9999px';
+        instBadge.style.fontWeight = '900';
+        instBadge.style.fontSize = '0.85rem';
+        instBadge.style.textTransform = 'uppercase';
+        instBadge.textContent = 'Misión en la libreta';
+        roundCard.appendChild(instBadge);
+
+        const instText = document.createElement('div');
+        instText.style.fontSize = '1.38rem';
+        instText.style.fontWeight = '800';
+        instText.style.color = '#1e293b';
+        instText.style.margin = '0.8rem 0 1.2rem 0';
+        instText.style.lineHeight = '1.4';
+        instText.textContent = rondas[0].inst;
+        roundCard.appendChild(instText);
+
+        // Temporizador Circular / Barra de 30 segundos
+        const timerRow = document.createElement('div');
+        timerRow.style.display = 'flex';
+        timerRow.style.alignItems = 'center';
+        timerRow.style.gap = '1.2rem';
+        timerRow.style.marginBottom = '0.8rem';
+
+        const timerCircle = document.createElement('div');
+        timerCircle.style.width = '70px';
+        timerCircle.style.height = '70px';
+        timerCircle.style.borderRadius = '50%';
+        timerCircle.style.background = '#fef3c7';
+        timerCircle.style.border = '4px solid #d97706';
+        timerCircle.style.display = 'flex';
+        timerCircle.style.alignItems = 'center';
+        timerCircle.style.justifyContent = 'center';
+        timerCircle.style.fontSize = '1.7rem';
+        timerCircle.style.fontWeight = '900';
+        timerCircle.style.color = '#92400e';
+        timerCircle.textContent = '30';
+        timerRow.appendChild(timerCircle);
+
+        const timerControls = document.createElement('div');
+        timerControls.style.display = 'flex';
+        timerControls.style.gap = '0.6rem';
+
+        let timerSeconds = 30;
+        let timerInterval = null;
+        let isRunning = false;
+
+        const btnPlay = document.createElement('button');
+        btnPlay.type = 'button';
+        btnPlay.className = 'tactile-btn';
+        btnPlay.style.background = '#10b981';
+        btnPlay.style.color = '#ffffff';
+        btnPlay.style.border = '2px solid #059669';
+        btnPlay.style.boxShadow = '0 4px 0 #047857';
+        btnPlay.style.borderRadius = '14px';
+        btnPlay.style.padding = '0.55rem 1.2rem';
+        btnPlay.style.fontSize = '1.05rem';
+        btnPlay.style.fontWeight = '900';
+        btnPlay.style.cursor = 'pointer';
+        btnPlay.style.display = 'inline-flex';
+        btnPlay.style.alignItems = 'center';
+        btnPlay.style.gap = '0.45rem';
+        btnPlay.innerHTML = `
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Iniciar 30s</span>
+        `;
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            isRunning = false;
+        }
+
+        btnPlay.onclick = () => {
+            if (isRunning) {
+                stopTimer();
+                btnPlay.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Reanudar</span>
+                `;
+            } else {
+                isRunning = true;
+                btnPlay.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    <span>Pausar</span>
+                `;
+                timerInterval = setInterval(() => {
+                    timerSeconds--;
+                    timerCircle.textContent = timerSeconds;
+                    if (timerSeconds <= 5 && timerSeconds > 0) {
+                        if (AppState.settings.soundEnabled) Activities.playSound('tick');
+                        timerCircle.style.background = '#fee2e2';
+                        timerCircle.style.borderColor = '#ef4444';
+                        timerCircle.style.color = '#b91c1c';
+                    }
+                    if (timerSeconds <= 0) {
+                        stopTimer();
+                        timerCircle.textContent = '0';
+                        if (AppState.settings.soundEnabled) Activities.playSound('bell');
+                        instText.innerHTML = `<span style="color: #dc2626; font-size: 1.5rem;">¡TIEMPO! ¡PASA TU LIBRETA AL COMPAÑERO/A!</span>`;
+                        btnPlay.style.display = 'none';
+                    }
+                }, 1000);
+            }
+        };
+        timerControls.appendChild(btnPlay);
+
+        const btnNextRound = document.createElement('button');
+        btnNextRound.type = 'button';
+        btnNextRound.className = 'tactile-btn';
+        btnNextRound.style.background = '#ffffff';
+        btnNextRound.style.color = '#78350f';
+        btnNextRound.style.border = '2px solid #d97706';
+        btnNextRound.style.boxShadow = '0 4px 0 #b45309';
+        btnNextRound.style.borderRadius = '14px';
+        btnNextRound.style.padding = '0.55rem 1.2rem';
+        btnNextRound.style.fontSize = '1.05rem';
+        btnNextRound.style.fontWeight = '900';
+        btnNextRound.style.cursor = 'pointer';
+        btnNextRound.style.display = 'inline-flex';
+        btnNextRound.style.alignItems = 'center';
+        btnNextRound.style.gap = '0.45rem';
+        btnNextRound.innerHTML = `
+            <span>Siguiente Ronda</span>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        `;
+
+        btnNextRound.onclick = () => {
+            stopTimer();
+            rondaActual++;
+            if (rondaActual < rondas.length) {
+                // Actualizar píldoras
+                stepPills.forEach((p, idx) => {
+                    p.style.background = idx === rondaActual ? '#d97706' : (idx < rondaActual ? '#fef3c7' : '#ffffff');
+                    p.style.color = idx === rondaActual ? '#ffffff' : (idx < rondaActual ? '#92400e' : '#64748b');
+                });
+                instText.textContent = rondas[rondaActual].inst;
+                timerSeconds = 30;
+                timerCircle.textContent = '30';
+                timerCircle.style.background = '#fef3c7';
+                timerCircle.style.borderColor = '#d97706';
+                timerCircle.style.color = '#92400e';
+                btnPlay.style.display = 'inline-flex';
+                btnPlay.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Iniciar 30s</span>
+                `;
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            } else {
+                // Exposición de Arte Final
+                stepPills.forEach(p => {
+                    p.style.background = '#10b981';
+                    p.style.color = '#ffffff';
+                });
+                instBadge.textContent = '¡Exposición de Arte!';
+                instBadge.style.background = '#dcfce7';
+                instBadge.style.color = '#15803d';
+                instText.innerHTML = `
+                    <div style="font-size: 1.55rem; color: #15803d; font-weight: 900; margin-bottom: 0.5rem;">¡Obras Colectivas Terminadas!</div>
+                    <div style="font-size: 1.15rem; color: #334155;">Enseñad los dibujos que han viajado por la clase y observad las creaciones únicas que habéis hecho juntos.</div>
+                `;
+                timerRow.style.display = 'none';
+                if (AppState.settings.soundEnabled) Activities.playSound('victory');
+            }
+        };
+        timerControls.appendChild(btnNextRound);
+        timerRow.appendChild(timerControls);
+        roundCard.appendChild(timerRow);
+        stage.appendChild(roundCard);
+
+        // Barra de Valoración de la Profe (Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar((res) => {
+            stopTimer();
+            onComplete(res);
+        });
+        stage.appendChild(evalBar);
+
+        container.appendChild(stage);
+    },
+
+    // ==============================================================
+    // 3. RENDER DIBUJO PASO A PASO (GUÍA EN PAREJAS O CLASE)
+    // ==============================================================
+    renderPasoAPaso(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.4rem 1.6rem 1rem 1.6rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #eff6ff 0%, #f0fdf4 40%, #ffffff 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '16px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(2, 132, 199, 0.35)';
+        hud.style.border = '2.5px solid #ffffff';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>Taller Creativo · Dibujo Paso a Paso</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Trabajo en Parejas
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central en Dos Columnas
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '1080px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        const mainCols = document.createElement('div');
+        mainCols.style.display = 'grid';
+        mainCols.style.gridTemplateColumns = '380px 1fr';
+        mainCols.style.gap = '1.3rem';
+        mainCols.style.width = '100%';
+        mainCols.style.marginBottom = '0.6rem';
+        mainCols.style.alignItems = 'stretch';
+
+        // Columna Izquierda: Instrucciones para el Guía
+        const leftCol = document.createElement('div');
+        leftCol.style.background = '#ffffff';
+        leftCol.style.border = '2.5px solid #bfdbfe';
+        leftCol.style.borderRadius = '22px';
+        leftCol.style.padding = '1.2rem 1.3rem';
+        leftCol.style.boxShadow = '0 8px 24px rgba(2, 132, 199, 0.08)';
+        leftCol.style.display = 'flex';
+        leftCol.style.flexDirection = 'column';
+        leftCol.style.justifyContent = 'space-between';
+        leftCol.style.boxSizing = 'border-box';
+
+        const pasos = actividad.pasos || [
+            { num: 1, inst: "Dibuja un círculo grande para la cabeza." },
+            { num: 2, inst: "Añade dos orejas triangulares arriba." },
+            { num: 3, inst: "Dibuja dos ojos, nariz y bigotes." },
+            { num: 4, inst: "Dibuja el cuerpo redondeado abajo." },
+            { num: 5, inst: "¡Ponle cola y decora con colores!" }
+        ];
+
+        let pasoIndex = 0;
+
+        const leftHeader = document.createElement('div');
+        const roleBadge = document.createElement('span');
+        roleBadge.style.background = '#eff6ff';
+        roleBadge.style.color = '#1d4ed8';
+        roleBadge.style.padding = '0.25rem 0.8rem';
+        roleBadge.style.borderRadius = '9999px';
+        roleBadge.style.fontWeight = '900';
+        roleBadge.style.fontSize = '0.8rem';
+        roleBadge.style.textTransform = 'uppercase';
+        roleBadge.textContent = 'Misión: Alumno Guía';
+        leftHeader.appendChild(roleBadge);
+
+        const guideTitle = document.createElement('h3');
+        guideTitle.style.fontSize = '1.25rem';
+        guideTitle.style.fontWeight = '900';
+        guideTitle.style.color = '#1e3a8a';
+        guideTitle.style.margin = '0.5rem 0 0.2rem 0';
+        guideTitle.textContent = actividad.titulo;
+        leftHeader.appendChild(guideTitle);
+
+        const guideSub = document.createElement('p');
+        guideSub.style.fontSize = '0.88rem';
+        guideSub.style.color = '#64748b';
+        guideSub.style.margin = '0 0 0.8rem 0';
+        guideSub.textContent = 'Lee las instrucciones paso a paso a tu compañero/a:';
+        leftHeader.appendChild(guideSub);
+        leftCol.appendChild(leftHeader);
+
+        // Tarjeta de Paso Activo
+        const stepCard = document.createElement('div');
+        stepCard.style.background = '#f8fafc';
+        stepCard.style.border = '2px solid #e2e8f0';
+        stepCard.style.borderRadius = '16px';
+        stepCard.style.padding = '0.9rem 1rem';
+        stepCard.style.flex = '1';
+        stepCard.style.display = 'flex';
+        stepCard.style.flexDirection = 'column';
+        stepCard.style.justifyContent = 'center';
+
+        const stepBadge = document.createElement('div');
+        stepBadge.style.fontSize = '0.88rem';
+        stepBadge.style.fontWeight = '900';
+        stepBadge.style.color = '#0284c7';
+        stepBadge.style.marginBottom = '0.4rem';
+        stepBadge.textContent = `Paso 1 de ${pasos.length}`;
+        stepCard.appendChild(stepBadge);
+
+        const stepText = document.createElement('div');
+        stepText.style.fontSize = '1.18rem';
+        stepText.style.fontWeight = '800';
+        stepText.style.color = '#0f172a';
+        stepText.style.lineHeight = '1.4';
+        stepText.textContent = pasos[0].inst;
+        stepCard.appendChild(stepText);
+        leftCol.appendChild(stepCard);
+
+        // Botones de navegación de pasos
+        const stepNav = document.createElement('div');
+        stepNav.style.display = 'flex';
+        stepNav.style.gap = '0.6rem';
+        stepNav.style.marginTop = '0.8rem';
+
+        const btnPrev = document.createElement('button');
+        btnPrev.type = 'button';
+        btnPrev.className = 'tactile-btn';
+        btnPrev.style.flex = '1';
+        btnPrev.style.background = '#f1f5f9';
+        btnPrev.style.color = '#475569';
+        btnPrev.style.border = '1.5px solid #cbd5e1';
+        btnPrev.style.borderRadius = '12px';
+        btnPrev.style.padding = '0.5rem';
+        btnPrev.style.fontWeight = '800';
+        btnPrev.style.fontSize = '0.92rem';
+        btnPrev.style.cursor = 'pointer';
+        btnPrev.textContent = 'Anterior';
+        btnPrev.onclick = () => {
+            if (pasoIndex > 0) {
+                pasoIndex--;
+                stepBadge.textContent = `Paso ${pasoIndex + 1} de ${pasos.length}`;
+                stepText.textContent = pasos[pasoIndex].inst;
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            }
+        };
+        stepNav.appendChild(btnPrev);
+
+        const btnNext = document.createElement('button');
+        btnNext.type = 'button';
+        btnNext.className = 'tactile-btn';
+        btnNext.style.flex = '1';
+        btnNext.style.background = '#0284c7';
+        btnNext.style.color = '#ffffff';
+        btnNext.style.border = '1.5px solid #0369a1';
+        btnNext.style.borderRadius = '12px';
+        btnNext.style.padding = '0.5rem';
+        btnNext.style.fontWeight = '800';
+        btnNext.style.fontSize = '0.92rem';
+        btnNext.style.cursor = 'pointer';
+        btnNext.textContent = 'Siguiente';
+        btnNext.onclick = () => {
+            if (pasoIndex < pasos.length - 1) {
+                pasoIndex++;
+                stepBadge.textContent = `Paso ${pasoIndex + 1} de ${pasos.length}`;
+                stepText.textContent = pasos[pasoIndex].inst;
+                if (AppState.settings.soundEnabled) Activities.playSound('tick');
+            } else {
+                stepBadge.textContent = '¡Completado!';
+                stepText.textContent = '¡Habéis terminado todos los pasos! Comprobad el resultado final.';
+                if (AppState.settings.soundEnabled) Activities.playSound('success');
+            }
+        };
+        stepNav.appendChild(btnNext);
+        leftCol.appendChild(stepNav);
+        mainCols.appendChild(leftCol);
+
+        // Columna Derecha: Lienzo de Dibujo Digital
+        const rightCol = document.createElement('div');
+        rightCol.style.display = 'flex';
+        rightCol.style.flexDirection = 'column';
+        rightCol.style.alignItems = 'center';
+        rightCol.style.width = '100%';
+
+        const canvasObj = this.createDrawingCanvas(520, 270);
+        rightCol.appendChild(canvasObj.element);
+        mainCols.appendChild(rightCol);
+
+        stage.appendChild(mainCols);
+
+        // Barra de Valoración de la Profe (Oops, Bien, Genial)
+        const evalBar = this.createTeacherEvalBar(onComplete);
+        stage.appendChild(evalBar);
+
+        container.appendChild(stage);
+    },
+
+    // ==============================================================
+    // 4. RENDER SEGUIR RITMOS (PATRONES RÍTMICOS MUSICALES)
+    // ==============================================================
+    renderSeguirRitmos(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.6rem 1.8rem 1.4rem 1.8rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #ede9fe 0%, #f5f3ff 40%, #ffffff 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '16px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(124, 58, 237, 0.35)';
+        hud.style.border = '2.5px solid #ffffff';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>Taller Creativo · Seguir el Ritmo</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Oído y Coordinación
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const stage = document.createElement('div');
+        stage.style.flex = '1';
+        stage.style.display = 'flex';
+        stage.style.flexDirection = 'column';
+        stage.style.alignItems = 'center';
+        stage.style.justifyContent = 'center';
+        stage.style.width = '100%';
+        stage.style.maxWidth = '880px';
+        stage.style.margin = 'auto';
+        stage.style.boxSizing = 'border-box';
+
+        const secuencia = actividad.secuencia || ['tambor', 'tambor', 'palmas'];
+        let currentIndex = 0;
+        let isPlayingSequence = false;
+
+        // Cabecera del ritmo
+        const titleRow = document.createElement('div');
+        titleRow.style.textAlign = 'center';
+        titleRow.style.marginBottom = '0.9rem';
+
+        const h3 = document.createElement('h3');
+        h3.style.fontSize = '1.75rem';
+        h3.style.fontWeight = '900';
+        h3.style.color = '#5b21b6';
+        h3.style.margin = '0 0 0.25rem 0';
+        h3.textContent = actividad.titulo;
+        titleRow.appendChild(h3);
+
+        const sub = document.createElement('p');
+        sub.style.fontSize = '1.15rem';
+        sub.style.color = '#334155';
+        sub.style.fontWeight = '700';
+        sub.style.margin = '0';
+        sub.textContent = actividad.desc || '¡Escucha la secuencia rítmica y repítela con tu clase!';
+        titleRow.appendChild(sub);
+        stage.appendChild(titleRow);
+
+        // Barra de línea de tiempo con círculos de compás
+        const timelineBox = document.createElement('div');
+        timelineBox.style.display = 'flex';
+        timelineBox.style.alignItems = 'center';
+        timelineBox.style.justifyContent = 'center';
+        timelineBox.style.gap = '0.9rem';
+        timelineBox.style.marginBottom = '1.3rem';
+
+        const beatDots = [];
+        secuencia.forEach((inst, idx) => {
+            const dot = document.createElement('div');
+            dot.style.width = '38px';
+            dot.style.height = '38px';
+            dot.style.borderRadius = '50%';
+            dot.style.border = '3px solid #cbd5e1';
+            dot.style.background = '#ffffff';
+            dot.style.display = 'flex';
+            dot.style.alignItems = 'center';
+            dot.style.justifyContent = 'center';
+            dot.style.fontWeight = '900';
+            dot.style.fontSize = '1.1rem';
+            dot.style.color = '#64748b';
+            dot.style.boxShadow = '0 4px 10px rgba(0,0,0,0.06)';
+            dot.textContent = `${idx + 1}`;
+            beatDots.push(dot);
+            timelineBox.appendChild(dot);
+        });
+        stage.appendChild(timelineBox);
+
+        // Botón principal de escuchar el ritmo
+        const btnListen = document.createElement('button');
+        btnListen.type = 'button';
+        btnListen.className = 'tactile-btn';
+        btnListen.style.background = '#7c3aed';
+        btnListen.style.color = '#ffffff';
+        btnListen.style.border = '2.5px solid #6d28d9';
+        btnListen.style.boxShadow = '0 5px 0 #5b21b6';
+        btnListen.style.borderRadius = '20px';
+        btnListen.style.padding = '0.65rem 1.8rem';
+        btnListen.style.fontSize = '1.25rem';
+        btnListen.style.fontWeight = '900';
+        btnListen.style.cursor = 'pointer';
+        btnListen.style.display = 'inline-flex';
+        btnListen.style.alignItems = 'center';
+        btnListen.style.gap = '0.65rem';
+        btnListen.style.marginBottom = '1.4rem';
+        btnListen.innerHTML = `
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <span>¡Escuchar Ritmo!</span>
+        `;
+        stage.appendChild(btnListen);
+
+        // 4 Pads táctiles de Instrumentos
+        const padsGrid = document.createElement('div');
+        padsGrid.style.display = 'grid';
+        padsGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        padsGrid.style.gap = '1.1rem';
+        padsGrid.style.width = '100%';
+        padsGrid.style.maxWidth = '780px';
+        padsGrid.style.marginBottom = '1.3rem';
+
+        const instruments = [
+            {
+                id: 'tambor',
+                nombre: 'Tambor',
+                color: '#1e3a8a',
+                bg: '#eff6ff',
+                border: '#3b82f6',
+                shadow: '#2563eb',
+                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="8"/><path d="M4 7v10c0 2.2 3.6 4 8 4s8-1.8 8-4V7"/><path d="m4 11 8 4 8-4"/></svg>`
+            },
+            {
+                id: 'palmas',
+                nombre: 'Palmas',
+                color: '#b45309',
+                bg: '#fffbeb',
+                border: '#f59e0b',
+                shadow: '#d97706',
+                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>`
+            },
+            {
+                id: 'triangulo',
+                nombre: 'Triángulo',
+                color: '#047857',
+                bg: '#f0fdf4',
+                border: '#10b981',
+                shadow: '#059669',
+                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="2" x2="12" y2="4"/></svg>`
+            },
+            {
+                id: 'maraca',
+                nombre: 'Maraca',
+                color: '#be123c',
+                bg: '#fff1f2',
+                border: '#f43f5e',
+                shadow: '#e11d48',
+                svg: `<svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/><circle cx="10" cy="7" r=".8" fill="currentColor"/><circle cx="14" cy="7" r=".8" fill="currentColor"/><circle cx="12" cy="10" r=".8" fill="currentColor"/></svg>`
+            }
+        ];
+
+        const padButtons = {};
+
+        instruments.forEach(inst => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'tactile-btn';
+            btn.id = 'pad-' + inst.id;
+            btn.style.height = '120px';
+            btn.style.background = '#ffffff';
+            btn.style.border = `3px solid ${inst.border}`;
+            btn.style.borderRadius = '22px';
+            btn.style.color = inst.color;
+            btn.style.boxShadow = `0 6px 0 ${inst.shadow}`;
+            btn.style.display = 'flex';
+            btn.style.flexDirection = 'column';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.gap = '0.5rem';
+            btn.style.cursor = 'pointer';
+            btn.style.transition = 'transform 0.15s, background 0.15s, box-shadow 0.15s';
+            btn.style.boxSizing = 'border-box';
+
+            btn.innerHTML = `
+                ${inst.svg}
+                <span style="font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px;">${inst.nombre}</span>
+            `;
+
+            function triggerPadVisual() {
+                btn.style.transform = 'scale(0.94)';
+                btn.style.background = inst.bg;
+                btn.style.boxShadow = `0 2px 0 ${inst.shadow}`;
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                    btn.style.background = '#ffffff';
+                    btn.style.boxShadow = `0 6px 0 ${inst.shadow}`;
+                }, 160);
+            }
+
+            btn.onclick = () => {
+                if (isPlayingSequence) return;
+                triggerPadVisual();
+                if (AppState.settings.soundEnabled) Activities.playSound(inst.id);
+
+                // Comprobar si coincide con el tiempo esperado
+                if (secuencia[currentIndex] === inst.id) {
+                    // Acierto en este tiempo
+                    beatDots[currentIndex].style.background = '#10b981';
+                    beatDots[currentIndex].style.borderColor = '#059669';
+                    beatDots[currentIndex].style.color = '#ffffff';
+                    beatDots[currentIndex].textContent = '✓';
+                    currentIndex++;
+
+                    if (currentIndex === secuencia.length) {
+                        // ¡Secuencia completada con éxito!
+                        padsGrid.style.pointerEvents = 'none';
+                        setTimeout(() => {
+                            if (AppState.settings.soundEnabled) Activities.playSound('victory');
+                            onComplete(true);
+                        }, 500);
+                    }
+                } else {
+                    // Fallo: reiniciar intento
+                    if (AppState.settings.soundEnabled) Activities.playSound('error');
+                    timelineBox.style.animation = 'shake 0.4s';
+                    setTimeout(() => {
+                        timelineBox.style.animation = '';
+                        currentIndex = 0;
+                        beatDots.forEach((d, idx) => {
+                            d.style.background = '#ffffff';
+                            d.style.borderColor = '#cbd5e1';
+                            d.style.color = '#64748b';
+                            d.textContent = `${idx + 1}`;
+                        });
+                    }, 450);
+                }
+            };
+
+            padButtons[inst.id] = { btn, triggerPadVisual };
+            padsGrid.appendChild(btn);
+        });
+        stage.appendChild(padsGrid);
+
+        // Lógica de reproducción de secuencia automática
+        btnListen.onclick = () => {
+            if (isPlayingSequence) return;
+            isPlayingSequence = true;
+            btnListen.style.opacity = '0.6';
+            btnListen.style.pointerEvents = 'none';
+            padsGrid.style.pointerEvents = 'none';
+            currentIndex = 0;
+
+            beatDots.forEach((d, idx) => {
+                d.style.background = '#ffffff';
+                d.style.borderColor = '#cbd5e1';
+                d.style.color = '#64748b';
+                d.textContent = `${idx + 1}`;
+            });
+
+            secuencia.forEach((instId, i) => {
+                setTimeout(() => {
+                    const pad = padButtons[instId];
+                    if (pad) {
+                        pad.triggerPadVisual();
+                        if (AppState.settings.soundEnabled) Activities.playSound(instId);
+                    }
+                    beatDots[i].style.background = '#fef08a';
+                    beatDots[i].style.borderColor = '#eab308';
+                    beatDots[i].style.color = '#854d0e';
+
+                    if (i === secuencia.length - 1) {
+                        setTimeout(() => {
+                            isPlayingSequence = false;
+                            btnListen.style.opacity = '1';
+                            btnListen.style.pointerEvents = 'auto';
+                            padsGrid.style.pointerEvents = 'auto';
+                            beatDots.forEach((d, idx) => {
+                                d.style.background = '#ffffff';
+                                d.style.borderColor = '#cbd5e1';
+                                d.style.color = '#64748b';
+                                d.textContent = `${idx + 1}`;
+                            });
+                        }, 500);
+                    }
+                }, i * (actividad.tempo || 480));
+            });
+        };
+
+        // Botón rápido para el profesor (si la clase lo hizo con palmas en el aula)
+        const classSuccessRow = document.createElement('div');
+        classSuccessRow.style.display = 'flex';
+        classSuccessRow.style.justifyContent = 'center';
+        classSuccessRow.style.width = '100%';
+
+        const btnClassWin = document.createElement('button');
+        btnClassWin.type = 'button';
+        btnClassWin.className = 'tactile-btn';
+        btnClassWin.style.background = '#dcfce7';
+        btnClassWin.style.color = '#15803d';
+        btnClassWin.style.border = '2px solid #16a34a';
+        btnClassWin.style.boxShadow = '0 4px 0 #15803d';
+        btnClassWin.style.borderRadius = '16px';
+        btnClassWin.style.padding = '0.55rem 1.4rem';
+        btnClassWin.style.fontSize = '1.05rem';
+        btnClassWin.style.fontWeight = '900';
+        btnClassWin.style.cursor = 'pointer';
+        btnClassWin.style.display = 'inline-flex';
+        btnClassWin.style.alignItems = 'center';
+        btnClassWin.style.gap = '0.5rem';
+        btnClassWin.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>¡La clase lo ha conseguido en voz alta / con palmas!</span>
+        `;
+        btnClassWin.onclick = () => {
+            if (AppState.settings.soundEnabled) Activities.playSound('victory');
+            onComplete(true);
+        };
+        classSuccessRow.appendChild(btnClassWin);
+        stage.appendChild(classSuccessRow);
+
+        container.appendChild(stage);
+    },
+
+    // ==============================================================
+    // 5. RENDER MEZCLA DE COLORES (LABORATORIO DE COLOR Y PINTURA)
+    // ==============================================================
+    renderMezclaColores(actividad, container, onComplete) {
+        container.innerHTML = '';
+        container.style.position = 'relative';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.alignItems = 'center';
+        container.style.justifyContent = 'space-between';
+        container.style.padding = '5.6rem 2rem 1.6rem 2rem';
+        container.style.boxSizing = 'border-box';
+        container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #f0fdf4 40%, #ffffff 100%)';
+        container.style.overflow = 'hidden';
+
+        // HUD flotante
+        const hud = document.createElement('div');
+        hud.style.position = 'absolute';
+        hud.style.top = '16px';
+        hud.style.left = '50%';
+        hud.style.transform = 'translateX(-50%)';
+        hud.style.zIndex = '50';
+        hud.style.background = 'linear-gradient(135deg, #0f766e 0%, #0d9488 100%)';
+        hud.style.padding = '0.65rem 2.4rem';
+        hud.style.borderRadius = '9999px';
+        hud.style.boxShadow = '0 10px 25px rgba(13, 148, 136, 0.35)';
+        hud.style.border = '2.5px solid #ffffff';
+        hud.style.display = 'flex';
+        hud.style.alignItems = 'center';
+        hud.style.gap = '1.6rem';
+        hud.style.pointerEvents = 'none';
+        hud.style.whiteSpace = 'nowrap';
+        hud.style.width = 'max-content';
+        hud.style.maxWidth = '92vw';
+        hud.style.boxSizing = 'border-box';
+
+        hud.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                <span>Taller Creativo · El Laboratorio del Color</span>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                Teoría del Color
+            </div>
+        `;
+        container.appendChild(hud);
+
+        // Escenario Central
+        const centerStage = document.createElement('div');
+        centerStage.style.flex = '1';
+        centerStage.style.display = 'flex';
+        centerStage.style.flexDirection = 'column';
+        centerStage.style.alignItems = 'center';
+        centerStage.style.justifyContent = 'center';
+        centerStage.style.width = '100%';
+        centerStage.style.maxWidth = '880px';
+        centerStage.style.textAlign = 'center';
+        centerStage.style.boxSizing = 'border-box';
+
+        // Fórmula visual si es de mezclar colores
+        if (actividad.c1 && actividad.c2) {
+            const formulaRow = document.createElement('div');
+            formulaRow.style.display = 'flex';
+            formulaRow.style.alignItems = 'center';
+            formulaRow.style.justifyContent = 'center';
+            formulaRow.style.gap = '1.2rem';
+            formulaRow.style.marginBottom = '1.2rem';
+
+            // Gotita Color 1
+            const drop1 = document.createElement('div');
+            drop1.style.display = 'flex';
+            drop1.style.flexDirection = 'column';
+            drop1.style.alignItems = 'center';
+            drop1.style.gap = '0.35rem';
+            drop1.innerHTML = `
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: ${actividad.c1.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
+                <span style="font-weight: 900; font-size: 0.95rem; color: #1e293b;">${actividad.c1.nombre}</span>
+            `;
+            formulaRow.appendChild(drop1);
+
+            const plusSym = document.createElement('span');
+            plusSym.style.fontSize = '2.2rem';
+            plusSym.style.fontWeight = '900';
+            plusSym.style.color = '#64748b';
+            plusSym.textContent = '+';
+            formulaRow.appendChild(plusSym);
+
+            // Gotita Color 2
+            const drop2 = document.createElement('div');
+            drop2.style.display = 'flex';
+            drop2.style.flexDirection = 'column';
+            drop2.style.alignItems = 'center';
+            drop2.style.gap = '0.35rem';
+            drop2.innerHTML = `
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: ${actividad.c2.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
+                <span style="font-weight: 900; font-size: 0.95rem; color: #1e293b;">${actividad.c2.nombre}</span>
+            `;
+            formulaRow.appendChild(drop2);
+
+            const arrowSym = document.createElement('span');
+            arrowSym.style.fontSize = '2.2rem';
+            arrowSym.style.fontWeight = '900';
+            arrowSym.style.color = '#0284c7';
+            arrowSym.textContent = '➔';
+            formulaRow.appendChild(arrowSym);
+
+            // Gota incógnita con interrogación
+            const mysteryDrop = document.createElement('div');
+            mysteryDrop.style.display = 'flex';
+            mysteryDrop.style.flexDirection = 'column';
+            mysteryDrop.style.alignItems = 'center';
+            mysteryDrop.style.gap = '0.35rem';
+            mysteryDrop.innerHTML = `
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: #ffffff; border: 3.5px dashed #0284c7; box-shadow: 0 6px 16px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: #0284c7;">?</div>
+                <span style="font-weight: 900; font-size: 0.95rem; color: #0284c7;">¿Qué color?</span>
+            `;
+            formulaRow.appendChild(mysteryDrop);
+            centerStage.appendChild(formulaRow);
+        } else if (actividad.c1 && !actividad.c2) {
+            // Inversa: Mostrar color resultante y preguntar por los componentes
+            const formulaRow = document.createElement('div');
+            formulaRow.style.display = 'flex';
+            formulaRow.style.alignItems = 'center';
+            formulaRow.style.justifyContent = 'center';
+            formulaRow.style.gap = '1.2rem';
+            formulaRow.style.marginBottom = '1.2rem';
+
+            const targetDrop = document.createElement('div');
+            targetDrop.style.display = 'flex';
+            targetDrop.style.flexDirection = 'column';
+            targetDrop.style.alignItems = 'center';
+            targetDrop.style.gap = '0.35rem';
+            targetDrop.innerHTML = `
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: ${actividad.c1.hex}; border: 3.5px solid #ffffff; box-shadow: 0 6px 16px rgba(0,0,0,0.18);"></div>
+                <span style="font-weight: 900; font-size: 1rem; color: #1e293b;">${actividad.c1.nombre}</span>
+            `;
+            formulaRow.appendChild(targetDrop);
+
+            const eqSym = document.createElement('span');
+            eqSym.style.fontSize = '2.2rem';
+            eqSym.style.fontWeight = '900';
+            eqSym.style.color = '#0284c7';
+            eqSym.textContent = '=';
+            formulaRow.appendChild(eqSym);
+
+            const mysteryBox = document.createElement('div');
+            mysteryBox.style.background = '#e0f2fe';
+            mysteryBox.style.border = '2.5px dashed #0284c7';
+            mysteryBox.style.padding = '0.6rem 1.4rem';
+            mysteryBox.style.borderRadius = '16px';
+            mysteryBox.style.fontWeight = '900';
+            mysteryBox.style.color = '#0369a1';
+            mysteryBox.style.fontSize = '1.15rem';
+            mysteryBox.textContent = '¿? + ¿?';
+            formulaRow.appendChild(mysteryBox);
+            centerStage.appendChild(formulaRow);
+        }
+
+        // Título de la pregunta
+        const qTitle = document.createElement('h2');
+        qTitle.style.fontSize = '1.75rem';
+        qTitle.style.marginBottom = '1.2rem';
+        qTitle.style.color = '#0f172a';
+        qTitle.style.lineHeight = '1.35';
+        qTitle.textContent = actividad.pregunta;
+        centerStage.appendChild(qTitle);
+        container.appendChild(centerStage);
+
+        // 4 Opciones Táctiles con muestras de color
+        const workArea = document.createElement('div');
+        workArea.style.display = 'grid';
+        workArea.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        workArea.style.gap = '1.1rem';
+        workArea.style.width = '100%';
+        workArea.style.maxWidth = '880px';
+        workArea.style.flexShrink = '0';
+
+        const letters = ['A', 'B', 'C', 'D'];
+        actividad.opciones.forEach((opc, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'tactile-btn tactile-btn-white';
+            btn.style.padding = '0.9rem 1.4rem';
+            btn.style.height = '72px';
+            btn.style.borderRadius = '20px';
+            btn.style.display = 'flex';
+            btn.style.flexDirection = 'row';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'flex-start';
+            btn.style.gap = '1.1rem';
+            btn.style.boxSizing = 'border-box';
+            btn.style.cursor = 'pointer';
+
+            const badge = document.createElement('span');
+            badge.style.width = '38px';
+            badge.style.height = '38px';
+            badge.style.borderRadius = '12px';
+            badge.style.background = '#e2e8f0';
+            badge.style.color = '#334155';
+            badge.style.display = 'flex';
+            badge.style.alignItems = 'center';
+            badge.style.justifyContent = 'center';
+            badge.style.fontWeight = '900';
+            badge.style.fontSize = '1.1rem';
+            badge.textContent = letters[index] || '•';
+            btn.appendChild(badge);
+
+            // Muestra de color (swatch)
+            if (opc.hex) {
+                const swatch = document.createElement('span');
+                swatch.style.width = '34px';
+                swatch.style.height = '34px';
+                swatch.style.borderRadius = '50%';
+                swatch.style.background = opc.hex;
+                swatch.style.border = '2px solid rgba(0,0,0,0.12)';
+                swatch.style.boxShadow = '0 2px 6px rgba(0,0,0,0.12)';
+                swatch.style.flexShrink = '0';
+                btn.appendChild(swatch);
+            }
+
+            const textSpan = document.createElement('span');
+            textSpan.style.flex = '1';
+            textSpan.style.fontSize = '1.25rem';
+            textSpan.style.fontWeight = '800';
+            textSpan.style.color = '#0f172a';
+            textSpan.style.textAlign = 'left';
+            textSpan.textContent = opc.nombre;
+            btn.appendChild(textSpan);
+
+            btn.onclick = () => {
+                const esCorrecto = index === actividad.respuesta;
+                this.feedback(esCorrecto, btn, badge, onComplete);
+            };
+
+            workArea.appendChild(btn);
+        });
+
+        container.appendChild(workArea);
+    },
+
     renderStandard(actividad, container, onComplete) {
         container.innerHTML = '';
         container.style.position = 'relative';
@@ -3624,14 +6145,126 @@ window.Activities = {
                 }
                 return;
             } else if(type === 'success') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, ctx.currentTime); // Do
-                osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // Mi
-                osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.16); // Sol
-                gainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.35);
+                // Sonido ágil, limpio y alegre al acertar una opción o cazar una burbuja (chime cristalino ascendente de 2 notas)
+                const now = ctx.currentTime;
+                const chimeNotes = [
+                    { f: 659.25, start: 0.00, dur: 0.10 }, // Mi5
+                    { f: 880.00, start: 0.07, dur: 0.20 }  // La5
+                ];
+                chimeNotes.forEach(n => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(n.f, now + n.start);
+                    g.gain.setValueAtTime(0.001, now + n.start);
+                    g.gain.linearRampToValueAtTime(targetGain * 0.75, now + n.start + 0.015);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now + n.start);
+                    o.stop(now + n.start + n.dur);
+                });
+                return;
+            } else if(type === 'victory') {
+                // Fanfarria triunfal completa para la pestaña de reto superado y victoria final
+                const now = ctx.currentTime;
+                const fanfareNotes = [
+                    { f: 523.25, start: 0.00, dur: 0.09 }, // Do5
+                    { f: 659.25, start: 0.08, dur: 0.09 }, // Mi5
+                    { f: 783.99, start: 0.16, dur: 0.11 }, // Sol5
+                    { f: 1046.50, start: 0.25, dur: 0.50 }, // Do6 triunfal
+                    { f: 1318.51, start: 0.27, dur: 0.45 }  // Mi6 armónico brillante
+                ];
+                fanfareNotes.forEach(n => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(n.f, now + n.start);
+                    g.gain.setValueAtTime(0.001, now + n.start);
+                    g.gain.linearRampToValueAtTime(targetGain * 0.85, now + n.start + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now + n.start);
+                    o.stop(now + n.start + n.dur);
+                });
+                return;
+            } else if(type === 'bell') {
+                const now = ctx.currentTime;
+                [1046.5, 2093].forEach((f, idx) => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(f, now);
+                    g.gain.setValueAtTime(0.001, now);
+                    g.gain.linearRampToValueAtTime(targetGain * (idx === 0 ? 0.75 : 0.35), now + 0.01);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now);
+                    o.stop(now + 1.1);
+                });
+                return;
+            } else if(type === 'tambor') {
+                const now = ctx.currentTime;
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(170, now);
+                o.frequency.exponentialRampToValueAtTime(42, now + 0.16);
+                g.gain.setValueAtTime(targetGain * 0.9, now);
+                g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+                o.connect(g);
+                g.connect(ctx.destination);
+                o.start(now);
+                o.stop(now + 0.22);
+                return;
+            } else if(type === 'palmas') {
+                const now = ctx.currentTime;
+                [0, 0.025].forEach(dt => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(800 + Math.random() * 200, now + dt);
+                    o.frequency.exponentialRampToValueAtTime(300, now + dt + 0.05);
+                    g.gain.setValueAtTime(targetGain * 0.7, now + dt);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + dt + 0.06);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now + dt);
+                    o.stop(now + dt + 0.06);
+                });
+                return;
+            } else if(type === 'triangulo') {
+                const now = ctx.currentTime;
+                [2200, 4400].forEach((f, idx) => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(f, now);
+                    g.gain.setValueAtTime(targetGain * (idx === 0 ? 0.6 : 0.25), now);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now);
+                    o.stop(now + 0.9);
+                });
+                return;
+            } else if(type === 'maraca') {
+                const now = ctx.currentTime;
+                for (let i = 0; i < 3; i++) {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(1400 + i * 250, now + i * 0.02);
+                    g.gain.setValueAtTime(targetGain * 0.4, now + i * 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.02 + 0.035);
+                    o.connect(g);
+                    g.connect(ctx.destination);
+                    o.start(now + i * 0.02);
+                    o.stop(now + i * 0.02 + 0.035);
+                }
+                return;
             } else {
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(260, ctx.currentTime);

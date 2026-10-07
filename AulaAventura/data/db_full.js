@@ -212,7 +212,6 @@ window.AULA_DATA.primaria2.laboratorio = [
 ];
 
 window.AULA_DATA.primaria2.biblioteca = [
-    { tipo: 'memory', pregunta: 'Encuentra las parejas de Don Quijote', parejas: ['🐴', '🛡️', '⚔️', '📖', '👴', '🏰'] },
     { tipo: 'multiple', pregunta: '¿En qué estación del año hace más calor?', opciones: ['Invierno', 'Otoño', 'Primavera', 'Verano'], respuesta: 3 },
     { tipo: 'multiple', pregunta: '¿Quién es el escudero de Don Quijote?', opciones: ['Rocinante', 'Sancho Panza', 'Dulcinea', 'Cervantes'], respuesta: 1 },
     { tipo: 'multiple', pregunta: '¿Cómo se llama la localidad o ciudad donde vivimos?', opciones: ['Ciudad Real', 'Madrid', 'Barcelona', 'Sevilla'], respuesta: 0 }

@@ -924,15 +924,16 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    padding: 0.35rem 1rem 0.6rem 1rem;
+    overflow: hidden;
     box-sizing: border-box;
 }
 
 .adventure-world-wrap {
     width: 100%;
-    max-width: 1060px;
+    max-width: 980px;
     aspect-ratio: 1376 / 768;
-    max-height: calc(100vh - 110px);
+    max-height: calc(100vh - 130px);
     background: #7dd3fc url('../assets/mapa_infantil.jpg') center center / 100% 100% no-repeat;
     border-radius: 32px;
     border: 6px solid #ffffff;
