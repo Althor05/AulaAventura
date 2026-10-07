@@ -2455,7 +2455,7 @@ window.Activities = {
         container.style.flexDirection = 'column';
         container.style.alignItems = 'center';
         container.style.justifyContent = 'space-between';
-        container.style.padding = '5.8rem 1.5rem 1.5rem 1.5rem';
+        container.style.padding = '5.8rem 1.5rem 0 1.5rem';
         container.style.boxSizing = 'border-box';
         container.style.background = 'radial-gradient(ellipse at 50% 90%, #dcfce7 0%, #f0fdf4 40%, #ffffff 100%)';
         container.style.overflow = 'hidden';
@@ -2563,15 +2563,18 @@ window.Activities = {
 
         container.appendChild(centerStage);
 
-        // Fila Inferior con los 4 Contenedores
+        // Fila Inferior con los 4 Contenedores (Papeleras limpias sin marcos ni textos extras)
         const binsRow = document.createElement('div');
-        binsRow.style.display = 'grid';
-        binsRow.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        binsRow.style.gap = '1.4rem';
+        binsRow.style.display = 'flex';
+        binsRow.style.justifyContent = 'center';
+        binsRow.style.alignItems = 'flex-end';
+        binsRow.style.gap = '2rem';
         binsRow.style.width = '100%';
-        binsRow.style.maxWidth = '920px';
+        binsRow.style.maxWidth = '980px';
         binsRow.style.margin = '0 auto';
+        binsRow.style.marginBottom = '-70px'; // Asoma de mitad para arriba desde el borde inferior
         binsRow.style.flexShrink = '0';
+        binsRow.style.zIndex = '10';
 
         const binElements = {};
         const binKeys = ['azul', 'amarillo', 'verde', 'marron'];
@@ -2591,12 +2594,14 @@ window.Activities = {
                 wasteCard.style.transform = 'scale(0) translateY(120px)';
                 wasteCard.style.opacity = '0';
 
-                // Iluminar contenedor acertado
+                // Iluminar papelera acertada
                 const targetBin = binElements[selectedBinKey];
                 if (targetBin) {
-                    targetBin.style.transform = 'scale(1.1) translateY(-10px)';
-                    targetBin.style.boxShadow = `0 16px 36px ${actividad.contenedores[selectedBinKey].color}88`;
-                    targetBin.style.borderColor = '#ffffff';
+                    targetBin.style.transform = 'translateY(-30px) scale(1.12)';
+                    const img = targetBin.querySelector('img');
+                    if (img) {
+                        img.style.filter = 'drop-shadow(0 0 25px rgba(34, 197, 94, 0.9)) drop-shadow(0 18px 30px rgba(0,0,0,0.35))';
+                    }
                 }
 
                 // Mostrar explicación didáctica
@@ -2622,32 +2627,35 @@ window.Activities = {
             const binBtn = document.createElement('button');
             binBtn.className = 'reciclaje-bin-btn';
             binBtn.dataset.bin = key;
-            binBtn.style.background = info.color;
-            binBtn.style.border = '4px solid #ffffff';
-            binBtn.style.borderRadius = '24px';
-            binBtn.style.boxShadow = `0 10px 0 ${info.color}aa, 0 14px 25px rgba(0,0,0,0.18)`;
-            binBtn.style.padding = '1rem 0.8rem';
+            binBtn.style.background = 'transparent';
+            binBtn.style.border = 'none';
+            binBtn.style.outline = 'none';
+            binBtn.style.padding = '0';
+            binBtn.style.margin = '0';
+            binBtn.style.cursor = 'pointer';
             binBtn.style.display = 'flex';
             binBtn.style.flexDirection = 'column';
             binBtn.style.alignItems = 'center';
-            binBtn.style.justifyContent = 'center';
-            binBtn.style.gap = '0.35rem';
-            binBtn.style.cursor = 'pointer';
-            binBtn.style.color = '#ffffff';
-            binBtn.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease';
+            binBtn.style.justifyContent = 'flex-end';
+            binBtn.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease';
             binBtn.style.userSelect = 'none';
+            binBtn.style.position = 'relative';
 
+            // Solo la papelera con su propia imagen, sin marco ni texto exterior
             binBtn.innerHTML = `
-                <div style="width: 100%; height: 95px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.2rem;">
-                    <img src="assets/reciclaje/contenedor_${key}.jpg" alt="${info.nombre}" style="width: 90px; height: 90px; object-fit: contain; border-radius: 16px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.22)); background: #ffffff; padding: 3px;">
-                </div>
-                <div style="font-size: 1.15rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.4); text-align: center; line-height: 1.2;">
-                    ${info.nombre}
-                </div>
-                <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.95; text-align: center; line-height: 1.1;">
-                    ${info.desc.split(',')[0]}...
-                </div>
+                <img src="assets/reciclaje/${key}.png" alt="${info.nombre}" style="width: 175px; max-width: 21vw; height: auto; object-fit: contain; display: block; filter: drop-shadow(0 14px 22px rgba(0,0,0,0.22)); pointer-events: none; transition: transform 0.2s ease, filter 0.2s ease;">
             `;
+
+            binBtn.onmouseenter = () => {
+                if (!resolved && !isDragging) {
+                    binBtn.style.transform = 'translateY(-14px) scale(1.05)';
+                }
+            };
+            binBtn.onmouseleave = () => {
+                if (!resolved && !isDragging) {
+                    binBtn.style.transform = 'translateY(0) scale(1)';
+                }
+            };
 
             binBtn.onclick = () => {
                 checkAnswer(key, binBtn);
@@ -2711,10 +2719,10 @@ window.Activities = {
                         const rect = bEl.getBoundingClientRect();
                         if (moveEvt.clientX >= rect.left && moveEvt.clientX <= rect.right &&
                             moveEvt.clientY >= rect.top && moveEvt.clientY <= rect.bottom) {
-                            bEl.style.transform = 'scale(1.08) translateY(-6px)';
+                            bEl.style.transform = 'translateY(-20px) scale(1.08)';
                             bEl.style.filter = 'brightness(1.15)';
                         } else {
-                            bEl.style.transform = 'scale(1) translateY(0)';
+                            bEl.style.transform = 'translateY(0) scale(1)';
                             bEl.style.filter = 'none';
                         }
                     });
@@ -2738,7 +2746,7 @@ window.Activities = {
                     binKeys.forEach(k => {
                         const bEl = binElements[k];
                         const rect = bEl.getBoundingClientRect();
-                        bEl.style.transform = 'scale(1) translateY(0)';
+                        bEl.style.transform = 'translateY(0) scale(1)';
                         bEl.style.filter = 'none';
 
                         if (upEvt.clientX >= rect.left && upEvt.clientX <= rect.right &&
@@ -2933,32 +2941,47 @@ window.Activities = {
             const habBtn = document.createElement('button');
             habBtn.className = 'habitat-card-btn';
             habBtn.dataset.habitat = hab.id;
-            habBtn.style.background = hab.bg;
+            habBtn.style.position = 'relative';
+            habBtn.style.height = '185px';
+            habBtn.style.padding = '0';
             habBtn.style.border = '4px solid #ffffff';
             habBtn.style.borderRadius = '24px';
-            habBtn.style.boxShadow = '0 12px 28px rgba(0,0,0,0.18)';
-            habBtn.style.padding = '1.2rem 1rem';
+            habBtn.style.boxShadow = '0 14px 28px rgba(0,0,0,0.18)';
+            habBtn.style.overflow = 'hidden';
+            habBtn.style.cursor = 'pointer';
             habBtn.style.display = 'flex';
             habBtn.style.flexDirection = 'column';
-            habBtn.style.alignItems = 'center';
-            habBtn.style.justifyContent = 'center';
-            habBtn.style.gap = '0.4rem';
-            habBtn.style.cursor = 'pointer';
-            habBtn.style.color = '#ffffff';
-            habBtn.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease';
+            habBtn.style.justifyContent = 'flex-end';
+            habBtn.style.background = '#1e293b';
+            habBtn.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease';
             habBtn.style.userSelect = 'none';
 
+            // Tarjeta de paisaje inmersivo: la foto ocupa todo el espacio sin marcos de colores artificiales
             habBtn.innerHTML = `
-                <div style="width: 100%; height: 105px; border-radius: 16px; overflow: hidden; margin-bottom: 0.35rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 2.5px solid rgba(255,255,255,0.7);">
-                    <img src="assets/habitats/${hab.id}.jpg" alt="${hab.nombre}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                </div>
-                <div style="font-size: 1.25rem; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.45); text-align: center; line-height: 1.2;">
-                    ${hab.nombre}
-                </div>
-                <div style="font-size: 0.82rem; font-weight: 700; opacity: 0.95; text-align: center; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                    ${hab.clima.split(',')[0]}
+                <img src="assets/habitats/${hab.id}.jpg" alt="${hab.nombre}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; pointer-events: none;">
+                <div style="position: relative; z-index: 2; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%); padding: 2rem 0.8rem 1rem 0.8rem; box-sizing: border-box; text-align: center; pointer-events: none;">
+                    <div style="font-size: 1.35rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.7); line-height: 1.2; letter-spacing: 0.3px;">
+                        ${hab.nombre}
+                    </div>
                 </div>
             `;
+
+            habBtn.onmouseenter = () => {
+                if (!resolved && !isDragging) {
+                    habBtn.style.transform = 'translateY(-8px) scale(1.03)';
+                    habBtn.style.boxShadow = '0 20px 36px rgba(0,0,0,0.28)';
+                    const img = habBtn.querySelector('img');
+                    if (img) img.style.transform = 'scale(1.08)';
+                }
+            };
+            habBtn.onmouseleave = () => {
+                if (!resolved && !isDragging) {
+                    habBtn.style.transform = 'translateY(0) scale(1)';
+                    habBtn.style.boxShadow = '0 14px 28px rgba(0,0,0,0.18)';
+                    const img = habBtn.querySelector('img');
+                    if (img) img.style.transform = 'scale(1)';
+                }
+            };
 
             habBtn.onclick = () => {
                 checkAnswer(hab.id, habBtn);
@@ -3022,11 +3045,13 @@ window.Activities = {
                         const rect = hEl.getBoundingClientRect();
                         if (moveEvt.clientX >= rect.left && moveEvt.clientX <= rect.right &&
                             moveEvt.clientY >= rect.top && moveEvt.clientY <= rect.bottom) {
-                            hEl.style.transform = 'scale(1.08) translateY(-6px)';
-                            hEl.style.filter = 'brightness(1.15)';
+                            hEl.style.transform = 'scale(1.06) translateY(-8px)';
+                            hEl.style.borderColor = '#38bdf8';
+                            hEl.style.boxShadow = '0 20px 38px rgba(0,0,0,0.3)';
                         } else {
                             hEl.style.transform = 'scale(1) translateY(0)';
-                            hEl.style.filter = 'none';
+                            hEl.style.borderColor = '#ffffff';
+                            hEl.style.boxShadow = '0 14px 28px rgba(0,0,0,0.18)';
                         }
                     });
                 }
@@ -3049,7 +3074,8 @@ window.Activities = {
                         const hEl = habitatElements[h.id];
                         const rect = hEl.getBoundingClientRect();
                         hEl.style.transform = 'scale(1) translateY(0)';
-                        hEl.style.filter = 'none';
+                        hEl.style.borderColor = '#ffffff';
+                        hEl.style.boxShadow = '0 14px 28px rgba(0,0,0,0.18)';
 
                         if (upEvt.clientX >= rect.left && upEvt.clientX <= rect.right &&
                             upEvt.clientY >= rect.top && upEvt.clientY <= rect.bottom) {
@@ -3164,14 +3190,6 @@ window.Activities = {
         situationText.style.lineHeight = '1.4';
         situationCard.appendChild(situationText);
 
-        const situationPrompt = document.createElement('div');
-        situationPrompt.textContent = 'Selecciona la opción correcta según las normas de tráfico:';
-        situationPrompt.style.fontSize = '1.05rem';
-        situationPrompt.style.fontWeight = '700';
-        situationPrompt.style.color = '#64748b';
-        situationPrompt.style.marginTop = '0.7rem';
-        situationCard.appendChild(situationPrompt);
-
         centerStage.appendChild(situationCard);
 
         // Banner Explicativo de Seguridad Vial (inicialmente oculto)
@@ -3219,8 +3237,13 @@ window.Activities = {
                     ? '0 20px 45px rgba(16, 185, 129, 0.25), 0 0 0 5px #d1fae5'
                     : '0 20px 45px rgba(239, 68, 68, 0.25), 0 0 0 5px #fee2e2';
 
-                triggerCrayon.style.transform = 'scale(1.12) translateY(-8px)';
-                triggerCrayon.style.filter = 'brightness(1.15)';
+                triggerCrayon.style.transform = 'scale(1.1) translateY(-10px)';
+                const svg = triggerCrayon.querySelector('svg');
+                if (svg) {
+                    svg.style.filter = actividad.esSeguro
+                        ? 'drop-shadow(0 0 25px rgba(16, 185, 129, 0.95)) drop-shadow(0 14px 25px rgba(0,0,0,0.3))'
+                        : 'drop-shadow(0 0 25px rgba(239, 68, 68, 0.95)) drop-shadow(0 14px 25px rgba(0,0,0,0.3))';
+                }
 
                 expBanner.textContent = (actividad.esSeguro ? '✓ ¡Conducta Segura! ' : '✕ ¡Conducta Peligrosa! ') + actividad.explicacion;
                 expBanner.style.borderColor = actividad.esSeguro ? '#10b981' : '#ef4444';
@@ -3236,55 +3259,159 @@ window.Activities = {
             }
         };
 
-        // 1. CERA VERDE (¡ES SEGURO!)
+        // 1. CERA VERDE (¡ES SEGURO!) - Botón con forma real de cera escolar
         const greenCrayon = document.createElement('button');
         greenCrayon.className = 'cera-vial-btn cera-verde';
+        greenCrayon.style.background = 'transparent';
+        greenCrayon.style.border = 'none';
+        greenCrayon.style.outline = 'none';
+        greenCrayon.style.padding = '0';
+        greenCrayon.style.cursor = 'pointer';
+        greenCrayon.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease';
+        greenCrayon.style.userSelect = 'none';
         greenCrayon.style.display = 'flex';
         greenCrayon.style.alignItems = 'center';
-        greenCrayon.style.gap = '1.2rem';
-        greenCrayon.style.padding = '0.9rem 2.2rem';
-        greenCrayon.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-        greenCrayon.style.color = '#ffffff';
-        greenCrayon.style.border = '4px solid #ffffff';
-        greenCrayon.style.borderRadius = '9999px';
-        greenCrayon.style.boxShadow = '0 10px 0 #047857, 0 16px 28px rgba(5, 150, 105, 0.35)';
-        greenCrayon.style.cursor = 'pointer';
-        greenCrayon.style.transition = 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
-        greenCrayon.style.userSelect = 'none';
+        greenCrayon.style.justifyContent = 'center';
 
         greenCrayon.innerHTML = `
-            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><polyline points="20 6 9 17 4 12"/></svg>
-            <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
-                <span style="font-size: 1.45rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">¡ES SEGURO!</span>
-                <span style="font-size: 0.85rem; font-weight: 800; color: #d1fae5;">Cera Verde ✓</span>
-            </div>
+            <svg viewBox="0 0 320 84" width="310" height="82" style="display: block; overflow: visible; filter: drop-shadow(0 10px 18px rgba(5, 150, 105, 0.35)); transition: transform 0.2s ease, filter 0.2s ease;">
+                <defs>
+                    <linearGradient id="tipGradVerde" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#6ee7b7"/>
+                        <stop offset="35%" stop-color="#10b981"/>
+                        <stop offset="80%" stop-color="#059669"/>
+                        <stop offset="100%" stop-color="#047857"/>
+                    </linearGradient>
+                    <linearGradient id="bodyGradVerde" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#34d399"/>
+                        <stop offset="25%" stop-color="#10b981"/>
+                        <stop offset="75%" stop-color="#059669"/>
+                        <stop offset="100%" stop-color="#047857"/>
+                    </linearGradient>
+                    <linearGradient id="wrapGradVerde" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#059669"/>
+                        <stop offset="20%" stop-color="#10b981"/>
+                        <stop offset="80%" stop-color="#047857"/>
+                        <stop offset="100%" stop-color="#064e3b"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- Cuerpo cilíndrico de cera base -->
+                <rect x="46" y="14" width="264" height="56" rx="10" fill="url(#bodyGradVerde)"/>
+
+                <!-- Punta afilada cónica de cera -->
+                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradVerde)" stroke="#047857" stroke-width="1.2"/>
+                <path d="M 46 17 C 36 24, 22 35, 12 41 C 24 38, 38 29, 46 23 Z" fill="rgba(255,255,255,0.45)"/>
+
+                <!-- Faja / Etiqueta de papel de la cera -->
+                <rect x="62" y="11" width="232" height="62" rx="6" fill="url(#wrapGradVerde)" stroke="#ffffff" stroke-width="2.5"/>
+                
+                <!-- Franjas decorativas clásicas de cera escolar -->
+                <line x1="74" y1="12" x2="74" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+                <line x1="82" y1="12" x2="82" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+                <line x1="88" y1="12" x2="88" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+
+                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+                <line x1="278" y1="12" x2="278" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+                <line x1="286" y1="12" x2="286" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+
+                <!-- Brillo cilíndrico superior -->
+                <rect x="63" y="17" width="230" height="6" fill="rgba(255,255,255,0.28)" rx="3"/>
+
+                <!-- Círculo blanco con tick de verificación -->
+                <circle cx="114" cy="42" r="16" fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                <path d="M 106 42 L 111 47 L 122 36" fill="none" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Texto de la cera -->
+                <text x="138" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.45);">¡ES SEGURO!</text>
+            </svg>
         `;
+
+        greenCrayon.onmouseenter = () => {
+            if (!resolved) greenCrayon.style.transform = 'translateY(-6px) scale(1.04)';
+        };
+        greenCrayon.onmouseleave = () => {
+            if (!resolved) greenCrayon.style.transform = 'translateY(0) scale(1)';
+        };
+
         greenCrayon.onclick = () => checkAnswer(true, greenCrayon);
         crayonsRow.appendChild(greenCrayon);
 
-        // 2. CERA ROJA (¡ES PELIGROSO!)
+        // 2. CERA ROJA (¡ES PELIGROSO!) - Botón con forma real de cera escolar
         const redCrayon = document.createElement('button');
         redCrayon.className = 'cera-vial-btn cera-roja';
+        redCrayon.style.background = 'transparent';
+        redCrayon.style.border = 'none';
+        redCrayon.style.outline = 'none';
+        redCrayon.style.padding = '0';
+        redCrayon.style.cursor = 'pointer';
+        redCrayon.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease';
+        redCrayon.style.userSelect = 'none';
         redCrayon.style.display = 'flex';
         redCrayon.style.alignItems = 'center';
-        redCrayon.style.gap = '1.2rem';
-        redCrayon.style.padding = '0.9rem 2.2rem';
-        redCrayon.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
-        redCrayon.style.color = '#ffffff';
-        redCrayon.style.border = '4px solid #ffffff';
-        redCrayon.style.borderRadius = '9999px';
-        redCrayon.style.boxShadow = '0 10px 0 #b91c1c, 0 16px 28px rgba(220, 38, 38, 0.35)';
-        redCrayon.style.cursor = 'pointer';
-        redCrayon.style.transition = 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
-        redCrayon.style.userSelect = 'none';
+        redCrayon.style.justifyContent = 'center';
 
         redCrayon.innerHTML = `
-            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
-                <span style="font-size: 1.45rem; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">¡ES PELIGROSO!</span>
-                <span style="font-size: 0.85rem; font-weight: 800; color: #fee2e2;">Cera Roja ✕</span>
-            </div>
+            <svg viewBox="0 0 320 84" width="310" height="82" style="display: block; overflow: visible; filter: drop-shadow(0 10px 18px rgba(220, 38, 38, 0.35)); transition: transform 0.2s ease, filter 0.2s ease;">
+                <defs>
+                    <linearGradient id="tipGradRoja" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#fca5a5"/>
+                        <stop offset="35%" stop-color="#ef4444"/>
+                        <stop offset="80%" stop-color="#dc2626"/>
+                        <stop offset="100%" stop-color="#b91c1c"/>
+                    </linearGradient>
+                    <linearGradient id="bodyGradRoja" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f87171"/>
+                        <stop offset="25%" stop-color="#ef4444"/>
+                        <stop offset="75%" stop-color="#dc2626"/>
+                        <stop offset="100%" stop-color="#991b1b"/>
+                    </linearGradient>
+                    <linearGradient id="wrapGradRoja" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#dc2626"/>
+                        <stop offset="20%" stop-color="#ef4444"/>
+                        <stop offset="80%" stop-color="#b91c1c"/>
+                        <stop offset="100%" stop-color="#7f1d1d"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- Cuerpo cilíndrico de cera base -->
+                <rect x="46" y="14" width="264" height="56" rx="10" fill="url(#bodyGradRoja)"/>
+
+                <!-- Punta afilada cónica de cera -->
+                <path d="M 48 14 C 38 22, 22 34, 10 40 C 7 41.5, 7 42.5, 10 44 C 22 50, 38 62, 48 70 Z" fill="url(#tipGradRoja)" stroke="#991b1b" stroke-width="1.2"/>
+                <path d="M 46 17 C 36 24, 22 35, 12 41 C 24 38, 38 29, 46 23 Z" fill="rgba(255,255,255,0.45)"/>
+
+                <!-- Faja / Etiqueta de papel de la cera -->
+                <rect x="62" y="11" width="232" height="62" rx="6" fill="url(#wrapGradRoja)" stroke="#ffffff" stroke-width="2.5"/>
+                
+                <!-- Franjas decorativas clásicas de cera escolar -->
+                <line x1="74" y1="12" x2="74" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+                <line x1="82" y1="12" x2="82" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+                <line x1="88" y1="12" x2="88" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+
+                <line x1="272" y1="12" x2="272" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="3"/>
+                <line x1="278" y1="12" x2="278" y2="72" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+                <line x1="286" y1="12" x2="286" y2="72" stroke="rgba(0,0,0,0.3)" stroke-width="5"/>
+
+                <!-- Brillo cilíndrico superior -->
+                <rect x="63" y="17" width="230" height="6" fill="rgba(255,255,255,0.28)" rx="3"/>
+
+                <!-- Círculo blanco con aspa roja -->
+                <circle cx="106" cy="42" r="16" fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                <path d="M 99 35 L 113 49 M 113 35 L 99 49" fill="none" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Texto de la cera -->
+                <text x="130" y="50" font-family="'Nunito', 'Segoe UI', system-ui, sans-serif" font-weight="900" font-size="19" fill="#ffffff" letter-spacing="0.5" style="text-shadow: 0 2px 4px rgba(0,0,0,0.45);">¡ES PELIGROSO!</text>
+            </svg>
         `;
+
+        redCrayon.onmouseenter = () => {
+            if (!resolved) redCrayon.style.transform = 'translateY(-6px) scale(1.04)';
+        };
+        redCrayon.onmouseleave = () => {
+            if (!resolved) redCrayon.style.transform = 'translateY(0) scale(1)';
+        };
+
         redCrayon.onclick = () => checkAnswer(false, redCrayon);
         crayonsRow.appendChild(redCrayon);
 
