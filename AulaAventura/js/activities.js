@@ -4456,6 +4456,7 @@ window.Activities = {
             const btnEarly = document.createElement('button');
             btnEarly.type = 'button';
             btnEarly.id = 'btn-acertado-early';
+            btnEarly.title = '¡Ya lo han acertado!';
             btnEarly.className = 'tactile-btn';
             btnEarly.style.marginLeft = 'auto'; // Alineado a la derecha
             btnEarly.style.background = '#10b981';
@@ -4463,17 +4464,16 @@ window.Activities = {
             btnEarly.style.border = '2.5px solid #059669';
             btnEarly.style.boxShadow = '0 4px 0 #047857';
             btnEarly.style.borderRadius = '14px';
-            btnEarly.style.padding = '0.45rem 1.15rem';
-            btnEarly.style.fontSize = '0.98rem';
-            btnEarly.style.fontWeight = '900';
+            btnEarly.style.padding = '0.35rem 1.25rem';
+            btnEarly.style.height = '42px';
             btnEarly.style.cursor = 'pointer';
             btnEarly.style.display = 'inline-flex';
+            btnEarly.style.flexDirection = 'row';
             btnEarly.style.alignItems = 'center';
-            btnEarly.style.gap = '0.45rem';
+            btnEarly.style.justifyContent = 'center';
             btnEarly.style.flexShrink = '0';
             btnEarly.innerHTML = `
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>¡Ya lo han acertado!</span>
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             `;
             btnEarly.onclick = () => {
                 if (AppState.settings.soundEnabled) Activities.playSound('tick');
@@ -4527,7 +4527,7 @@ window.Activities = {
             card.style.flexDirection = 'column';
             card.style.alignItems = 'center';
             card.style.textAlign = 'center';
-            card.style.maxWidth = '640px';
+            card.style.maxWidth = '680px';
             card.style.width = '100%';
             card.style.boxSizing = 'border-box';
 
@@ -4575,7 +4575,7 @@ window.Activities = {
             desc.style.marginBottom = '1.8rem';
             desc.innerHTML = `
                 El alumno/a debe escoger su <strong>papelito secreto</strong>.<br>
-                Cuando esté listo/a en la pizarra con su papel, pulsa <strong>Empezar</strong>.<br>
+                Cuando esté en la pizarra con su papel, <span style="white-space: nowrap;">pulsa <strong>Empezar</strong>.</span><br>
                 Tendrá <strong>1 minuto</strong> para dibujarlo y que la clase lo adivine.
             `;
             card.appendChild(desc);
@@ -4741,20 +4741,15 @@ window.Activities = {
             badge.textContent = '¡Ronda de Dibujo Finalizada!';
             card.appendChild(badge);
 
-            const iconClock = document.createElement('div');
-            iconClock.style.width = '84px';
-            iconClock.style.height = '84px';
-            iconClock.style.borderRadius = '50%';
-            iconClock.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-            iconClock.style.display = 'flex';
-            iconClock.style.alignItems = 'center';
-            iconClock.style.justifyContent = 'center';
-            iconClock.style.marginBottom = '1.3rem';
-            iconClock.style.boxShadow = '0 10px 24px rgba(217, 119, 6, 0.35)';
-            iconClock.innerHTML = `
-                <img src="assets/Reloj.png" alt="Tiempo" style="width: 50px; height: 50px; object-fit: contain; display: block;">
-            `;
-            card.appendChild(iconClock);
+            const clockImg = document.createElement('img');
+            clockImg.src = 'assets/Reloj.png';
+            clockImg.alt = 'Tiempo terminado';
+            clockImg.style.width = '105px';
+            clockImg.style.height = '105px';
+            clockImg.style.objectFit = 'contain';
+            clockImg.style.display = 'block';
+            clockImg.style.margin = '0 auto 1.3rem auto';
+            card.appendChild(clockImg);
 
             const title = document.createElement('h2');
             title.style.fontSize = '2.2rem';
