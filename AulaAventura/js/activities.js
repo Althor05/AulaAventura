@@ -3496,7 +3496,7 @@ window.Activities = {
         container.style.flexDirection = 'column';
         container.style.alignItems = 'center';
         container.style.justifyContent = 'space-between';
-        container.style.padding = '5.8rem 2rem 1.4rem 2rem';
+        container.style.padding = '5.9rem 2rem 1.1rem 2rem';
         container.style.boxSizing = 'border-box';
         container.style.background = 'radial-gradient(ellipse at 50% 90%, #fef3c7 0%, #fefce8 40%, #f8fafc 100%)';
         container.style.overflow = 'hidden';
@@ -3536,21 +3536,22 @@ window.Activities = {
         const splitStage = document.createElement('div');
         splitStage.style.flex = '1';
         splitStage.style.display = 'flex';
-        splitStage.style.gap = '1.6rem';
+        splitStage.style.gap = '1.5rem';
         splitStage.style.alignItems = 'stretch';
         splitStage.style.justifyContent = 'center';
         splitStage.style.width = '100%';
-        splitStage.style.maxWidth = '1120px';
+        splitStage.style.maxWidth = '1140px';
+        splitStage.style.maxHeight = '480px';
         splitStage.style.margin = 'auto';
         splitStage.style.boxSizing = 'border-box';
 
         // 1. Tarjeta de Lectura (Pergamino)
         const readingCard = document.createElement('div');
-        readingCard.style.flex = '1.15';
+        readingCard.style.flex = '1.25';
         readingCard.style.background = '#fffdfa';
         readingCard.style.border = '3px solid #d4af37';
         readingCard.style.borderRadius = '24px';
-        readingCard.style.padding = '1.4rem 1.8rem';
+        readingCard.style.padding = '1.15rem 1.6rem';
         readingCard.style.boxShadow = '0 12px 28px rgba(180, 83, 9, 0.12), inset 0 0 25px rgba(254, 243, 199, 0.35)';
         readingCard.style.display = 'flex';
         readingCard.style.flexDirection = 'column';
@@ -3558,35 +3559,42 @@ window.Activities = {
         readingCard.style.boxSizing = 'border-box';
 
         const readingTop = document.createElement('div');
+        readingTop.style.display = 'flex';
+        readingTop.style.flexDirection = 'column';
+        readingTop.style.flex = '1';
+        readingTop.style.justifyContent = 'flex-start';
+
         const badgeSpan = document.createElement('span');
         badgeSpan.style.background = '#fef3c7';
         badgeSpan.style.color = '#92400e';
-        badgeSpan.style.fontSize = '0.82rem';
+        badgeSpan.style.fontSize = '0.78rem';
         badgeSpan.style.fontWeight = '900';
-        badgeSpan.style.padding = '0.25rem 0.8rem';
+        badgeSpan.style.padding = '0.2rem 0.75rem';
         badgeSpan.style.borderRadius = '9999px';
         badgeSpan.style.border = '1.5px solid #fcd34d';
         badgeSpan.style.display = 'inline-block';
-        badgeSpan.textContent = 'Historia y Cultura';
+        badgeSpan.style.width = 'max-content';
+        badgeSpan.textContent = 'Lectura Comprensiva';
         readingTop.appendChild(badgeSpan);
 
         const rTitle = document.createElement('h3');
-        rTitle.style.fontSize = '1.5rem';
+        rTitle.style.fontSize = '1.38rem';
         rTitle.style.fontWeight = '900';
         rTitle.style.color = '#78350f';
-        rTitle.style.margin = '0.6rem 0 0.8rem 0';
+        rTitle.style.margin = '0.35rem 0 0.5rem 0';
         rTitle.style.lineHeight = '1.25';
         rTitle.textContent = actividad.titulo;
         readingTop.appendChild(rTitle);
 
         const rBody = document.createElement('div');
-        rBody.style.fontSize = '1.18rem';
-        rBody.style.lineHeight = '1.65';
+        rBody.style.fontSize = '1.13rem';
+        rBody.style.lineHeight = '1.52';
         rBody.style.color = '#1e293b';
         rBody.style.fontWeight = '600';
-        rBody.style.overflowY = 'auto';
-        rBody.style.maxHeight = '230px';
-        rBody.style.paddingRight = '0.5rem';
+        rBody.style.whiteSpace = 'pre-line';
+        rBody.style.overflow = 'visible';
+        rBody.style.flex = '1';
+        rBody.style.margin = '0.2rem 0';
         rBody.textContent = actividad.texto;
         readingTop.appendChild(rBody);
         readingCard.appendChild(readingTop);
@@ -3595,13 +3603,13 @@ window.Activities = {
         const readingFooter = document.createElement('div');
         readingFooter.style.display = 'flex';
         readingFooter.style.justifyContent = 'flex-start';
-        readingFooter.style.marginTop = '0.8rem';
+        readingFooter.style.marginTop = '0.5rem';
 
         const btnAudio = document.createElement('button');
         btnAudio.type = 'button';
         btnAudio.className = 'tactile-btn';
-        btnAudio.style.padding = '0.45rem 1.1rem';
-        btnAudio.style.fontSize = '0.95rem';
+        btnAudio.style.padding = '0.38rem 0.95rem';
+        btnAudio.style.fontSize = '0.9rem';
         btnAudio.style.fontWeight = '800';
         btnAudio.style.borderRadius = '14px';
         btnAudio.style.background = '#fef3c7';
@@ -3612,7 +3620,7 @@ window.Activities = {
         btnAudio.style.alignItems = 'center';
         btnAudio.style.gap = '0.5rem';
         btnAudio.innerHTML = `
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
             <span>Escuchar lectura</span>
         `;
         let isSpeaking = false;
@@ -3654,7 +3662,7 @@ window.Activities = {
         questionCard.style.background = '#ffffff';
         questionCard.style.border = '3px solid #93c5fd';
         questionCard.style.borderRadius = '24px';
-        questionCard.style.padding = '1.4rem 1.6rem';
+        questionCard.style.padding = '1.15rem 1.4rem';
         questionCard.style.boxShadow = '0 12px 28px rgba(30, 58, 138, 0.1)';
         questionCard.style.display = 'flex';
         questionCard.style.flexDirection = 'column';
@@ -3662,18 +3670,18 @@ window.Activities = {
         questionCard.style.boxSizing = 'border-box';
 
         const qTitle = document.createElement('h4');
-        qTitle.style.fontSize = '1.25rem';
+        qTitle.style.fontSize = '1.2rem';
         qTitle.style.fontWeight = '900';
         qTitle.style.color = '#0f172a';
-        qTitle.style.lineHeight = '1.35';
-        qTitle.style.margin = '0 0 1rem 0';
+        qTitle.style.lineHeight = '1.3';
+        qTitle.style.margin = '0 0 0.75rem 0';
         qTitle.textContent = actividad.pregunta;
         questionCard.appendChild(qTitle);
 
         const optionsCol = document.createElement('div');
         optionsCol.style.display = 'flex';
         optionsCol.style.flexDirection = 'column';
-        optionsCol.style.gap = '0.75rem';
+        optionsCol.style.gap = '0.62rem';
         optionsCol.style.flex = '1';
         optionsCol.style.justifyContent = 'center';
 
@@ -3685,31 +3693,31 @@ window.Activities = {
             btn.type = 'button';
             btn.className = 'tactile-btn';
             btn.style.width = '100%';
-            btn.style.padding = '0.85rem 1.1rem';
-            btn.style.fontSize = '1.05rem';
+            btn.style.padding = '0.7rem 0.95rem';
+            btn.style.fontSize = '1.02rem';
             btn.style.fontWeight = '800';
-            btn.style.borderRadius = '18px';
+            btn.style.borderRadius = '16px';
             btn.style.background = '#f8fafc';
             btn.style.border = '2.5px solid #cbd5e1';
             btn.style.color = '#1e293b';
             btn.style.display = 'flex';
             btn.style.alignItems = 'center';
-            btn.style.gap = '0.9rem';
+            btn.style.gap = '0.85rem';
             btn.style.textAlign = 'left';
             btn.style.cursor = 'pointer';
             btn.style.transition = 'all 0.2s ease';
 
             const badge = document.createElement('span');
-            badge.style.width = '36px';
-            badge.style.height = '36px';
-            badge.style.borderRadius = '12px';
+            badge.style.width = '32px';
+            badge.style.height = '32px';
+            badge.style.borderRadius = '10px';
             badge.style.background = '#e2e8f0';
             badge.style.color = '#1e3a8a';
             badge.style.display = 'flex';
             badge.style.alignItems = 'center';
             badge.style.justifyContent = 'center';
             badge.style.fontWeight = '900';
-            badge.style.fontSize = '1.05rem';
+            badge.style.fontSize = '0.98rem';
             badge.style.flexShrink = '0';
             badge.textContent = letters[index] || '•';
 
@@ -3824,7 +3832,7 @@ window.Activities = {
                 <span>La Biblioteca Mágica · Continúa la Historia</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.05rem; padding: 0.35rem 1.1rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
-                Creatividad Narrativa
+                Continúa el relato en tu diario
             </div>
         `;
         container.appendChild(hud);
@@ -3841,60 +3849,42 @@ window.Activities = {
         stage.style.margin = 'auto';
         stage.style.boxSizing = 'border-box';
 
-        // Pergamino de la Historia (Solo el texto con espacios/huecos para continuar)
+        // Pergamino de la Historia (Solo el texto con espacios/huecos para continuar en el diario)
         const parchment = document.createElement('div');
         parchment.style.width = '100%';
         parchment.style.background = '#fffdfa';
         parchment.style.border = '3px solid #d4af37';
-        parchment.style.borderRadius = '26px';
-        parchment.style.padding = '1.8rem 2.4rem';
+        parchment.style.borderRadius = '28px';
+        parchment.style.padding = '2.4rem 2.8rem';
         parchment.style.boxShadow = '0 14px 32px rgba(180, 83, 9, 0.14), inset 0 0 25px rgba(254, 243, 199, 0.35)';
         parchment.style.boxSizing = 'border-box';
-        parchment.style.marginBottom = '1.4rem';
+        parchment.style.marginBottom = '1.8rem';
+        parchment.style.textAlign = 'center';
 
         const pTitle = document.createElement('h3');
-        pTitle.style.fontSize = '1.65rem';
+        pTitle.style.fontSize = '1.85rem';
         pTitle.style.fontWeight = '900';
         pTitle.style.color = '#78350f';
-        pTitle.style.margin = '0 0 1rem 0';
-        pTitle.textContent = actividad.titulo || 'Continúa el Relato';
+        pTitle.style.margin = '0 0 1.6rem 0';
+        pTitle.textContent = 'Continúa el relato en tu diario';
         parchment.appendChild(pTitle);
 
         const rawText = actividad.texto || `${actividad.textoInicial || ''} ${actividad.textoHueco || ''}`;
-        // Formatear los guiones bajos / espacios en blanco como un slot estilizado
-        const formattedHtml = rawText.replace(/_{3,}/g, '<span style="display: inline-block; min-width: 100px; border-bottom: 3.5px dashed #d97706; background: rgba(254, 243, 199, 0.65); padding: 0 8px; margin: 0 4px; border-radius: 4px; vertical-align: baseline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+        // Formatear los guiones bajos / huecos como línea de escritura discontinua estilizada
+        const formattedHtml = rawText.replace(/_{1,}/g, '<span style="display: inline-block; min-width: 110px; border-bottom: 3.5px dashed #d97706; background: rgba(254, 243, 199, 0.65); padding: 0 12px; margin: 0 6px; border-radius: 4px; vertical-align: baseline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
 
         const pBody = document.createElement('div');
-        pBody.style.fontSize = '1.35rem';
-        pBody.style.lineHeight = '1.75';
+        pBody.style.fontSize = '1.75rem';
+        pBody.style.lineHeight = '2';
         pBody.style.color = '#1e293b';
-        pBody.style.fontWeight = '600';
+        pBody.style.fontWeight = '700';
         pBody.innerHTML = formattedHtml;
         parchment.appendChild(pBody);
-
-        // Indicador didáctico para la clase
-        const tipBadge = document.createElement('div');
-        tipBadge.style.marginTop = '1.4rem';
-        tipBadge.style.display = 'inline-flex';
-        tipBadge.style.alignItems = 'center';
-        tipBadge.style.gap = '0.6rem';
-        tipBadge.style.background = '#fef3c7';
-        tipBadge.style.color = '#92400e';
-        tipBadge.style.padding = '0.45rem 1.1rem';
-        tipBadge.style.borderRadius = '14px';
-        tipBadge.style.fontSize = '0.98rem';
-        tipBadge.style.fontWeight = '800';
-        tipBadge.style.border = '1.5px solid #fcd34d';
-        tipBadge.innerHTML = `
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            <span>¡Continúa el relato en voz alta o en tu cuaderno con la clase!</span>
-        `;
-        parchment.appendChild(tipBadge);
 
         stage.appendChild(parchment);
 
         // Valoración de la Profe (3 Botones directos sin recuadro blanco: Oops, Bien, Genial)
-        const evalBar = this.createTeacherEvalBar(onComplete);
+        const evalBar = this.createTeacherEvalBar(onComplete, { marginTop: '0.4rem' });
         stage.appendChild(evalBar);
         container.appendChild(stage);
     },
@@ -3959,85 +3949,71 @@ window.Activities = {
         // Cabecera con instrucción
         const headerCard = document.createElement('div');
         headerCard.style.textAlign = 'center';
-        headerCard.style.marginBottom = '1rem';
+        headerCard.style.marginBottom = '1.4rem';
 
         const subTitle = document.createElement('h3');
-        subTitle.style.fontSize = '1.65rem';
+        subTitle.style.fontSize = '1.8rem';
         subTitle.style.fontWeight = '900';
         subTitle.style.color = '#78350f';
-        subTitle.style.margin = '0 0 0.35rem 0';
-        subTitle.textContent = '¡El Telar de Palabras: Crea tu Historia!';
+        subTitle.style.margin = '0 0 0.4rem 0';
+        subTitle.textContent = 'Crear una historia con Palabras';
 
         const descP = document.createElement('p');
-        descP.style.fontSize = '1.2rem';
+        descP.style.fontSize = '1.25rem';
         descP.style.color = '#334155';
         descP.style.fontWeight = '700';
         descP.style.margin = '0';
-        descP.textContent = 'Inventad un cuento emocionante con vuestra clase usando estas palabras al azar:';
+        descP.textContent = 'Inventad una historia con vuestra clase usando estas 4 palabras:';
 
         headerCard.appendChild(subTitle);
         headerCard.appendChild(descP);
         stage.appendChild(headerCard);
 
-        // Cuadrícula de 4 Cartas con Palabras
+        // Cuadrícula de 4 Cartas con Palabras (sin personajes, lugares ni categorías)
         const cardsGrid = document.createElement('div');
         cardsGrid.style.display = 'grid';
         cardsGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        cardsGrid.style.gap = '1.1rem';
+        cardsGrid.style.gap = '1.3rem';
         cardsGrid.style.width = '100%';
-        cardsGrid.style.marginBottom = '1.2rem';
+        cardsGrid.style.marginBottom = '1.4rem';
 
-        let currentData = {
-            personaje: actividad.personaje || 'Un caballero andante valiente',
-            lugar: actividad.lugar || 'En las almenas de un castillo de piedra',
-            objeto: actividad.objeto || 'Una brújula dorada que busca secretos',
-            mision: actividad.mision || 'Tienen que descifrar un enigma antes de cenar'
-        };
+        let currentWords = Array.isArray(actividad.palabras) && actividad.palabras.length === 4
+            ? [...actividad.palabras]
+            : (window.HistoryBank ? window.HistoryBank.getRandomFourWords() : ['castillo', 'estrella', 'camino', 'tesoro']);
+
+        const cardPalettes = [
+            { bg: '#eff6ff', border: '#3b82f6', color: '#1d4ed8' },
+            { bg: '#f0fdf4', border: '#22c55e', color: '#15803d' },
+            { bg: '#fffbeb', border: '#f59e0b', color: '#b45309' },
+            { bg: '#f5f3ff', border: '#8b5cf6', color: '#6d28d9' }
+        ];
 
         const renderCards = () => {
             cardsGrid.innerHTML = '';
-            const items = [
-                { categoria: 'Personaje', val: currentData.personaje, color: '#2563eb', bg: '#eff6ff', border: '#3b82f6' },
-                { categoria: 'Lugar', val: currentData.lugar, color: '#16a34a', bg: '#f0fdf4', border: '#22c55e' },
-                { categoria: 'Objeto', val: currentData.objeto, color: '#d97706', bg: '#fffbeb', border: '#f59e0b' },
-                { categoria: 'Misión', val: currentData.mision, color: '#7c3aed', bg: '#f5f3ff', border: '#8b5cf6' }
-            ];
-
-            items.forEach(it => {
+            currentWords.forEach((word, idx) => {
+                const palette = cardPalettes[idx % cardPalettes.length];
                 const c = document.createElement('div');
                 c.style.background = '#ffffff';
-                c.style.border = `3px solid ${it.border}`;
-                c.style.borderRadius = '22px';
-                c.style.padding = '1.3rem 1.1rem';
+                c.style.border = `3.5px solid ${palette.border}`;
+                c.style.borderRadius = '24px';
+                c.style.padding = '1.8rem 1rem';
                 c.style.display = 'flex';
-                c.style.flexDirection = 'column';
                 c.style.alignItems = 'center';
-                c.style.justifyContent = 'space-between';
+                c.style.justifyContent = 'center';
                 c.style.textAlign = 'center';
                 c.style.minHeight = '155px';
-                c.style.boxShadow = `0 8px 20px ${it.border}22`;
+                c.style.boxShadow = `0 10px 25px ${palette.border}28`;
                 c.style.boxSizing = 'border-box';
-                c.style.transition = 'transform 0.25s ease';
+                c.style.background = `linear-gradient(135deg, #ffffff 60%, ${palette.bg} 100%)`;
 
-                const pill = document.createElement('span');
-                pill.style.background = it.color;
-                pill.style.color = '#ffffff';
-                pill.style.fontSize = '0.8rem';
-                pill.style.fontWeight = '900';
-                pill.style.padding = '0.22rem 0.8rem';
-                pill.style.borderRadius = '9999px';
-                pill.style.textTransform = 'uppercase';
-                pill.style.letterSpacing = '0.5px';
-                pill.textContent = it.categoria;
-                c.appendChild(pill);
-
-                const txt = document.createElement('div');
-                txt.style.fontSize = '1.18rem';
-                txt.style.fontWeight = '800';
-                txt.style.color = '#0f172a';
-                txt.style.lineHeight = '1.35';
-                txt.style.margin = 'auto 0';
-                txt.textContent = it.val;
+                const txt = document.createElement('span');
+                txt.style.fontSize = '1.85rem';
+                txt.style.fontWeight = '900';
+                txt.style.color = palette.color;
+                txt.style.lineHeight = '1.25';
+                txt.style.textTransform = 'capitalize';
+                txt.style.letterSpacing = '-0.3px';
+                txt.textContent = word;
                 c.appendChild(txt);
 
                 cardsGrid.appendChild(c);
@@ -4057,9 +4033,9 @@ window.Activities = {
         const btnRoll = document.createElement('button');
         btnRoll.type = 'button';
         btnRoll.className = 'tactile-btn';
-        btnRoll.style.height = '48px';
-        btnRoll.style.padding = '0 1.8rem';
-        btnRoll.style.fontSize = '1.12rem';
+        btnRoll.style.height = '50px';
+        btnRoll.style.padding = '0 2.2rem';
+        btnRoll.style.fontSize = '1.18rem';
         btnRoll.style.fontWeight = '900';
         btnRoll.style.borderRadius = '18px';
         btnRoll.style.background = '#ffffff';
@@ -4070,19 +4046,15 @@ window.Activities = {
         btnRoll.style.display = 'inline-flex';
         btnRoll.style.flexDirection = 'row';
         btnRoll.style.alignItems = 'center';
-        btnRoll.style.gap = '0.65rem';
+        btnRoll.style.gap = '0.75rem';
         btnRoll.innerHTML = `
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="4"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
             <span>Nuevas palabras</span>
         `;
 
         btnRoll.onclick = () => {
-            if (window.HistoryBank && window.HistoryBank.BANCO_CREA_HISTORIA) {
-                const b = window.HistoryBank.BANCO_CREA_HISTORIA;
-                currentData.personaje = b.personajes[Math.floor(Math.random() * b.personajes.length)].nombre;
-                currentData.lugar = b.lugares[Math.floor(Math.random() * b.lugares.length)].nombre;
-                currentData.objeto = b.objetos[Math.floor(Math.random() * b.objetos.length)].nombre;
-                currentData.mision = b.misiones[Math.floor(Math.random() * b.misiones.length)].nombre;
+            if (window.HistoryBank) {
+                currentWords = window.HistoryBank.getRandomFourWords();
                 renderCards();
                 if (AppState.settings.soundEnabled) Activities.playSound('dice');
             }
@@ -4091,7 +4063,7 @@ window.Activities = {
         stage.appendChild(toolRow);
 
         // Valoración de la Profe (3 Botones directos sin recuadro blanco: Oops, Bien, Genial)
-        const evalBar = this.createTeacherEvalBar(onComplete);
+        const evalBar = this.createTeacherEvalBar(onComplete, { marginTop: '0.4rem' });
         stage.appendChild(evalBar);
         container.appendChild(stage);
     },
