@@ -64,6 +64,7 @@ window.Activities = {
         let totalPopped = 0;
         let isTransitioning = false;
         const acertadasList = [];
+        const erroneasList = [];
 
         // HUD flotante con color vivo y contraste de alta visibilidad
         const hud = document.createElement('div');
@@ -263,6 +264,7 @@ window.Activities = {
                     bubble.style.color = '#ffffff';
                     bubble.style.borderColor = '#dc2626';
                     bubble.style.animation = 'shake 0.4s';
+                    if (!erroneasList.includes(palabra)) erroneasList.push(palabra);
                     if (AppState.settings.soundEnabled) this.playSound('error');
                     setTimeout(() => {
                         bubble.style.background = 'radial-gradient(circle at 35% 28%, rgba(255,255,255,0.98) 0%, rgba(186, 230, 253, 0.85) 45%, rgba(56, 189, 248, 0.75) 100%)';
@@ -450,16 +452,46 @@ window.Activities = {
                             </svg>
                         </button>
                     </div>
-                    <!-- Desplegable de palabras acertadas -->
-                    <div id="words-dropdown" style="display: none; width: 100%; max-width: 580px; max-height: 180px; overflow-y: auto; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 18px; padding: 1rem 1.2rem; margin-top: 0.4rem; box-sizing: border-box;">
-                        <div style="font-size: 0.95rem; font-weight: 800; color: #fef08a; margin-bottom: 0.6rem; text-align: left;">
-                            Palabras acertadas (${acertadasList.length}):
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-start;">
-                            ${acertadasList.length > 0 
-                                ? acertadasList.map(w => `<span style="background: rgba(34, 197, 94, 0.25); color: #86efac; border: 1.5px solid #22c55e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem;">${w}</span>`).join('') 
-                                : `<span style="color: #94a3b8; font-size: 0.95rem; font-weight: 700;">No atrapaste ninguna palabra en esta partida.</span>`
-                            }
+                    <!-- Desplegable de palabras acertadas y erróneas con barra divisoria vertical -->
+                    <div id="words-dropdown" style="display: none; width: 100%; max-width: 660px; max-height: 220px; overflow-y: auto; background: rgba(15, 23, 42, 0.9); border: 2.5px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 1.1rem 1.3rem; margin-top: 0.4rem; box-sizing: border-box; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);">
+                        <div style="display: flex; flex-direction: row; gap: 1.2rem; align-items: stretch; justify-content: space-between;">
+                            
+                            <!-- Columna 1: Palabras Acertadas -->
+                            <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+                                <div style="font-size: 0.95rem; font-weight: 800; color: #86efac; margin-bottom: 0.7rem; text-align: left; display: flex; align-items: center; gap: 0.45rem;">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    <span>Palabras acertadas (${acertadasList.length})</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: flex-start; align-items: center; flex: 1;">
+                                    ${acertadasList.length > 0 
+                                        ? acertadasList.map(w => `<span style="background: rgba(34, 197, 94, 0.22); color: #86efac; border: 1.5px solid #22c55e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem;">${w}</span>`).join('') 
+                                        : `<div style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; color: #94a3b8; font-size: 1.35rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px;">Ninguna</div>`
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Barra Divisoria Vertical -->
+                            <div style="width: 2px; background: rgba(255, 255, 255, 0.22); margin: 0 0.1rem; align-self: stretch; flex-shrink: 0; border-radius: 2px;"></div>
+
+                            <!-- Columna 2: Palabras Erróneas -->
+                            <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+                                <div style="font-size: 0.95rem; font-weight: 800; color: #fca5a5; margin-bottom: 0.7rem; text-align: left; display: flex; align-items: center; gap: 0.45rem;">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                    <span>Palabras erróneas (${erroneasList.length})</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: flex-start; align-items: center; flex: 1;">
+                                    ${erroneasList.length > 0 
+                                        ? erroneasList.map(w => `<span style="background: rgba(239, 68, 68, 0.22); color: #fca5a5; border: 1.5px solid #ef4444; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem;">${w}</span>`).join('') 
+                                        : `<div style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; color: #86efac; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; text-shadow: 0 1px 4px rgba(0,0,0,0.3);">¡Ninguna!</div>`
+                                    }
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 `;

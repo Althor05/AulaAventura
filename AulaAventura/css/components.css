@@ -1903,13 +1903,14 @@
 }
 
 .map-side-roulette-tab:hover {
-    transform: translateY(-50%) translateX(-6px) scale(1.05);
-    box-shadow: -6px 8px 24px rgba(234, 88, 12, 0.6), 0 0 18px rgba(254, 240, 138, 0.6);
+    transform: translateY(-50%);
+    box-shadow: -4px 6px 20px rgba(234, 88, 12, 0.6), 0 0 16px rgba(254, 240, 138, 0.55);
     background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
 }
 
 .map-side-roulette-tab:active {
-    transform: translateY(-50%) translateX(-2px) scale(0.98);
+    transform: translateY(-50%);
+    filter: brightness(0.95);
 }
 
 .map-side-roulette-tab.docked-hidden {
