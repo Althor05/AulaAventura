@@ -128,8 +128,8 @@ window.Activities = {
         roundOverlay.style.alignItems = 'center';
         roundOverlay.style.justifyContent = 'center';
         roundOverlay.style.flexDirection = 'column';
-        roundOverlay.style.gap = '1.5rem';
-        roundOverlay.style.padding = '2rem';
+        roundOverlay.style.gap = '1.1rem';
+        roundOverlay.style.padding = '1.2rem 2rem';
         roundOverlay.style.boxSizing = 'border-box';
         roundOverlay.style.textAlign = 'center';
         roundOverlay.style.color = '#ffffff';
@@ -452,9 +452,9 @@ window.Activities = {
                             </svg>
                         </button>
                     </div>
-                    <!-- Desplegable de palabras acertadas y erróneas con barra divisoria vertical -->
-                    <div id="words-dropdown" style="display: none; width: 100%; max-width: 660px; max-height: 220px; overflow-y: auto; background: rgba(15, 23, 42, 0.9); border: 2.5px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 1.1rem 1.3rem; margin-top: 0.4rem; box-sizing: border-box; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);">
-                        <div style="display: flex; flex-direction: row; gap: 1.2rem; align-items: stretch; justify-content: space-between;">
+                    <!-- Desplegable de palabras acertadas y erróneas con barra divisoria vertical (amplio horizontalmente sin scroll) -->
+                    <div id="words-dropdown" style="display: none; width: 95%; max-width: min(1040px, 94vw); max-height: 280px; overflow-y: auto; background: rgba(15, 23, 42, 0.92); border: 2.5px solid rgba(255, 255, 255, 0.3); border-radius: 22px; padding: 1.2rem 1.6rem; margin-top: 0.4rem; box-sizing: border-box; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);">
+                        <div style="display: flex; flex-direction: row; gap: 1.6rem; align-items: stretch; justify-content: space-between;">
                             
                             <!-- Columna 1: Palabras Acertadas -->
                             <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
