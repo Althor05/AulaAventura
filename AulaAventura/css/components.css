@@ -216,7 +216,7 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 1.8rem;
+    margin-bottom: 2.1rem;
 }
 
 .btn-hero-cta {
@@ -359,7 +359,7 @@
 .home-zones-strip {
     width: 100%;
     max-width: 1380px;
-    margin: 0.8rem auto 2.8rem auto;
+    margin: 1.2rem auto 2.8rem auto;
     padding: 0 2.5rem;
 }
 
