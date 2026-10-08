@@ -64,15 +64,30 @@ window.RuletaSaber = {
         ctx.lineWidth = 2.1;
         ctx.stroke(path);
 
-        // Puntos de pintura en el caso de Taller
+        // Puntos de pintura de la paleta en Taller Creativo (claros, circulares y con sombra de contraste)
         if (zoneId === 'taller') {
+            const dots = [
+                [6.5, 12.5],
+                [8.5, 7.5],
+                [13.5, 6.5],
+                [17.5, 10.5]
+            ];
+
+            // Sombra de contraste para que resalten perfectamente sobre el fondo
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+            for (let i = 0; i < dots.length; i++) {
+                ctx.beginPath();
+                ctx.arc(dots[i][0], dots[i][1], 2.1, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Círculos blancos sólidos y limpios
             ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(13.5, 6.5, 0.9, 0, Math.PI * 2);
-            ctx.arc(17.5, 10.5, 0.9, 0, Math.PI * 2);
-            ctx.arc(8.5, 7.5, 0.9, 0, Math.PI * 2);
-            ctx.arc(6.5, 12.5, 0.9, 0, Math.PI * 2);
-            ctx.fill();
+            for (let i = 0; i < dots.length; i++) {
+                ctx.beginPath();
+                ctx.arc(dots[i][0], dots[i][1], 1.55, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
         ctx.restore();
