@@ -4542,6 +4542,10 @@ window.Activities = {
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
+            if (window._pizarraTimerInterval) {
+                clearInterval(window._pizarraTimerInterval);
+                window._pizarraTimerInterval = null;
+            }
         };
 
         // --- PANTALLA 1: ESPERA Y PREPARACIÓN DEL PAPEL ---
@@ -4663,8 +4667,38 @@ window.Activities = {
 
             let timeLeft = 60;
 
-            // Timer HUD removed for Dibujo Paso a Paso (no time limit)
-            const timerBadge = null;
+                        const hud = document.createElement('div');
+            hud.style.position = 'absolute';
+            hud.style.top = '16px';
+            hud.style.left = '50%';
+            hud.style.transform = 'translateX(-50%)';
+            hud.style.zIndex = '50';
+            hud.style.background = 'linear-gradient(135deg, #9f1239 0%, #e11d48 100%)';
+            hud.style.padding = '0.65rem 2.4rem';
+            hud.style.borderRadius = '9999px';
+            hud.style.boxShadow = '0 10px 25px rgba(225, 29, 72, 0.35)';
+            hud.style.border = '2.5px solid #ffffff';
+            hud.style.display = 'flex';
+            hud.style.alignItems = 'center';
+            hud.style.gap = '1.6rem';
+            hud.style.pointerEvents = 'none';
+            hud.style.whiteSpace = 'nowrap';
+            hud.style.width = 'max-content';
+            hud.style.maxWidth = '92vw';
+            hud.style.boxSizing = 'border-box';
+
+            hud.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
+                    <span>Taller Creativo · Pizarra Mágica</span>
+                </div>
+                <div id="pizarra-timer-badge" style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 1.2rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 80px; text-align: center; display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.45rem;">
+                    <img src="assets/Reloj.png" alt="Tiempo" style="width: 22px; height: 22px; object-fit: contain; display: inline-block;">
+                    <span id="pizarra-timer-val">60s</span>
+                </div>
+            `;
+            container.appendChild(hud);
+
+            const timerBadge = hud.querySelector('#pizarra-timer-badge');
 
             const stage = document.createElement('div');
             stage.style.flex = '1';
@@ -4686,7 +4720,29 @@ window.Activities = {
             stage.appendChild(canvasObj.element);
             container.appendChild(stage);
 
-            // Timer disabled for Dibujo Paso a Paso (no time limit)
+            timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timerBadge) {
+        const valEl = timerBadge.querySelector('#pizarra-timer-val');
+        if (valEl) {
+            valEl.textContent = `${timeLeft}s`;
+        } else {
+            timerBadge.textContent = `${timeLeft}s`;
+        }
+        if (timeLeft <= 10 && timeLeft > 0) {
+            // No tick sound for this mode
+            timerBadge.style.background = 'rgba(239, 68, 68, 0.35)';
+            timerBadge.style.borderColor = '#ef4444';
+            timerBadge.style.color = '#fecaca';
+        }
+    }
+    if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        cleanup();
+        renderFinishedScreen();
+    }
+}, 1000);
+            window._pizarraTimerInterval = timerInterval;
         };
 
         // --- PANTALLA 3: PANTALLA DE FINALIZACIÓN CON SÓLO 2 BOTONES (OOPS / GENIAL) ---

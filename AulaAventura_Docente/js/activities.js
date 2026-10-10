@@ -4542,6 +4542,10 @@ window.Activities = {
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
+            if (window._pizarraTimerInterval) {
+                clearInterval(window._pizarraTimerInterval);
+                window._pizarraTimerInterval = null;
+            }
         };
 
         // --- PANTALLA 1: ESPERA Y PREPARACIÓN DEL PAPEL ---

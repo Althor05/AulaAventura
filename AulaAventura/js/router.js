@@ -21,6 +21,11 @@ window.Router = {
         const route = this.routes[path];
         
         if (route) {
+            // Limpiar timer de Pizarra Mágica si sigue corriendo
+            if (window._pizarraTimerInterval) {
+                clearInterval(window._pizarraTimerInterval);
+                window._pizarraTimerInterval = null;
+            }
             this.container.innerHTML = route.template();
             if (route.controller) {
                 // Dar tiempo al DOM para renderizar antes de vincular eventos
