@@ -4134,8 +4134,8 @@ window.Activities = {
 
         const allActions = [
             { id: 'oops', label: 'Oops', bg: '#fee2e2', border: '#ef4444', color: '#991b1b', shadow: '#dc2626', success: false, chuches: 0, sound: 'error' },
-            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 15, sound: 'success' },
-            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 30, sound: 'success' }
+            { id: 'bien', label: 'Bien', bg: '#e0f2fe', border: '#0284c7', color: '#0369a1', shadow: '#0284c7', success: true, chuches: 10, sound: 'success' },
+            { id: 'genial', label: 'Genial', bg: '#dcfce7', border: '#16a34a', color: '#15803d', shadow: '#16a34a', success: true, chuches: 20, sound: 'success' }
         ];
 
         const evalActions = options.twoButtons 
@@ -4663,38 +4663,8 @@ window.Activities = {
 
             let timeLeft = 60;
 
-            const hud = document.createElement('div');
-            hud.style.position = 'absolute';
-            hud.style.top = '16px';
-            hud.style.left = '50%';
-            hud.style.transform = 'translateX(-50%)';
-            hud.style.zIndex = '50';
-            hud.style.background = 'linear-gradient(135deg, #9f1239 0%, #e11d48 100%)';
-            hud.style.padding = '0.65rem 2.4rem';
-            hud.style.borderRadius = '9999px';
-            hud.style.boxShadow = '0 10px 25px rgba(225, 29, 72, 0.35)';
-            hud.style.border = '2.5px solid #ffffff';
-            hud.style.display = 'flex';
-            hud.style.alignItems = 'center';
-            hud.style.gap = '1.6rem';
-            hud.style.pointerEvents = 'none';
-            hud.style.whiteSpace = 'nowrap';
-            hud.style.width = 'max-content';
-            hud.style.maxWidth = '92vw';
-            hud.style.boxSizing = 'border-box';
-
-            hud.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; font-weight: 900; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.35);">
-                    <span>Taller Creativo · Pizarra Mágica</span>
-                </div>
-                <div id="pizarra-timer-badge" style="background: rgba(255, 255, 255, 0.22); color: #fef08a; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 1.2rem; border-radius: 9999px; border: 1.5px solid #fef08a; text-shadow: 0 1px 2px rgba(0,0,0,0.3); min-width: 80px; text-align: center; display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.45rem;">
-                    <img src="assets/Reloj.png" alt="Tiempo" style="width: 22px; height: 22px; object-fit: contain; display: inline-block;">
-                    <span id="pizarra-timer-val">60s</span>
-                </div>
-            `;
-            container.appendChild(hud);
-
-            const timerBadge = hud.querySelector('#pizarra-timer-badge');
+            // Timer HUD removed for Dibujo Paso a Paso (no time limit)
+const timerBadge = null;
 
             const stage = document.createElement('div');
             stage.style.flex = '1';
@@ -4716,27 +4686,7 @@ window.Activities = {
             stage.appendChild(canvasObj.element);
             container.appendChild(stage);
 
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                if (timerBadge) {
-                    const valEl = timerBadge.querySelector('#pizarra-timer-val');
-                    if (valEl) {
-                        valEl.textContent = `${timeLeft}s`;
-                    } else {
-                        timerBadge.textContent = `${timeLeft}s`;
-                    }
-                    if (timeLeft <= 10 && timeLeft > 0) {
-                        if (AppState.settings.soundEnabled) Activities.playSound('tick');
-                        timerBadge.style.background = 'rgba(239, 68, 68, 0.35)';
-                        timerBadge.style.borderColor = '#ef4444';
-                        timerBadge.style.color = '#fecaca';
-                    }
-                }
-                if (timeLeft <= 0) {
-                    cleanup();
-                    renderFinishedScreen();
-                }
-            }, 1000);
+            // Timer disabled for Dibujo Paso a Paso (no time limit)
         };
 
         // --- PANTALLA 3: PANTALLA DE FINALIZACIÓN CON SÓLO 2 BOTONES (OOPS / GENIAL) ---
