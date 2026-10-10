@@ -1,3 +1,27 @@
+// Bloqueo total de menú contextual para lápices táctiles y pizarras digitales interactivas (PDI)
+window.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+}, { capture: true });
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+}, { capture: true });
+// Prevent native context‑menu on right‑click (button 2)
+document.addEventListener('pointerdown', e => {
+  if (e.button === 2) e.preventDefault();
+});
+
+// Fire the button's click on right‑click release, mirroring left‑click behaviour
+document.addEventListener('pointerup', e => {
+  if (e.button === 2) {
+    // Find the nearest element that can be clicked (button, .btn, or any with onclick)
+    const target = e.target.closest('button, .btn, [onclick]');
+    if (target) {
+      target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    }
+  }
+});
 window.AppState = {
     currentLevel: StorageHelper.load('currentLevel', 'primaria1'),
     settings: {
@@ -199,7 +223,7 @@ function initApp() {
                         <div class="home-zone-card-big zone-bosque">
                             <div class="home-zone-big-icon-wrap">${AppIcons.bosque}</div>
                             <div class="home-zone-big-title">Bosque de Palabras</div>
-                            <div class="home-zone-big-desc">Vocabulario, lectoescritura y comprensión lectora.</div>
+                            <div class="home-zone-big-desc">Vocabulario y lectoescritura, descubre palabras.</div>
                         </div>
 
                         <div class="home-zone-card-big zone-lab">

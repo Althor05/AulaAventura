@@ -117,7 +117,25 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
     -webkit-font-smoothing: antialiased;
+}
+
+/* Evitar arrastre fantasma de imágenes en navegadores y menús de toque prolongado */
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Elementos táctiles y lienzos sin menú contextual nativo */
+canvas, .tactile-btn, button {
+    -webkit-touch-callout: none;
 }
 
 h1, h2, h3, h4, h5, h6 {

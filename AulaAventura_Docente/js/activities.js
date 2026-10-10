@@ -912,13 +912,30 @@ window.Activities = {
             btn.style.height = '78px';
             btn.style.fontSize = '2rem';
 
-            // Drag & Drop con Pointer Events
+            // Desactivar menú contextual en el botón de sílaba
+            btn.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+
+            // Drag & Drop con Pointer Events compatible con lápiz táctil / PDI
             let isDragging = false;
             let startX = 0, startY = 0;
             let floatingEl = null;
 
+            const triggerSyllableAction = () => {
+                if (isDragging) return;
+                const expectedSil = targetSilabas[currentStep];
+                if (sil === expectedSil) {
+                    placeSyllableSuccess(sil, btn);
+                } else {
+                    highlightCurrentSlot();
+                    btn.style.animation = 'shake 0.4s';
+                    if (AppState.settings.soundEnabled) Activities.playSound('error');
+                    setTimeout(() => { btn.style.animation = ''; }, 450);
+                }
+            };
+
             const onPointerDown = (e) => {
-                if (e.button !== undefined && e.button !== 0) return;
+                // Aceptar botón izquierdo (0), botón secundario/barrilete del lápiz (2), o toques de lápiz táctil / dedos
+                if (e.button !== undefined && e.button !== 0 && e.button !== 2 && e.pointerType !== 'pen' && e.pointerType !== 'touch') return;
                 isDragging = false;
                 startX = e.clientX;
                 startY = e.clientY;
@@ -929,6 +946,7 @@ window.Activities = {
 
                     if (!isDragging && Math.hypot(dx, dy) > 6) {
                         isDragging = true;
+                        if (moveEvt.cancelable) moveEvt.preventDefault();
                         btn.style.opacity = '0.3';
                         btn.style.cursor = 'grabbing';
 
@@ -947,6 +965,7 @@ window.Activities = {
                     }
 
                     if (isDragging && floatingEl) {
+                        if (moveEvt.cancelable) moveEvt.preventDefault();
                         floatingEl.style.left = `${moveEvt.clientX}px`;
                         floatingEl.style.top = `${moveEvt.clientY}px`;
 
@@ -1004,6 +1023,9 @@ window.Activities = {
                             highlightCurrentSlot();
                         }
                         setTimeout(() => { isDragging = false; }, 80);
+                    } else if (!isDragging && upEvt && upEvt.button === 2) {
+                        // En caso de pulsación directa con el botón secundario del lápiz táctil
+                        triggerSyllableAction();
                     }
                 };
 
@@ -1016,15 +1038,7 @@ window.Activities = {
 
             // Tap o Clic directo accesible
             btn.onclick = () => {
-                if (isDragging) return;
-                const expectedSil = targetSilabas[currentStep];
-                if (sil === expectedSil) {
-                    placeSyllableSuccess(sil, btn);
-                } else {
-                    btn.style.animation = 'shake 0.4s';
-                    if (AppState.settings.soundEnabled) Activities.playSound('error');
-                    setTimeout(() => { btn.style.animation = ''; }, 450);
-                }
+                triggerSyllableAction();
             };
 
             optionsRow.appendChild(btn);
@@ -1990,13 +2004,15 @@ window.Activities = {
             btn.style.userSelect = 'none';
             btn.style.position = 'relative';
 
+            btn.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+
             let isDragging = false;
             let startX = 0, startY = 0;
             let floatingEl = null;
             let activeHoveredSlot = null;
 
             const onPointerDown = (e) => {
-                if (e.button !== undefined && e.button !== 0) return;
+                if (e.button !== undefined && e.button !== 0 && e.button !== 2 && e.pointerType !== 'pen' && e.pointerType !== 'touch') return;
                 isDragging = false;
                 startX = e.clientX;
                 startY = e.clientY;
@@ -2007,6 +2023,7 @@ window.Activities = {
 
                     if (!isDragging && Math.hypot(dx, dy) > 6) {
                         isDragging = true;
+                        if (moveEvt.cancelable) moveEvt.preventDefault();
                         btn.style.opacity = '0.3';
                         btn.style.cursor = 'grabbing';
 
@@ -2025,6 +2042,7 @@ window.Activities = {
                     }
 
                     if (isDragging && floatingEl) {
+                        if (moveEvt.cancelable) moveEvt.preventDefault();
                         floatingEl.style.left = `${moveEvt.clientX}px`;
                         floatingEl.style.top = `${moveEvt.clientY}px`;
 
@@ -2805,6 +2823,7 @@ window.Activities = {
                 }
             };
 
+            binBtn.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
             binBtn.onclick = () => {
                 checkAnswer(key, binBtn);
             };
@@ -2815,14 +2834,17 @@ window.Activities = {
 
         container.appendChild(binsRow);
 
-        // Drag & Drop para el Residuo hacia los contenedores
+        // Desactivar menú contextual en la tarjeta de residuo
+        wasteCard.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+
+        // Drag & Drop para el Residuo hacia los contenedores compatible con lápiz táctil
         let isDragging = false;
         let startX = 0, startY = 0;
         let floatingEl = null;
 
         const onPointerDown = (e) => {
             if (resolved) return;
-            if (e.button !== undefined && e.button !== 0) return;
+            if (e.button !== undefined && e.button !== 0 && e.button !== 2 && e.pointerType !== 'pen' && e.pointerType !== 'touch') return;
             isDragging = false;
             startX = e.clientX;
             startY = e.clientY;
@@ -2833,6 +2855,7 @@ window.Activities = {
 
                 if (!isDragging && Math.hypot(dx, dy) > 8) {
                     isDragging = true;
+                    if (moveEvt.cancelable) moveEvt.preventDefault();
                     wasteCard.style.opacity = '0.35';
                     wasteCard.style.cursor = 'grabbing';
 
@@ -2858,6 +2881,7 @@ window.Activities = {
                 }
 
                 if (isDragging && floatingEl) {
+                    if (moveEvt.cancelable) moveEvt.preventDefault();
                     floatingEl.style.left = `${moveEvt.clientX}px`;
                     floatingEl.style.top = `${moveEvt.clientY}px`;
 
@@ -3111,6 +3135,7 @@ window.Activities = {
                 }
             };
 
+            habBtn.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
             habBtn.onclick = () => {
                 checkAnswer(hab.id, habBtn);
             };
@@ -3121,14 +3146,17 @@ window.Activities = {
 
         container.appendChild(habitatsRow);
 
-        // Drag & Drop para el Animal hacia los hábitats
+        // Desactivar menú contextual en la tarjeta del animal
+        animalCard.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+
+        // Drag & Drop para el Animal hacia los hábitats compatible con lápiz táctil
         let isDragging = false;
         let startX = 0, startY = 0;
         let floatingEl = null;
 
         const onPointerDown = (e) => {
             if (resolved) return;
-            if (e.button !== undefined && e.button !== 0) return;
+            if (e.button !== undefined && e.button !== 0 && e.button !== 2 && e.pointerType !== 'pen' && e.pointerType !== 'touch') return;
             isDragging = false;
             startX = e.clientX;
             startY = e.clientY;
@@ -3139,6 +3167,7 @@ window.Activities = {
 
                 if (!isDragging && Math.hypot(dx, dy) > 8) {
                     isDragging = true;
+                    if (moveEvt.cancelable) moveEvt.preventDefault();
                     animalCard.style.opacity = '0.35';
                     animalCard.style.cursor = 'grabbing';
 
@@ -3164,6 +3193,7 @@ window.Activities = {
                 }
 
                 if (isDragging && floatingEl) {
+                    if (moveEvt.cancelable) moveEvt.preventDefault();
                     floatingEl.style.left = `${moveEvt.clientX}px`;
                     floatingEl.style.top = `${moveEvt.clientY}px`;
 
@@ -4228,66 +4258,84 @@ window.Activities = {
         }
         updateCursorStyle();
 
+        canvas.style.touchAction = 'none';
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
         function getCoords(e) {
             const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+            const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
             return {
                 x: (clientX - rect.left) * (width / rect.width),
                 y: (clientY - rect.top) * (height / rect.height)
             };
         }
 
-        function start(e) {
+        function drawDot(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, (isEraser ? 40 : currentSize) / 2, 0, Math.PI * 2);
+            ctx.fillStyle = isEraser ? '#ffffff' : currentColor;
+            ctx.fill();
+        }
+
+        function drawLine(fromX, fromY, toX, toY) {
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.strokeStyle = isEraser ? '#ffffff' : currentColor;
+            ctx.lineWidth = isEraser ? 40 : currentSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+
+        function onCanvasPointerDown(e) {
+            if (e.button !== undefined && e.button !== 0 && e.button !== 2 && e.pointerType !== 'pen' && e.pointerType !== 'touch') return;
+            if (e.cancelable) e.preventDefault();
+            try { canvas.setPointerCapture(e.pointerId); } catch(err) {}
             isDrawing = true;
             const p = getCoords(e);
             lastX = p.x;
             lastY = p.y;
+            drawDot(p.x, p.y);
         }
 
-        function move(e) {
-            if (!isDrawing) return;
-            if (e.cancelable && e.touches) e.preventDefault();
-            const p = getCoords(e);
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(p.x, p.y);
-            ctx.strokeStyle = isEraser ? '#ffffff' : currentColor;
-            ctx.lineWidth = isEraser ? 40 : currentSize;
-            ctx.stroke();
-            lastX = p.x;
-            lastY = p.y;
-        }
-
-        function stop() {
-            isDrawing = false;
-        }
-
-        canvas.addEventListener('mousedown', start);
-        canvas.addEventListener('mousemove', (e) => {
+        function onCanvasPointerMove(e) {
             const rect = canvasBox.getBoundingClientRect();
             cursorCircle.style.left = `${e.clientX - rect.left}px`;
             cursorCircle.style.top = `${e.clientY - rect.top}px`;
             cursorCircle.style.display = 'block';
-            move(e);
-        });
-        canvas.addEventListener('mouseenter', () => {
+
+            if (!isDrawing) return;
+            if (e.cancelable) e.preventDefault();
+            const p = getCoords(e);
+            drawLine(lastX, lastY, p.x, p.y);
+            lastX = p.x;
+            lastY = p.y;
+        }
+
+        function onCanvasPointerUp(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                try { if (e && e.pointerId) canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+            }
+        }
+
+        canvas.addEventListener('pointerdown', onCanvasPointerDown);
+        canvas.addEventListener('pointermove', onCanvasPointerMove);
+        canvas.addEventListener('pointerup', onCanvasPointerUp);
+        canvas.addEventListener('pointercancel', onCanvasPointerUp);
+        canvas.addEventListener('pointerenter', () => {
             cursorCircle.style.display = 'block';
             updateCursorStyle();
         });
-        canvas.addEventListener('mouseleave', () => {
-            cursorCircle.style.display = 'none';
-            stop();
+        canvas.addEventListener('pointerleave', () => {
+            if (!isDrawing) cursorCircle.style.display = 'none';
         });
-        window.addEventListener('mouseup', stop);
-
-        canvas.addEventListener('touchstart', (e) => {
-            start(e);
-        }, { passive: false });
-        canvas.addEventListener('touchmove', (e) => {
-            move(e);
-        }, { passive: false });
-        window.addEventListener('touchend', stop);
+        window.addEventListener('pointerup', onCanvasPointerUp);
 
         // Barra de herramientas de dibujo
         const bar = document.createElement('div');
